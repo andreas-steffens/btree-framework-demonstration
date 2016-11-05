@@ -1,6 +1,5 @@
-src/btreetest/applications/avp_path_find/* linguist-vendored
-sublevel*.h linguist-vendored=false
-airduct*.h linguist-vendored=false
-alienvessel.h linguist-vendored=false
-predatorship.h linguist-vendored=false
+src/btreetest/applications/avp_path_find/sublevel*.h linguist-vendored
+src/btreetest/applications/avp_path_find/airduct*.h linguist-vendored
+src/btreetest/applications/avp_path_find/alienvessel.h linguist-vendored
+src/btreetest/applications/avp_path_find/predatorship.h linguist-vendored
 
