@@ -26,40 +26,7 @@ Please read section "2.2. Windows - How to build the test bench using cygwin and
 <br>
 ## How to build the test bench under linux?
 --
-Via command execute the following commands:
-
-```
-cd .../to/your/projects/location
-git clone https://github.com/andreas-steffens/btree-framework-demonstration
-cd btree-framework-demonstration/src/btreetest
-make debug        # this builds the binary with debug settings
-make regression   # this builds the binary with debug settings and runs all regression tests
-```
-
-In order to see all build rules, please see section "2.1. Linux" of the [README](https://github.com/andreas-steffens/btree-framework-demonstration/blob/master/README) file.
-
-Depending on what binary has been build, use one of the following command lines to see what individual tests can be run:
-
-./btreetest_dbg --help
-./btreetest_prf --help
-./btreetest --help
-
-Examples:
-
-./btreetest.dbg -type stl-multimap test 1
-
-./btreetest.dbg -type array test 1
-
-
-Note: Don't run cmake directly, since this will destroy the existing Makefile. In case that happened anyway, then run the ./recover_makefile.sh script or execute the following commands:
-
-rm -fv CMakeCache.txt
-rm -rfv CMakeFiles
-cp -fv Makefile.backup Makefile
-
-Usual indicators that the Makefile got destroyed are, that make complains about a rule not to exist or that it cannot find a file.
-
-
+Please read section "2.1. Linux - How to build the test bench using cmake" of the [README](https://github.com/andreas-steffens/btree-framework-demonstration/blob/master/README) file.
 <br>
 <br>
 ## Version
