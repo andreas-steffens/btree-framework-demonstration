@@ -74,6 +74,9 @@ The project is cmake based and is therefore very easy to set up. The two "How to
 ./btreetest -help | --help | -usage | --usage
 ./btreetest -type <test type> [-app <app name>] -test <test number> [-sizetype <address space bit width>]
 
+-help, --help, 	prints this help page and exits
+-usage, --usage
+
 -type			selects the container type or application test mode
 
 				stl-set			- selects STL interface equivalent set container types
