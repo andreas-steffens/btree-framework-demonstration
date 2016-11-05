@@ -1,0 +1,54 @@
+Step 1) Check you have cmake version 3.1 or above installed by calling this command line:
+
+cmake --version
+
+Step 2) In this directory, run one of the following commands:
+
+... to build binaries
+
+make debug							- builds regression test binary with debug flags
+make profile						- builds regression test binary with profile flags (resulting binary is supposed to be used with a profiler)
+make release						- builds regression test binary with release flags
+make coverage						- builds regression test binary with debug and coverage flags
+
+... to run tests in bulk
+
+make regression						- runs regression tests using debug binary (this may takes hours to complete)
+make coverage_report				- runs regression tests using coverage binary and creates result displayed as HTML (this may takes hours to complete)
+
+... to clean up
+
+make clean_all						- runs any clean commands
+make clean							- removes any build file (may those be intermediate or final)
+make clean_regression_tests			- cleans all regression tests regardless of their result
+make clean_failed_regression_tests	- cleans all regression tests that returned with an error code
+
+Step 3) run the test bench directly
+
+Depending on what binary has been build, use one of the following command lines to see what individual tests can be run:
+
+./btreetest_dbg --help
+./btreetest_prf --help
+./btreetest --help
+
+Examples:
+
+./btreetest.dbg -type stl-multimap test 1
+
+./btreetest.dbg -type array test 1
+
+
+Note: Don't run cmake directly, since this will destroy the existing Makefile. In case that happened anyway, then run the ./recover_makefile.sh script or execute the following commands:
+
+rm -fv CMakeCache.txt
+rm -rfv CMakeFiles
+cp -fv Makefile.backup Makefile
+
+Usual indicators that the Makefile got destroyed are, that make complains about a rule not to exist or that it cannot find a file.
+
+
+Note: This is the btree-framework test bench. If you want to see the btree-framework source code, then go to directory btree_framework. If you want to get hold of btree-framework source code as a sub-module to build a library, then run this commands:
+
+cd .../to/your/project's/location
+git clone https://github.com/andreas-steffens/btree-framework
+

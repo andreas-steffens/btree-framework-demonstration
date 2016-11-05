@@ -1,0 +1,254 @@
+btree-framework
+
+Author: Andreas Steffens
+Version: 0.06 (alpha)
+License: LGPL v3.0
+
+Contents
+
+1. Where to start
+2. How to build this framework under linux or windows
+2.1. Linux - How to build the test bench using cmake
+2.2. Windows - How to build the test bench using cygwin and cmake
+3. Feedback
+3.1. What increases the chances that I will respond to your email
+3.1.1. A proper subject, which tells the context of what I am going to find in your email's body.
+3.1.2. An email body that gets to the point of what you want to say.
+3.2. What decreases the chances that I will respond to your email
+3.2.1. An empty or useless subject.
+3.2.2. Email content that is confusing or off topic.
+3.2.3. Content that has been covered by the documentation or is too obvious to warrant a reply.
+3.2.4. Improper english.
+
+
+1. Where to start
+
+The folder ./btree-framework-demonstration/doc holds two files containing the same documentation. One file is displaying the documentation as an Open Office Text file (.odt), while the other is a Portable Document Format file (.pdf). That documentation explains this b-tree framework in detail, but only a sub set of sections is required to be understood to get started. See below:
+
+Quick Start Guide
+Programmer Guide
+	Class Hierarchy
+		Specific Data Classes
+			CBTreeArray
+			CBTreeKeySort
+			Associative Containers (CBTree[Multi]Map|Set)
+	Template Parameters
+		Data Type (_t_data)
+		Key Type (_t_key)
+		Address Type (_t_sizetype)
+		Data Layer Properties (_t_datalayerproperties)
+	Application Classes
+		Application Specific Key Sort Classes
+			comp ()
+				Default comp () addendum
+			extract_key ()
+				extract_key () addendum
+
+
+Also, the same folder contains a document called "quick presentation", avaiable as an Open Office Impress (.odp) and as a Portable Document Format (.pdf) file. This would be a good starting point if a short introduction is needed.
+
+
+2. How to build this framework under linux or windows
+
+
+2.1. Linux - How to build the test bench using cmake
+
+Check you have cmake version 3.1 or above installed by calling this command line:
+
+cmake --version
+
+For this framework to compile, a compiler capable to support the C++11 dialect is required.
+This release was tested with: GCC (C++) 6.2.1 20160916 (Fedora 24 x86_64)
+
+Do not use cmake directly. As this is problematic, since cmake just destroys the Makefile coming with this repository. If that accedentally happens anyway, then to recover from that please run recover_makefile.sh or execute the following commands:
+rm -fv CMakeCache.txt
+rm -rfv CMakeFiles
+cp -fv Makefile.backup Makefile
+
+Please use the build rules with make below, instead of calling cmake. The make file rules will call cmake for you with the correct cmake settings being involved. Those will allow not only for different binaries to be build, but also to build those in parallel. However, during the compile process, each job may take up to ~1GB of memory, so use the make option -j with caution or not at all!
+Usual indicators that the Makefile got destroyed are, that make complains about a rule not to exist or that it cannot find a file.
+
+To build the b-tree test bench execute the following commands:
+
+cd .../to/your/projects/location
+git clone https://github.com/andreas-steffens/btree-framework-demonstration
+cd btree-framework-demonstration/src/btreetest
+make debug
+
+
+List of make file rules:
+all								- runs regression, valgrind_report, coverage_report, performance, release
+debug							- builds regression test binary with debug flags
+profile							- builds regression test binary with profile flags (resulting binary is supposed to be used with a profiler)
+release							- builds regression test binary with release flags
+coverage						- builds regression test binary with debug and coverage flags
+regression						- runs regression tests using debug binary
+performance						- runs performance tests using release binary (this is not ready yet)
+coverage_report					- runs regression tests using coverage binary and creates result displayed as HTML
+valgrind_report					- runs regression tests using valgrind with debug binary (warning: takes days or maybe weeks to run)
+clean_all						- runs any clean commands
+clean							- removes any build file (may those be intermediate or final)
+clean_coverage					- removes any coverage or coverage report file (may those be intermediate or final)
+clean_regression_tests			- cleans all regression tests regardless of their result
+clean_failed_regression_tests	- cleans all regression tests that returned with an error code
+clean_coverage_tests			- cleans all code coverage tests regardless of their result
+clean_failed_coverage_tests		- cleans all code coverage tests that returned with an error code
+clean_validation_tests			- cleans all validation tests regardless of their result
+clean_failed_validation_tests	- cleans all validation tests that returned with an error code
+clean_tests						- runs clean_regression_tests clean_coverage_tests clean_validation_tests
+clean_failed_tests				- runs clean_failed_regression_tests clean_failed_coverage_tests clean_failed_validation_tests
+
+Depending on what binary has been build, use one of the following command lines to see what individual tests can be run:
+
+./btreetest_dbg --help
+./btreetest_prf --help
+./btreetest --help
+
+Examples:
+
+./btreetest.dbg -type stl-multimap test 1
+
+./btreetest.dbg -type array test 1
+
+
+If you want to run a full regression, then run the following command:
+
+make regression
+
+Depending on your hardware this may take hours to days to complete.
+
+
+2.2. Windows - How to build the test bench using cygwin and cmake
+
+First of all, make sure you have cmake version 3.1 or above installed by calling the following command line under the DOS command line interface: <-- Yes, it must be the DOS command line interface, NOT cygwin!
+
+cmake --version
+
+Note: You will need the windows cmake variant and NOT the cygwin variant, since only windows cmake has the required project generators for visual studio build in.
+To find out if your installed cmake supports visual studio execute this command under the DOS command line interface:
+
+cmake --help
+
+If, at the very bottom of the help page, visual studio generators are displayed, then everything is fine. Otherwise, it is required that you install windows cmake (see link below):
+
+https://cmake.org/download/
+
+If you were using cmake under cygwin before, then installing windows cygwin is not a problem, since cygwin will continue to use cygwin cmake, while the DOS command line will use windows cmake.
+
+For this framework to compile, at least Visual Studio 2013 Express or a compiler that supports the C++11 dialect is required.
+This release was tested with: Visual Studio Express 2013 Version: 12.0.40629.00 (update 5)
+
+To build the b-tree test bench execute the following commands under cygwin:
+
+cd .../to/your/projects/location
+git clone https://github.com/andreas-steffens/btree-framework-demonstration
+
+Or download the source directly from:
+
+https://github.com/andreas-steffens/btree-framework-demonstration/archive/master.zip
+
+and then extract the archive by right clicking on it and select "Extract All...". Select a destination folder and press "Extract".
+
+
+Once the repository has been cloned or downloaded and extracted use the windows explorer and go to the location where the files have been cloned or extracted to. Then go into directory "src" and then directory "btreetest". Here you can find a number of batch files called msvce201x.x86(_64).bat. These batch files can be executed via DOS command line or the windows explorer. Each of those batch files creates a directory named "cmake" and generates all cmake files as well as the respective visual studio express solution files, set up for the selected platform and visual studio express version, in there. Then it tries to open whatever visual studio express application can be found under the registry key HKEY_CLASSES_ROOT\Applications\WDExpress.exe\shell\open\command. Please see below what versions of visual studio express and target platforms are currently supported:
+
+msvce2013.x86.bat    - Visual Studio Express 2013 for platform Win32
+msvce2013.x86_64.bat - Visual Studio Express 2013 for platform x64
+msvce2015.x86.bat    - Visual Studio Express 2015 for platform Win32
+msvce2015.x86_64.bat - Visual Studio Express 2015 for platform x64
+
+If the project needs re-opening at a later point, simply use the same batch file again. In the event that you accidentally select the wrong batch file, cmake will refuse to create new project files and aborts with an error message. As a result your existing project files remain unharmed.
+In case you want build the project say for a different platform, then you'll need to close the visual studio instance that has the btree-framework test bench project open. After that, you need to delete or rename the afore mentioned cmake directory and execute a different batch file that generates the project files for the desired platform. However, any modifications that have been made to the project will be lost!
+
+Once visual studio is running, set "btreetest" as your start up project in the solution explorer. Right click on "btreetest" -> click "Set as StartUp Project".
+
+If you want to run a short test, then right click on "btreetest" -> click "Properties". In the "btreetest Property Pages" window go to "Configuration Properties" -> "Debugging". On the right side insert one of the following command lines in the "Command Arguments" field. Insert one of the following command lines in said field:
+
+-type stl-multimap test 1
+
+-type array test 1
+
+Press F5 to build and run.
+
+
+If you want to run a full regression, then it is recommended to build the release version, since a full regression using the debug build may take days to complete.
+
+Under cygwin execute the following commands:
+
+cd .../to/your/projects/location
+cd btree-framework-demonstration/src/btreetest
+
+# use this command line for the debug build -- Warning: This is very slow and may take days to complete!
+make -f Makefile.cygwin regression
+
+# use this command line for the release build -- This may take hours to complete!
+make -f Makefile.cygwin regression RELEASE=1
+
+
+3. Feedback
+
+If you want to see updates or release on the btree-framework project, then follow this link:
+https://www.facebook.com/btreeframework
+
+If you want to contact me about this project, the email address below is what you want to use. Before you do so, read and understand this entire section, otherwise you might be wasting your time.
+
+email: btreeframework@gmail.com
+
+
+3.1. What increases the chances that I will respond to your email
+
+
+3.1.1. A proper subject, which tells the context of what I am going to find in your email's body.
+
+The subject ought to tell me briefly what the email is about. For instance:
+"BUG: CBTree_classname::method_name - undefined behaviour in corner case"
+
+The keyword at the beginning as well as the following text allow me to quickly assess what I am dealing with.
+Also, the keyword allows to have filter rules in place. The subject currently is being filtered for the following keywords:
+
+BUG: anything code related that is not behaving as documented
+CODE: anything code related that ought to be implemented a different way
+TEST: anything related to existing or missing regression tests or code coverage
+DOC: anything document related, such as: Is content missing? Is something not explained well enough?
+COMMENT: anything code related in terms of commenting, such as: an existing comment is misleading or not clear enough (you don't need to tell me about code that has not been commented yet)
+QUESTION: any questing in terms of this project, which has not been answered anywhere else
+ENHANCEMENT: anything related to this project that is an enhancement for everyone, such as: release procedures, file formats, folder structure etc.
+OTHER: anything related to this project that has not been covered by any of the above keywords
+
+If none of the keywords or an unknown keyword has been used, then your email is not lost, but won't be addressed for a very long time. Potentially for a period of time long enough, that the content becomes irrelevant. 
+
+Neither the subject nor the email's body need to tell me that you are talking about the b-tree framework. If you send an email to the address above, then I am assuming that already.
+
+
+3.1.2. An email body that gets to the point of what you want to say.
+
+The rule of thumb to that end is: The more afford you have made on your side, the more I am inclined to believe you are actually interested in what you are doing. I mean: if you don't care, why should I? By afford, I don't mean that you have to write a tone of text. What I am asking for is a clear train of though, since it won't be you who has to understand your email, that will be me. Explain why you think something needs to be changed, enhanced, fixed, tested or is broken.
+In terms of bugs, make sure it isn't a misinterpretation of the documentation or that you are looking at the wrong API function, because between different container types they can look very similar. Double check your findings and document them very well. I am asking you to do that, since your problem won't be the only one I will be dealing with. The more work you put into your request, the quicker I can resolve it and move on to the next request. In the long run it helps everyone.
+Also, criticism is good, but everyone can criticise. At the very least, suggest how to do things better.
+
+
+3.2. What decreases the chances that I will respond to your email
+
+
+3.2.1. An empty or useless subject.
+
+An empty subject or useless a subject like this: "OTHER: problem", just shows me that not much afford went into writing this email. How I feel about that has been explained above. A useless subject also includes misleading ones. If I see the keyword "BUG" in the subject, then I am expecting to see email content that is talking about code that is not behaving as documented. If that expectation is not met, then don't assume I will be putting much more afford into reading or understanding your message.
+
+
+3.2.2. Email content that is confusing or off topic.
+
+If I find your email confusing, misleading or off topic, then chances are that you are trying to talk about two or more subjects at once. If you want to talk about two different subjects, then write two emails. It also enables me to answer more to the point for each of your messages.
+Also, in terms of off topic: Insults won't get you anywhere.
+
+
+3.2.3. Content that has been covered by the documentation or is too obvious to warrant a reply.
+
+If something has been covered by the documentation, then you will probably get a very short answer where to find it or none at all, depending on my work load. If I see a question like: "Hey, what's a b-tree?", you can be rest assured that I will remain silent.
+
+
+3.2.4. Improper english.
+
+First of all, I am not an english native speaker and at this point you probably have already spotted a number of grammar and spelling mistakes. Those are not what I mean by "Improper english". What I mean is content like this: "Yo, c my hax yo!"
+It doesn't inspire any confidence and will just make me move on to the next email.
+Also, what I don't like is when someone writes the letter "u" instead of the word "you" or similar shortcuts. This allows for room to doubt your motivation and once I have that room it is likely that I will divert my interest to something else, like the next email. Just don't allow me to have that room...
+Shortcuts or abbreviations, which are within context, such as: "Ctrl+C", are fine though.

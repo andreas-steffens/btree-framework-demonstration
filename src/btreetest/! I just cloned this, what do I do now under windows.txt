@@ -1,0 +1,70 @@
+Step 1) First of all, make sure you have cmake version 3.1 or above installed by calling the following command line under the DOS command line interface: <-- Yes, it must be the DOS command line interface, NOT cygwin!
+
+cmake --version
+
+Note: You will need the windows cmake variant and NOT the cygwin variant, since only windows cmake has the required project generators for visual studio build in.
+To find out if your installed cmake supports visual studio execute this command under the DOS command line interface:
+
+cmake --help
+
+If, at the very bottom of the help page, visual studio generators are displayed, then everything is fine. Otherwise, it is required that you install windows cmake (see link below):
+
+https://cmake.org/download/
+
+If you were using cmake under cygwin before, then installing windows cygwin is not a problem, since cygwin will continue to use cygwin cmake, while the DOS command line will use windows cmake.
+
+******************************************************************************************
+
+Step 2) Next, make sure that you have Microsoft Visual Studio (Express) 2013 or 2015 installed.
+
+If not, the express variant is available for free under the following links:
+
+!!! Warning: If you have an older version installed, then read the statement below the links first!!!
+MSVCE 2013: https://www.microsoft.com/en-us/download/details.aspx?id=44914
+MSVCE 2015: https://www.microsoft.com/en-us/download/details.aspx?id=48146
+
+If an older version of Visual Studio (may it be the Express variant or not) is already installed and is part of your tool chain, then it is strongly recommended NOT to install any of the products listed above, since it is likely to alter your existing set up.
+
+******************************************************************************************
+
+Step 3) Use one of the batch files (.bat) provided to start visual studio.
+
+In this directory you can find a number of batch files called msvce201x.x86(_64).bat. These batch files can be executed via command line or the windows explorer. Each of those batch files creates a directory named "cmake" and generates all cmake files as well as the respective visual studio express solution files, set up for the selected platform and visual studio express version, in there. Then it tries to open whatever visual studio express application can be found under the registry key HKEY_CLASSES_ROOT\Applications\WDExpress.exe\shell\open\command. Please see below what versions of visual studio express and target platforms are currently supported:
+
+msvce2013.x86.bat    - Visual Studio Express 2013 for platform Win32
+msvce2013.x86_64.bat - Visual Studio Express 2013 for platform x64
+msvce2015.x86.bat    - Visual Studio Express 2015 for platform Win32
+msvce2015.x86_64.bat - Visual Studio Express 2015 for platform x64
+
+If the project needs re-opening at a later point, simply use the same batch file again. In the event that you accidentally select the wrong batch file, cmake will refuse to create new project files and aborts with an error message. As a result your existing project files remain unharmed.
+In case you want build the project say for a different platform, then you'll need to close the visual studio instance that has the btree-framework test bench project open. After that, you need to delete or rename the afore mentioned cmake directory and execute a different batch file that generates the project files for the desired platform. However, any modifications that have been made to the project will be lost!
+
+******************************************************************************************
+
+Step 4) Run tests or a full regression (optional)
+
+Once visual studio is running, set "btreetest" as your start up project in the solution explorer. Right click on "btreetest" -> click "Set as StartUp Project".
+
+If you want to run a short test, then right click on "btreetest" -> click "Properties". In the "btreetest Property Pages" window go to "Configuration Properties" -> "Debugging". On the right side insert one of the following command lines in the "Command Arguments" field. Insert one of the following command lines in said field:
+
+-type stl-multimap test 1
+
+-type array test 1
+
+If you want to run a full regression, then it is recommended to build the release version, since a full regression using the debug build may take days to complete.
+
+Under cygwin change directory to the location this file you are reading is within. For the regression testing, using the release build, execute the following command line:
+
+make -f Makefile.cygwin regression RELEASE=1
+
+For the regression testing, using the debug build, execute the following command line:
+
+make -f Makefile.cygwin regression
+
+
+
+Note: This is the btree-framework test bench. If you want to see the btree-framework source code, then go to directory btree_framework. If you want to get hold of btree-framework source code as a sub-module to build a library, then run this commands:
+
+cd .../to/your/project's/location
+git clone https://github.com/andreas-steffens/btree-framework
+
