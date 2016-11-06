@@ -47,7 +47,7 @@ Once visual studio is running, set "btreetest" as your start up project in the s
 
 If you want to run a short test, then right click on "btreetest" -> click "Properties". In the "btreetest Property Pages" window go to "Configuration Properties" -> "Debugging". On the right side insert one of the following command lines in the "Command Arguments" field. Insert one of the following command lines in said field:
 
--type stl-multimap test 1
+-type stl-multimap test 1000
 
 -type array test 1
 

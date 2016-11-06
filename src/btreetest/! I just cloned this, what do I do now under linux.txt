@@ -33,7 +33,7 @@ Depending on what binary has been build, use one of the following command lines 
 
 Examples:
 
-./btreetest.dbg -type stl-multimap test 1
+./btreetest.dbg -type stl-multimap test 1000
 
 ./btreetest.dbg -type array test 1
 
