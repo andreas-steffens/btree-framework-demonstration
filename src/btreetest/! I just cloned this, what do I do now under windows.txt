@@ -51,7 +51,7 @@ If you want to run a short test, then right click on "btreetest" -> click "Prope
 
 -type array test 1
 
-If you want to run a full regression, then it is recommended to build the release version, since a full regression using the debug build may take days to complete.
+If you want to run a full regression, then it is recommended to build the release version, since a full regression using the debug build may take days to complete. To build the release build go to menu "Build" and select entry "Configuration Manager...". In the window "Configuration Manager" that just opened, below the text "Active solution configuration", click the drop down box and select "Release". Close the window again by clicking the botton "Close" in the bottom right corner. Finally, press F7 to build or Ctrl+Alt+F7 to rebuild.
 
 Under cygwin change directory to the location this file you are reading is within. For the regression testing, using the release build, execute the following command line:
 

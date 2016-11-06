@@ -23,7 +23,9 @@ Contents
 
 1. Where to start
 
-The folder ./btree-framework-demonstration/doc holds two files containing the same documentation. One file is displaying the documentation as an Open Office Text file (.odt), while the other is a Portable Document Format file (.pdf). That documentation explains this b-tree framework in detail, but only a sub set of sections is required to be understood to get started. See below:
+The folder ./btree-framework-demonstration/doc contains a document called "quick presentation", avaiable as an Open Office Impress (.odp) and as a Portable Document Format (.pdf) file. This would be a good starting point if a short introduction is needed.
+
+Also, the same folder holds two files containing the same documentation. One file is displaying the documentation as an Open Office Text file (.odt), while the other is a Portable Document Format file (.pdf). That documentation explains this b-tree framework in detail, but only a sub set of sections is required to be understood to get started. See below:
 
 Quick Start Guide
 Programmer Guide
@@ -45,8 +47,6 @@ Programmer Guide
 				extract_key () addendum
 
 
-Also, the same folder contains a document called "quick presentation", avaiable as an Open Office Impress (.odp) and as a Portable Document Format (.pdf) file. This would be a good starting point if a short introduction is needed.
-
 
 2. How to build this framework under linux or windows
 
@@ -60,21 +60,27 @@ cmake --version
 For this framework to compile, a compiler capable to support the C++11 dialect is required.
 This release was tested with: GCC (C++) 6.2.1 20160916 (Fedora 24 x86_64)
 
-Do not use cmake directly. As this is problematic, since cmake just destroys the Makefile coming with this repository. If that accedentally happens anyway, then to recover from that please run recover_makefile.sh or execute the following commands:
+To see if gcc-c++ has been installed and what version it has execute the following command line:
+
+g++ --version
+
+The next step is to clone the btree-framework-demonstration repository. This is achieved by executing the following command lines:
+
+cd .../to/your/projects/location
+git clone https://github.com/andreas-steffens/btree-framework-demonstration
+
+To build the test bench execute the command lines below:
+
+cd btree-framework-demonstration/src/btreetest
+make debug
+
+Although there is a CMakeLists.txt in this directory, do not use cmake directly. As this is problematic, since cmake just destroys the Makefile coming with this repository. If that accedentally happens anyway, then to recover from that, please run recover_makefile.sh or execute the following commands:
 rm -fv CMakeCache.txt
 rm -rfv CMakeFiles
 cp -fv Makefile.backup Makefile
 
 Please use the build rules with make below, instead of calling cmake. The make file rules will call cmake for you with the correct cmake settings being involved. Those will allow not only for different binaries to be build, but also to build those in parallel. However, during the compile process, each job may take up to ~1GB of memory, so use the make option -j with caution or not at all!
 Usual indicators that the Makefile got destroyed are, that make complains about a rule not to exist or that it cannot find a file.
-
-To build the b-tree test bench execute the following commands:
-
-cd .../to/your/projects/location
-git clone https://github.com/andreas-steffens/btree-framework-demonstration
-cd btree-framework-demonstration/src/btreetest
-make debug
-
 
 List of make file rules:
 all								- runs regression, valgrind_report, coverage_report, performance, release
@@ -115,7 +121,7 @@ If you want to run a full regression, then run the following command:
 
 make regression
 
-Depending on your hardware this may take hours to days to complete.
+Depending on your hardware this may take hours to days to complete. However, with the command line above it is much safer to use the -j option, since all tests are not using more than ~20MB of memory.
 
 
 2.2. Windows - How to build the test bench using cygwin and cmake
@@ -170,8 +176,7 @@ If you want to run a short test, then right click on "btreetest" -> click "Prope
 
 Press F5 to build and run.
 
-
-If you want to run a full regression, then it is recommended to build the release version, since a full regression using the debug build may take days to complete.
+If you want to run a full regression, then it is recommended to build the release version, since a full regression using the debug build may take days to complete. To build the release build go to menu "Build" and select entry "Configuration Manager...". In the window "Configuration Manager" that just opened, below the text "Active solution configuration", click the drop down box and select "Release". Close the window again by clicking the botton "Close" in the bottom right corner. Finally, press F7 to build or Ctrl+Alt+F7 to rebuild.
 
 Under cygwin execute the following commands:
 
