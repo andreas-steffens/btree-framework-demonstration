@@ -24,6 +24,16 @@ typedef struct car_holders_s
 		strLastName = _strLastName;
 		strLicensePlate = _strLicensePlate;
 		strPhoneNumber = _strPhoneNumber;
+
+		// this is a work around for GNU STL implementations, which
+		// store their string data inside the instance for as long as
+		// the buffer size is less than 16 bytes...
+		// This is problematic, when a string is moved via memmove, since
+		// the string data and the pointer to it get moved, while the pointer
+		// is still referring to the old location.
+		if (strLastName.size () < 16) strLastName.resize (16);
+		if (strLicensePlate.size () < 16) strLicensePlate.resize (16);
+		if (strPhoneNumber.size () < 16) strPhoneNumber.resize (16);
 	};
 
 	::std::string		strLastName;
@@ -192,7 +202,7 @@ void example_2_simple_database ()
 
 	apAllContainers[i] = dynamic_cast<generic_type *> (psCarHolders);
 
-	// that way even more abstract deletions are possible, since all 
+	// that way even more abstract deletions are possible, since all
 	// containers in this framework are derived from CBTreeIf ...
 	for (i = 0; i < (sizeof (apAllContainers) / sizeof (*apAllContainers)); i++)
 	{
