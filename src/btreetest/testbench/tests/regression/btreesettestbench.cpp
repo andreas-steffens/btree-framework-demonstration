@@ -27,7 +27,7 @@ void TestBTreeSetSTLifAssignmentOperator (_t_set *pClSet, typename _t_set::size_
 	
 	::std::cout << "exercises assignment operator compatible to STL interface CBTreeSet<>:: operator= (CBTreeSet<> &)" << ::std::endl;
 
-	associative_container_add_primitive (pClSet, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pClSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	sClSet = *pClSet;
 
@@ -47,7 +47,7 @@ void TestBTreeSetSTLifInsert (_t_set *pClSet, typename _t_set::size_type nNumEnt
 
 	::std::cout << "CBTreeSet::insert (const valuetype &) is exercised" << ::std::endl;
 
-	associative_container_add_primitive (pClSet, nNumEntries, nLastSeed, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pClSet, nNumEntries, 0, nLastSeed, BTREETEST_KEY_GENERATION_RANDOM);
 }
 
 template<class _t_set>
@@ -66,7 +66,7 @@ void TestBTreeSetSTLifEraseViaIterator (_t_set *pClSet, typename _t_set::size_ty
 	
 	::std::cout << "exercises method compatible to STL interface CBTreeSet<>:: erase (const_iterator)" << ::std::endl;
 
-	associative_container_add_primitive (pClSet, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pClSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	while (pClSet->size () > 0)
 	{
@@ -112,7 +112,7 @@ void TestBTreeSetSTLifEraseViaKey (_t_set *pClSet, typename _t_set::size_type nN
 	{
 		nLastKey = 0;
 
-		associative_container_add_primitive (pClSet, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		associative_container_add_primitive (pClSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	while (pClSet->size () > 0)
@@ -158,7 +158,7 @@ void TestBTreeSetSTLifEraseViaIteratorMultiple (_t_set *pClSet, typename _t_set:
 	{
 		nLastKey = 0;
 
-		associative_container_add_primitive (pClSet, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		associative_container_add_primitive (pClSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	while (pClSet->size () > 0)
@@ -207,7 +207,7 @@ void TestBTreeSetSTLifKeyComp (_t_set *pClSet, typename _t_set::size_type nNumEn
 	
 	::std::cout << "exercises method compatible to STL interface CBTreeSet<>:: key_comp ()" << ::std::endl;
 
-	associative_container_add_primitive (pClSet, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pClSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	sIterBegin = pClSet->begin ();
 	sIterEnd = pClSet->end ();
@@ -249,7 +249,7 @@ void TestBTreeSetSTLifValueComp (_t_set *pClSet, typename _t_set::size_type nNum
 	
 	::std::cout << "exercises method compatible to STL interface CBTreeSet<>:: value_comp ()" << ::std::endl;
 
-	associative_container_add_primitive (pClSet, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pClSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	sIterBegin = pClSet->begin ();
 	sIterEnd = pClSet->end ();
@@ -286,7 +286,7 @@ void TestBTreeSetSTLifSwap (_t_set *pClSet, typename _t_set::size_type nNumEntri
 
 	::std::cout << "exercises method compatible to STL interface CBTreeSet<>:: swap (CBTreeSet &)" << ::std::endl;
 
-	associative_container_add_primitive (pClSet, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pClSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	sClSetRef.insert (pClSet->cbegin (), pClSet->cend ());
 
@@ -297,7 +297,7 @@ void TestBTreeSetSTLifSwap (_t_set *pClSet, typename _t_set::size_type nNumEntri
 		exit (-1);
 	}
 
-	associative_container_add_primitive (&sClSetTarget, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (&sClSetTarget, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	sClSetTargetRef.insert (sClSetTarget.cbegin (), sClSetTarget.cend ());
 
@@ -354,7 +354,7 @@ void TestBTreeSetSTLifFind (_t_set *pClSet, typename _t_set::size_type nNumEntri
 	
 	::std::cout << "exercises method compatible to STL interface CBTreeSet<>:: find (const _t_keytype &)" << ::std::endl;
 
-	associative_container_add_primitive (pClSet, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_ASCEND);
+	associative_container_add_primitive (pClSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_ASCEND);
 
 	for (sCIter = pClSet->cbegin (); sCIter != pClSet->cend (); sCIter++)
 	{
@@ -414,7 +414,7 @@ void TestBTreeSetSTLifLowerBoundUpperBound (_t_set *pClSet, typename _t_set::siz
 	{
 		nLastKey = 1;
 
-		associative_container_add_primitive (pClSet, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_ASCEND);
+		associative_container_add_primitive (pClSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_ASCEND);
 	}
 
 	for (i = 0; i < nNumEntries; i++)
@@ -475,7 +475,11 @@ void TestBTreeSetSTLifEmplace (_t_set *pClSet, typename _t_set::size_type nNumEn
 
 	::std::cout << "exercises method compatible to STL interface CBTreeSet<>:: emplace ()" << ::std::endl;
 
-	associative_container_emplace_primitive (pClSet, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pClSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_EMPLACE);
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pClSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_EMPLACE);
 }
 
 template<class _t_set>
@@ -485,7 +489,11 @@ void TestBTreeSetSTLifEmplaceHint (_t_set *pClSet, typename _t_set::size_type nN
 
 	::std::cout << "exercises method compatible to STL interface CBTreeSet<>:: emplace_hint () with hint variation set to " << nHintVariation << ::std::endl;
 
-	associative_container_emplace_hint_primitive (pClSet, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pClSet, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_EMPLACE_HINT);
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pClSet, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_EMPLACE_HINT);
 }
 
 template<class _t_set>
@@ -495,7 +503,165 @@ void TestBTreeSetSTLifInsertHint (_t_set *pClSet, typename _t_set::size_type nNu
 
 	::std::cout << "exercises method compatible to STL interface CBTreeSet<>:: insert (hint) with hint variation set to " << nHintVariation << ::std::endl;
 
-	associative_container_insert_hint_primitive (pClSet, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pClSet, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_INSERT_HINT);
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pClSet, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_INSERT_HINT);
+}
+
+template<class _t_set>
+void TestBTreeSetSTLifEmplaceViaCtor (_t_set *pClSet, typename _t_set::size_type nNumEntries, typename _t_set::size_type nHintVariation)
+{
+	uint32_t		nLastKey = 1;
+
+	::std::cout << "exercises method compatible to STL interface CBTreeSet<>:: emplace (ctor)" << ::std::endl;
+
+	associative_container_add_primitive (pClSet, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_ABSTRACT_EMPLACE);
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pClSet, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_ABSTRACT_EMPLACE);
+}
+
+template<class _t_set>
+void TestBTreeSetSTLifEmplaceHintViaCtor (_t_set *pClSet, typename _t_set::size_type nNumEntries, typename _t_set::size_type nHintVariation)
+{
+	uint32_t		nLastKey = 1;
+
+	::std::cout << "exercises method compatible to STL interface CBTreeSet<>:: emplace_hint (ctor)" << ::std::endl;
+
+	associative_container_add_primitive (pClSet, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_ABSTRACT_EMPLACE_HINT);
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pClSet, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_ABSTRACT_EMPLACE_HINT);
+}
+
+template<class _t_set>
+void TestBTreeSetSTLifEqualRange (_t_set *pClSet, typename _t_set::size_type nNumEntries, uint32_t nInstance)
+{
+	typedef typename _t_set::const_iterator				citer_t;
+
+	typedef typename _t_set::key_type					key_type;
+	typedef typename _t_set::size_type					size_type;
+
+	typedef typename _t_set::equal_range_type			equal_range_type;
+	typedef typename _t_set::equal_range_const_type		equal_range_const_type;
+
+	key_type								nLastKey;
+	key_type								nKey;
+	uint32_t								i;
+	size_type								j;
+	equal_range_type						sEqRange;
+	equal_range_const_type					sCEqRange;
+
+	::std::cout << "exercises methods compatible to STL interface CBTreeSet<>:: equal_range ()" << ::std::endl;
+
+	for (i = 0; i < nInstance; i++)
+	{
+		nLastKey = 1;
+
+		associative_container_add_primitive (pClSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_ASCEND);
+
+		for (j = 0; j < nNumEntries; j++)
+		{
+			nKey = key_type (j + 1);
+
+			sEqRange = pClSet->equal_range (nKey);
+			sCEqRange = ((const _t_set *) pClSet)->equal_range (nKey);
+
+			if (::std::distance (sEqRange.first, sEqRange.second) != size_type (1))
+			{
+				::std::cerr << ::std::endl;
+				::std::cerr << "TestBTreeSetSTLifEqualRange: ERROR: rw distance mismatch!" << ::std::endl;
+
+				exit (-1);
+			}
+
+			if (::std::distance (sCEqRange.first, sCEqRange.second) != size_type (1))
+			{
+				::std::cerr << ::std::endl;
+				::std::cerr << "TestBTreeSetSTLifEqualRange: ERROR: ro distance mismatch!" << ::std::endl;
+
+				exit (-1);
+			}
+		}
+
+		nKey = 0;
+
+		sEqRange = pClSet->equal_range (nKey);
+		sCEqRange = ((const _t_set *) pClSet)->equal_range (nKey);
+
+		if (sEqRange.first != pClSet->begin ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeSetSTLifEqualRange: ERROR: equal_range ().first didn't return begin () when testing for lowest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		if (sEqRange.second != pClSet->begin ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeSetSTLifEqualRange: ERROR: equal_range ().second didn't return begin () when testing for lowest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		if (sCEqRange.first != pClSet->cbegin ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeSetSTLifEqualRange: ERROR: equal_range () const.first didn't return cbegin () when testing for lowest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		if (sCEqRange.second != pClSet->cbegin ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeSetSTLifEqualRange: ERROR: equal_range () const.second didn't return cbegin () when testing for lowest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		nKey = (key_type) (nNumEntries + 1);
+
+		sEqRange = pClSet->equal_range (nKey);
+		sCEqRange = ((const _t_set *) pClSet)->equal_range (nKey);
+
+		if (sEqRange.first != pClSet->end ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeSetSTLifEqualRange: ERROR: equal_range ().first didn't return end () when testing for highest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		if (sEqRange.second != pClSet->end ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeSetSTLifEqualRange: ERROR: equal_range ().second didn't return end () when testing for highest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		if (sCEqRange.first != pClSet->cend ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeSetSTLifEqualRange: ERROR: equal_range () const.first didn't return cend () when testing for highest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		if (sCEqRange.second != pClSet->cend ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeSetSTLifEqualRange: ERROR: equal_range () const.second didn't return cend () when testing for highest key!" << ::std::endl;
+
+			exit (-1);
+		}
+	}
 }
 
 template<class _t_container>
@@ -655,6 +821,27 @@ void TestBTreeSTLset (uint32_t nTestNum, uint32_t nNodeSize, uint32_t nPageSize,
 	case BTREETEST_SET_STL_IF_INSERT_HINT_LARGE	:
 		{
 			TestBTreeSetSTLifInsertHint (pSetWrapper, 64, 64);
+
+			break;
+		}
+	
+	case BTREETEST_SET_STL_IF_EMPLACE_VIA_CTOR	:
+		{
+			TestBTreeSetSTLifEmplaceViaCtor (pSetWrapper, 64, 0);
+	
+			break;
+		}
+	
+	case BTREETEST_SET_STL_IF_EMPLACE_HINT_VIA_CTOR	:
+		{
+			TestBTreeSetSTLifEmplaceHintViaCtor (pSetWrapper, 64, 0);
+
+			break;
+		}
+	
+	case BTREETEST_SET_STL_IF_EQUAL_RANGE	:
+		{
+			TestBTreeSetSTLifEqualRange (pSetWrapper, 64, 5);
 
 			break;
 		}

@@ -234,7 +234,7 @@ bool CBTreeTestArray<_t_datalayerproperties>::operator!= (const CBTreeTestArray 
 template<class _t_datalayerproperties>
 void CBTreeTestArray<_t_datalayerproperties>::test () const
 {
-	typedef typename CBTreeTestArray<_t_datalayerproperties>::iterator	iter_t;
+	typedef typename CBTreeTestArray<_t_datalayerproperties>::const_iterator	citer_t;
 
 	if (!this->m_bAtomicTesting)
 	{
@@ -282,13 +282,13 @@ void CBTreeTestArray<_t_datalayerproperties>::test () const
 	size_type							it;
 	value_type							sData;
 	value_type							sRef;
-	iter_t								sIter;
+	citer_t								sCIter;
 
-	sIter = this->begin ();
+	sCIter = this->cbegin ();
 
-	for (it = 0; it < this->size (); it++, itRef++, sIter++)
+	for (it = 0; it < this->size (); it++, itRef++, sCIter++)
 	{
-		sData = *sIter;
+		sData = *sCIter;
 
 		sRef = *itRef;
 

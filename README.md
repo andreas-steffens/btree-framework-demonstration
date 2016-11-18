@@ -6,16 +6,38 @@ The btree-framework provides a number of associative and linear containers, each
 And finally, the project supports cmake, which is explained in the "How To Build" section below.
 <br>
 <br>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-0.jpg" alt="Quick Overview"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-1.jpg" alt="Any Container Type Is Based on a B-Tree Structure"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-2.jpg" alt="Any Container Can Be Abstracted"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-3.jpg" alt="How Is Polymorphism Within This Framework Possible?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-4.jpg" alt="How Is Polymorphism Within This Framework Possible?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-5.jpg" alt="How Is Polymorphism Within This Framework Possible?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-6.jpg" alt="How Is Polymorphism Within This Framework Possible?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-7.jpg" alt="How Is Polymorphism Within This Framework Possible?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-8.jpg" alt="What Can I Do With It?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-9.jpg" alt="What Can I Do With It?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-10.jpg" alt="What Can I Do With It?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-11.jpg" alt="What Can I Do With It?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-12.jpg" alt="What Can I Do With It?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-13.jpg" alt="What Can I Do With It?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-14.jpg" alt="What Can I Do With It?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-15.jpg" alt="What Can I Do With It?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-16.jpg" alt="What Can I Do With It?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-17.jpg" alt="What Can I Do With It?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-18.jpg" alt="Can I change my address range?"/></p>
+<p align="center"> <img src="https://raw.github.com/andreas-steffens/btree-framework-demonstration/doc/images/quick%20overview-19.jpg" alt="Conclusion"/></p>
+<br>
+<br>
 ## Documentation
 
 The documentation of this project comes in two flavours:
-- [Open Document Text file (.ODT)](https://github.com/andreas-steffens/btree-framework-demonstration/blob/master/doc/btree%20programmer%20guide.odt?raw=true)
-- [Portable Document Format file (.PDF)](https://github.com/andreas-steffens/btree-framework-demonstration/blob/master/doc/btree%20programmer%20guide.pdf?raw=true)
+- [Documentation as Open Document Text file (.ODT)](https://github.com/andreas-steffens/btree-framework-demonstration/blob/master/doc/btree%20programmer%20guide.odt?raw=true)
+- [Documentation as Portable Document Format file (.PDF)](https://github.com/andreas-steffens/btree-framework-demonstration/blob/master/doc/btree%20programmer%20guide.pdf?raw=true)
 
 The documentation is pretty large and might be a bit overwhelming. To address that problem, please find the section "1. Where to start" of the [README](https://github.com/andreas-steffens/btree-framework-demonstration/blob/master/README) file. This section tells what sections need to be initially read in order to understand how this framework is working and supposed to be used.
 Also available is a quick overview presentation giving a short introduction to the project (see the links below):
-- [Open Document Impress file (.ODP)](https://github.com/andreas-steffens/btree-framework-demonstration/blob/master/doc/quick%20overview.odp?raw=true)
-- [Portable Document Format file (.PDF)](https://github.com/andreas-steffens/btree-framework-demonstration/blob/master/doc/quick%20overview.pdf?raw=true)
+- [Quick Presentation as Open Document Impress file (.ODP)](https://github.com/andreas-steffens/btree-framework-demonstration/blob/master/doc/quick%20overview.odp?raw=true)
+- [Quick Presentation as Portable Document Format file (.PDF)](https://github.com/andreas-steffens/btree-framework-demonstration/blob/master/doc/quick%20overview.pdf?raw=true)
 
 <br>
 <br>
@@ -31,13 +53,12 @@ Please read section "2.1. Linux - How to build the test bench using cmake" of th
 <br>
 ## Version
 
-The current version of the project is: 0.06 (alpha)
+The current version of the project is: 0.07 (alpha)
 
 Please don't be discouraged by the fact that the version contains the word "alpha". What this means is that the feature set is incomplete, but what has been implemented is stable and thoroughly tested. See below to find out what is missing:
 
 - initializer&#95;list<> support
-- move constructors and move assignment operators
-- equal&#95;range ()
+- move constructors and move assignment operators for all container types
  
 <br>
 <br>
@@ -134,6 +155,9 @@ stl-set, stl-multiset, stl-map and stl-multimap
 	1016	- test exercises interface method insert (const_iterator &, const value_type &) with near perfect hint
 	1017	- test exercises interface method insert (const_iterator &, const value_type &) with potentially bad hint
 	1018	- test exercises interface method insert (const_iterator &, const value_type &) with terrible hint
+	1019	- test exercises interface method emplace (const value_type &)
+	1020	- test exercises interface method emplace_hint (const_iterator &, const value_type &) with perfect hint
+	1021	- test exercises interface method equal_range ()
 
 array
 
@@ -215,6 +239,9 @@ keysort
 	1014	- test exercises interface method insert (const_iterator &, const value_type &) with near perfect hint
 	1015	- test exercises interface method insert (const_iterator &, const value_type &) with potentially bad hint
 	1016	- test exercises interface method insert (const_iterator &, const value_type &) with terrible hint
+	1017	- test exercises interface method emplace (const value_type &)
+	1018	- test exercises interface method emplace_hint (const_iterator &, const value_type &) with perfect hint
+	1019	- test exercises interface method equal_range ()
 
 	2000	- code coverage test which exercises corner cases in method determine_position ()
 	2001	- code coverage test which exercises corner cases in method find_first_key ()

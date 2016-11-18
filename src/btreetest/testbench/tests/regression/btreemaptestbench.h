@@ -26,7 +26,6 @@
 #include "testbench/application_classes/regression/btreetestmap.h"
 
 #include "testbench/primitives/btreecommonprimitives.h"
-//#include "testbench/primitives/btreemultimapprimitives.h"
 
 #include "testbench/common/btreetestcommon.h"
 
@@ -61,6 +60,9 @@ typedef enum
 	BTREETEST_MAP_STL_IF_INSERT_HINT_MINOR, 
 	BTREETEST_MAP_STL_IF_INSERT_HINT_SIGNIFICANT, 
 	BTREETEST_MAP_STL_IF_INSERT_HINT_LARGE, 
+	BTREETEST_MAP_STL_IF_EMPLACE_VIA_CTOR, 
+	BTREETEST_MAP_STL_IF_EMPLACE_HINT_VIA_CTOR, 
+	BTREETEST_MAP_STL_IF_EQUAL_RANGE, 
 } btreetest_map_t;
 
 typedef enum
@@ -140,7 +142,7 @@ typedef CBTreeTestBenchMap<uint32_t, mapMap_t>				map_reference_t;
 template<class _t_container, class _t_iterator>
 void TestBTreeMapSTLifInsertViaIteratorPart (const char *pszTitle, int nArg, uint32_t nNumInstances, uint32_t nNumEntries, _t_container *pContainer, _t_iterator &rIter)
 {
-	uint32_t					nLastKey = 0;
+	uint32_t					nLastKey;
 	uint32_t					i;
 	_t_iterator					sIterBegin;
 	_t_iterator					sIterEnd;
@@ -149,7 +151,9 @@ void TestBTreeMapSTLifInsertViaIteratorPart (const char *pszTitle, int nArg, uin
 
 	for (i = 0; i < nNumInstances; i++)
 	{
-		associative_container_add_primitive (pContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		nLastKey = 0;
+
+		associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	get_begin (pContainer, sIterBegin);
@@ -195,7 +199,7 @@ void TestBTreeMapSTLifInsertViaIteratorPart (const char *pszTitle, int nArg, uin
 template<class _t_dest_container, class _t_src_container, class _t_dest_iterator, class _t_src_iterator>
 void TestBTreeMapSTLifInsertViaIteratorPart (const char *pszTitle, int nArg, uint32_t nNumInstances, uint32_t nNumEntries, _t_dest_container *pDestContainer, _t_src_container *pSrcContainer, _t_dest_iterator &rDestIter, _t_src_iterator &rSrcIter)
 {
-	uint32_t					nLastKey = 0;
+	uint32_t					nLastKey;
 	uint32_t					i;
 	_t_src_iterator				sSrcIterBegin;
 	_t_src_iterator				sSrcIterEnd;
@@ -204,7 +208,9 @@ void TestBTreeMapSTLifInsertViaIteratorPart (const char *pszTitle, int nArg, uin
 
 	for (i = 0; i < nNumInstances; i++)
 	{
-		associative_container_add_primitive (pSrcContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		nLastKey = 0;
+
+		associative_container_add_primitive (pSrcContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	get_begin (pSrcContainer, sSrcIterBegin);
@@ -222,7 +228,7 @@ void TestBTreeMapSTLifInsertViaIteratorPart (const char *pszTitle, int nArg, uin
 template<class _t_dest_container, class _t_src_container, class _t_dest_iterator, class _t_src_iterator>
 void TestBTreeMapSTLifInsertViaIteratorSame (const char *pszTitle, int nArg, uint32_t nNumInstances, uint32_t nNumEntries, _t_dest_container *pDestContainer, _t_src_container *pSrcContainer, _t_dest_iterator &rDestIter, _t_src_iterator &rSrcIter)
 {
-	uint32_t					nLastKey = 0;
+	uint32_t					nLastKey;
 	uint32_t					i;
 	_t_src_iterator				sSrcIterBegin;
 	_t_src_iterator				sSrcIterEnd;
@@ -234,7 +240,9 @@ void TestBTreeMapSTLifInsertViaIteratorSame (const char *pszTitle, int nArg, uin
 
 	for (i = 0; i < nNumInstances; i++)
 	{
-		associative_container_add_primitive (pSrcContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		nLastKey = 0;
+
+		associative_container_add_primitive (pSrcContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	get_end (pSrcContainer, sSrcIterEnd);
@@ -304,7 +312,7 @@ void TestBTreeMapSTLifInsertViaIteratorSame (const char *pszTitle, int nArg, uin
 template<class _t_dest_container, class _t_src_container, class _t_ext_container, class _t_dest_iterator, class _t_src_iterator, class _t_ext_iterator>
 void TestBTreeMapSTLifInsertViaIteratorPartExtern (const char *pszTitle, int nArg, uint32_t nNumInstances, uint32_t nNumEntries, _t_dest_container *pDestContainer, _t_src_container *pSrcContainer, _t_ext_container *pExtContainer, _t_dest_iterator &rDestIter, _t_src_iterator &rSrcIter, _t_ext_iterator &rExtIter)
 {
-	uint32_t					nLastKey = 0;
+	uint32_t					nLastKey;
 	uint32_t					i;
 	_t_src_iterator				sSrcIterBegin;
 	_t_src_iterator				sSrcIterA;
@@ -315,7 +323,9 @@ void TestBTreeMapSTLifInsertViaIteratorPartExtern (const char *pszTitle, int nAr
 
 	for (i = 0; i < nNumInstances; i++)
 	{
-		associative_container_add_primitive (pSrcContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		nLastKey = 0;
+
+		associative_container_add_primitive (pSrcContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	_t_ext_iterator		sExtIterBegin;
@@ -366,7 +376,7 @@ void TestBTreeMapSTLifInsertViaIteratorSameExtern (const char *pszTitle, int nAr
 	typename ::std::conditional< ::std::is_same<_t_ext_container, map_t> ::value || ::std::is_same<_t_ext_container, mmap_t> ::value, ::std::true_type, ::std::false_type> ::type
 								sSelectInsertMethod;
 
-	uint32_t					nLastKey = 0;
+	uint32_t					nLastKey;
 	uint32_t					i;
 	_t_src_iterator				sSrcIterBegin;
 	_t_src_iterator				sSrcIterEnd;
@@ -378,7 +388,9 @@ void TestBTreeMapSTLifInsertViaIteratorSameExtern (const char *pszTitle, int nAr
 
 	for (i = 0; i < nNumInstances; i++)
 	{
-		associative_container_add_primitive (pSrcContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		nLastKey = 0;
+
+		associative_container_add_primitive (pSrcContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	get_begin (pSrcContainer, sSrcIterBegin);
@@ -521,10 +533,10 @@ void TestBTreeMapSTLifInsertViaIterator (_t_map *pClM, uint32_t nNumEntries)
 	
 	::std::cout << "exercises method compatible to STL interface CBTreeMap[Multi]<>:: insert<_t_iterator> (_t_iterator, _t_iterator)" << ::std::endl;
 
-	TestBTreeMapSTLifInsertViaIteratorPart ("target::insert<_t_obj::iter_t> (iter_t, iter_t)", 0, 1, nNumEntries, &sClMMTarget, pClM, sIterA, sIterB);
-	TestBTreeMapSTLifInsertViaIteratorPart ("target::insert<_t_obj::citer_t> (citer_t, citer_t)", 0, 1, nNumEntries, &sClMMTarget, pClM, sCIterA, sCIterB);
-	TestBTreeMapSTLifInsertViaIteratorPart ("target::insert<_t_obj::riter_t> (riter_t, riter_t)", 0, 1, nNumEntries, &sClMMTarget, pClM, sRIterA, sRIterB);
-	TestBTreeMapSTLifInsertViaIteratorPart ("target::insert<_t_obj::criter_t> (criter_t, criter_t)", 0, 1, nNumEntries, &sClMMTarget, pClM, sCRIterA, sCRIterB);
+	TestBTreeMapSTLifInsertViaIteratorPart ("target::insert<_t_obj::iter_t> (iter_t, iter_t)", 0, 2, nNumEntries, &sClMMTarget, pClM, sIterA, sIterB);
+	TestBTreeMapSTLifInsertViaIteratorPart ("target::insert<_t_obj::citer_t> (citer_t, citer_t)", 0, 2, nNumEntries, &sClMMTarget, pClM, sCIterA, sCIterB);
+	TestBTreeMapSTLifInsertViaIteratorPart ("target::insert<_t_obj::riter_t> (riter_t, riter_t)", 0, 2, nNumEntries, &sClMMTarget, pClM, sRIterA, sRIterB);
+	TestBTreeMapSTLifInsertViaIteratorPart ("target::insert<_t_obj::criter_t> (criter_t, criter_t)", 0, 2, nNumEntries, &sClMMTarget, pClM, sCRIterA, sCRIterB);
 
 	TestBTreeMapSTLifInsertViaIteratorSame ("target::insert<_t_obj::iter_t> (iter_t == iter_t)", 0, 1, nNumEntries, &sClMMTarget, pClM, sIterA, sIterB);
 	TestBTreeMapSTLifInsertViaIteratorSame ("target::insert<_t_obj::citer_t> (citer_t == citer_t)", 0, 1, nNumEntries, &sClMMTarget, pClM, sCIterA, sCIterB);

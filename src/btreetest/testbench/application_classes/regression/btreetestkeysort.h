@@ -175,18 +175,8 @@ public:
 
 	void				swap						(CBTreeKeySortTest &rKeySort);
 
-	iterator			find						(const key_type &rKey);
-
-	iterator			lower_bound					(const key_type &rKey);
-	const_iterator		lower_bound					(const key_type &rKey) const;
-
-	iterator			upper_bound					(const key_type &rKey);
-	const_iterator		upper_bound					(const key_type &rKey) const;
-
 	void				clear						();
 
-	size_type			count						(const key_type &rKey) const;
-	
 	value_type			get_data_reference			(const_iterator &rCIter);
 	value_type			get_data_reference			(const_reverse_iterator &rCRIter);
 	
@@ -286,9 +276,6 @@ public:
 	void				clear						();
 
 	CBTreeKeySortTest	&operator=					(const CBTreeKeySortTest &rBT);
-
-//	bool				operator==					(const CBTreeKeySortTest &rKeySort) const;
-//	bool				operator!=					(const CBTreeKeySortTest &rKeySort) const;
 
 	void				test						() const;
 

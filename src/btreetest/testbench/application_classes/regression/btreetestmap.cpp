@@ -248,28 +248,6 @@ void CBTreeTestMap<_t_datalayerproperties>::clear ()
 	test ();
 }
 
-//template<class _t_datalayerproperties>
-//typename CBTreeTestMap<_t_datalayerproperties>::key_compare
-//	CBTreeTestMap<_t_datalayerproperties>::key_comp () const
-//{
-//	key_compare		sRslt;
-//
-//	sRslt.pThis = (CBTreeAssociativeIf_t *) (this);
-//
-//	return (sRslt);
-//}
-//
-//template<class _t_datalayerproperties>
-//typename CBTreeTestMap<_t_datalayerproperties>::value_compare
-//	CBTreeTestMap<_t_datalayerproperties>::value_comp () const
-//{
-//	value_compare	sRslt;
-//
-//	sRslt.pThis = (CBTreeAssociativeIf_t *) (this);
-//
-//	return (sRslt);
-//}
-//
 template<class _t_datalayerproperties>
 bool CBTreeTestMap<_t_datalayerproperties>::operator== (const CBTreeTestMap_t &rTMM) const
 {

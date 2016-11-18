@@ -1227,11 +1227,7 @@ void CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::init_contai
 	CBTreeIOpropertiesFile<_t_sizetype, uint32_t, uint32_t, uint32_t, uint32_t>		sFilePropertiesLarge5555 ("./", 1048576, 1);
 	CBTreeIOpropertiesFile<_t_sizetype, uint32_t, uint32_t, uint32_t, uint16_t>		sFilePropertiesLarge5554 ("./", 1048576, nPageSize * 2 / 3);
 	CBTreeIOpropertiesFile<_t_sizetype, uint32_t, uint16_t, uint32_t, uint16_t>		sFilePropertiesLarge5454 ("./", 1048576, nPageSize * 16);
-//	btree_cache_description_t															sCacheDescPageSize = {nPageSize};
-//	btree_cache_description_t															sCacheDescMin = {1};
-//	btree_cache_description_t															sCacheDescNearestBigger = {nPageSize * 2 / 3};
-//	btree_cache_description_t															sCacheDescLarge = {nPageSize * 16};
-	uint32_t																			i = 0;
+	uint32_t																		i = 0;
 
 	m_pContainerRAM6565_n = new CBTreeTestArray<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (sRAMprop6565, nNodeSize, this->m_pReference);
 	m_pContainerRAM6555_n = new CBTreeTestArray<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (sRAMprop6555, nNodeSize, this->m_pReference);

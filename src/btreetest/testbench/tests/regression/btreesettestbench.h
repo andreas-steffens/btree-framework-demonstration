@@ -29,7 +29,6 @@ class CBTreeTestBenchSet;
 
 #include "testbench/application_classes/regression/btreetestset.h"
 
-//#include "testbench/primitives/btreemultisetprimitives.h"
 #include "testbench/primitives/btreecommonprimitives.h"
 
 #include "testbench/common/btreetestcommon.h"
@@ -60,6 +59,9 @@ typedef enum
 	BTREETEST_SET_STL_IF_INSERT_HINT_MINOR, 
 	BTREETEST_SET_STL_IF_INSERT_HINT_SIGNIFICANT, 
 	BTREETEST_SET_STL_IF_INSERT_HINT_LARGE, 
+	BTREETEST_SET_STL_IF_EMPLACE_VIA_CTOR, 
+	BTREETEST_SET_STL_IF_EMPLACE_HINT_VIA_CTOR, 
+	BTREETEST_SET_STL_IF_EQUAL_RANGE, 
 } btreetest_set_t;
 
 template<class _t_key>
@@ -81,15 +83,7 @@ public:
 
 				~CBTreeTestBenchSet<_t_key> ()	
 				{};
-/*
-	template<class _t_iterator>
-	void insert (const typename ::std::set<_t_key>::iterator &rDummyIter, _t_iterator &rIterFirst, _t_iterator &rIterLast)
-	{
-		rDummyIter;
 
-		::std::set<_t_key>::insert (rIterFirst, rIterLast);
-	};
-*/
 	template<class _t_iterator>
 	void insert (const typename ::std::set<_t_key>::const_iterator &rDummyIter, _t_iterator &rIterFirst, _t_iterator &rIterLast)
 	{
@@ -130,7 +124,7 @@ typedef CBTreeTestBenchSet<uint32_t>				set_reference_t;
 template<class _t_container, class _t_iterator>
 void TestBTreeSetSTLifInsertViaIteratorPart (const char *pszTitle, int nArg, uint32_t nNumInstances, uint32_t nNumEntries, _t_container *pContainer, _t_iterator &rIter)
 {
-	uint32_t					nLastKey = 0;
+	uint32_t					nLastKey;
 	uint32_t					i;
 	_t_iterator					sIterBegin;
 	_t_iterator					sIterEnd;
@@ -139,7 +133,9 @@ void TestBTreeSetSTLifInsertViaIteratorPart (const char *pszTitle, int nArg, uin
 
 	for (i = 0; i < nNumInstances; i++)
 	{
-		associative_container_add_primitive (pContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		nLastKey = 0;
+
+		associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	get_begin (pContainer, sIterBegin);
@@ -185,7 +181,7 @@ void TestBTreeSetSTLifInsertViaIteratorPart (const char *pszTitle, int nArg, uin
 template<class _t_dest_container, class _t_src_container, class _t_dest_iterator, class _t_src_iterator>
 void TestBTreeSetSTLifInsertViaIteratorPart (const char *pszTitle, int nArg, uint32_t nNumInstances, uint32_t nNumEntries, _t_dest_container *pDestContainer, _t_src_container *pSrcContainer, _t_dest_iterator &rDestIter, _t_src_iterator &rSrcIter)
 {
-	uint32_t					nLastKey = 0;
+	uint32_t					nLastKey;
 	uint32_t					i;
 	_t_src_iterator				sSrcIterBegin;
 	_t_src_iterator				sSrcIterEnd;
@@ -194,7 +190,9 @@ void TestBTreeSetSTLifInsertViaIteratorPart (const char *pszTitle, int nArg, uin
 
 	for (i = 0; i < nNumInstances; i++)
 	{
-		associative_container_add_primitive (pSrcContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		nLastKey = 0;
+
+		associative_container_add_primitive (pSrcContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	get_begin (pSrcContainer, sSrcIterBegin);
@@ -212,7 +210,7 @@ void TestBTreeSetSTLifInsertViaIteratorPart (const char *pszTitle, int nArg, uin
 template<class _t_dest_container, class _t_src_container, class _t_dest_iterator, class _t_src_iterator>
 void TestBTreeSetSTLifInsertViaIteratorSame (const char *pszTitle, int nArg, uint32_t nNumInstances, uint32_t nNumEntries, _t_dest_container *pDestContainer, _t_src_container *pSrcContainer, _t_dest_iterator &rDestIter, _t_src_iterator &rSrcIter)
 {
-	uint32_t					nLastKey = 0;
+	uint32_t					nLastKey;
 	uint32_t					i;
 	_t_src_iterator				sSrcIterBegin;
 	_t_src_iterator				sSrcIterEnd;
@@ -224,7 +222,9 @@ void TestBTreeSetSTLifInsertViaIteratorSame (const char *pszTitle, int nArg, uin
 
 	for (i = 0; i < nNumInstances; i++)
 	{
-		associative_container_add_primitive (pSrcContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		nLastKey = 0;
+
+		associative_container_add_primitive (pSrcContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	get_end (pSrcContainer, sSrcIterEnd);
@@ -294,7 +294,7 @@ void TestBTreeSetSTLifInsertViaIteratorSame (const char *pszTitle, int nArg, uin
 template<class _t_dest_container, class _t_src_container, class _t_ext_container, class _t_dest_iterator, class _t_src_iterator, class _t_ext_iterator>
 void TestBTreeSetSTLifInsertViaIteratorPartExtern (const char *pszTitle, int nArg, uint32_t nNumInstances, uint32_t nNumEntries, _t_dest_container *pDestContainer, _t_src_container *pSrcContainer, _t_ext_container *pExtContainer, _t_dest_iterator &rDestIter, _t_src_iterator &rSrcIter, _t_ext_iterator &rExtIter)
 {
-	uint32_t					nLastKey = 0;
+	uint32_t					nLastKey;
 	uint32_t					i;
 	_t_src_iterator				sSrcIterBegin;
 	_t_src_iterator				sSrcIterA;
@@ -305,7 +305,9 @@ void TestBTreeSetSTLifInsertViaIteratorPartExtern (const char *pszTitle, int nAr
 
 	for (i = 0; i < nNumInstances; i++)
 	{
-		associative_container_add_primitive (pSrcContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		nLastKey = 0;
+
+		associative_container_add_primitive (pSrcContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	_t_ext_iterator		sExtIterBegin;
@@ -341,7 +343,7 @@ void TestBTreeSetSTLifInsertViaIteratorSameExtern (const char *pszTitle, int nAr
 	typename ::std::conditional< ::std::is_same<_t_ext_container, set_t> ::value || ::std::is_same<_t_ext_container, mset_t> ::value, ::std::true_type, ::std::false_type> ::type
 								sSelectInsertMethod;
 
-	uint32_t					nLastKey = 0;
+	uint32_t					nLastKey;
 	uint32_t					i;
 	_t_src_iterator				sSrcIterBegin;
 	_t_src_iterator				sSrcIterEnd;
@@ -353,7 +355,9 @@ void TestBTreeSetSTLifInsertViaIteratorSameExtern (const char *pszTitle, int nAr
 
 	for (i = 0; i < nNumInstances; i++)
 	{
-		associative_container_add_primitive (pSrcContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		nLastKey = 0;
+
+		associative_container_add_primitive (pSrcContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	get_begin (pSrcContainer, sSrcIterBegin);
@@ -494,10 +498,10 @@ void TestBTreeSetSTLifInsertViaIterator (_t_map *pClM, uint32_t nNumEntries)
 	
 	::std::cout << "exercises method compatible to STL interface CBTreeSet[Multi]<>:: insert<_t_iterator> (_t_iterator, _t_iterator)" << ::std::endl;
 
-	TestBTreeSetSTLifInsertViaIteratorPart ("target::insert<_t_obj::iter_t> (iter_t, iter_t)", 0, 1, nNumEntries, &sClMMTarget, pClM, sIterA, sIterB);
-	TestBTreeSetSTLifInsertViaIteratorPart ("target::insert<_t_obj::citer_t> (citer_t, citer_t)", 0, 1, nNumEntries, &sClMMTarget, pClM, sCIterA, sCIterB);
-	TestBTreeSetSTLifInsertViaIteratorPart ("target::insert<_t_obj::riter_t> (riter_t, riter_t)", 0, 1, nNumEntries, &sClMMTarget, pClM, sRIterA, sRIterB);
-	TestBTreeSetSTLifInsertViaIteratorPart ("target::insert<_t_obj::criter_t> (criter_t, criter_t)", 0, 1, nNumEntries, &sClMMTarget, pClM, sCRIterA, sCRIterB);
+	TestBTreeSetSTLifInsertViaIteratorPart ("target::insert<_t_obj::iter_t> (iter_t, iter_t)", 0, 2, nNumEntries, &sClMMTarget, pClM, sIterA, sIterB);
+	TestBTreeSetSTLifInsertViaIteratorPart ("target::insert<_t_obj::citer_t> (citer_t, citer_t)", 0, 2, nNumEntries, &sClMMTarget, pClM, sCIterA, sCIterB);
+	TestBTreeSetSTLifInsertViaIteratorPart ("target::insert<_t_obj::riter_t> (riter_t, riter_t)", 0, 2, nNumEntries, &sClMMTarget, pClM, sRIterA, sRIterB);
+	TestBTreeSetSTLifInsertViaIteratorPart ("target::insert<_t_obj::criter_t> (criter_t, criter_t)", 0, 2, nNumEntries, &sClMMTarget, pClM, sCRIterA, sCRIterB);
 
 	TestBTreeSetSTLifInsertViaIteratorSame ("target::insert<_t_obj::iter_t> (iter_t == iter_t)", 0, 1, nNumEntries, &sClMMTarget, pClM, sIterA, sIterB);
 	TestBTreeSetSTLifInsertViaIteratorSame ("target::insert<_t_obj::citer_t> (citer_t == citer_t)", 0, 1, nNumEntries, &sClMMTarget, pClM, sCIterA, sCIterB);

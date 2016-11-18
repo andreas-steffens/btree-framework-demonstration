@@ -155,6 +155,9 @@ void print_usage (const char *pszBinary)
 	::std::cerr << "1016    - test exercises interface method insert (const_iterator &, const value_type &) with near perfect hint" << ::std::endl;
 	::std::cerr << "1017    - test exercises interface method insert (const_iterator &, const value_type &) with potentially bad hint" << ::std::endl;
 	::std::cerr << "1018    - test exercises interface method insert (const_iterator &, const value_type &) with terrible hint" << ::std::endl;
+	::std::cerr << "1019    - test exercises interface method emplace (const value_type &)" << ::std::endl;
+	::std::cerr << "1020    - test exercises interface method emplace_hint (const_iterator &, const value_type &) with perfect hint" << ::std::endl;
+	::std::cerr << "1021    - test exercises interface method equal_range ()" << ::std::endl;
 	::std::cerr << ::std::endl;
 	::std::cerr << ::std::endl;
 	::std::cerr << "array" << ::std::endl;
@@ -236,6 +239,9 @@ void print_usage (const char *pszBinary)
 	::std::cerr << "1014    - test exercises interface method insert (const_iterator &, const value_type &) with near perfect hint" << ::std::endl;
 	::std::cerr << "1015    - test exercises interface method insert (const_iterator &, const value_type &) with potentially bad hint" << ::std::endl;
 	::std::cerr << "1016    - test exercises interface method insert (const_iterator &, const value_type &) with terrible hint" << ::std::endl;
+	::std::cerr << "1017    - test exercises interface method emplace (const value_type &)" << ::std::endl;
+	::std::cerr << "1018    - test exercises interface method emplace_hint (const_iterator &, const value_type &) with perfect hint" << ::std::endl;
+	::std::cerr << "1019    - test exercises interface method equal_range ()" << ::std::endl;
 	::std::cerr << ::std::endl;
 	::std::cerr << "2000    - code coverage test which exercises corner cases in method determine_position ()" << ::std::endl;
 	::std::cerr << "2001    - code coverage test which exercises corner cases in method find_first_key ()" << ::std::endl;

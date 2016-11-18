@@ -28,7 +28,6 @@ class CBTreeTestBenchMultiSet;
 
 #include "testbench/application_classes/regression/btreetestmultiset.h"
 
-//#include "testbench/primitives/btreemultisetprimitives.h"
 #include "testbench/primitives/btreecommonprimitives.h"
 
 #include "testbench/common/btreetestcommon.h"
@@ -56,15 +55,7 @@ public:
 
 				~CBTreeTestBenchMultiSet<_t_key> ()	
 				{};
-/*
-	template<class _t_iterator>
-	void insert (const typename ::std::multiset<_t_key>::iterator &rDummyIter, _t_iterator &rIterFirst, _t_iterator &rIterLast)
-	{
-		rDummyIter;
 
-		::std::multiset<_t_key>::insert (rIterFirst, rIterLast);
-	};
-*/
 	template<class _t_iterator>
 	void insert (const typename ::std::multiset<_t_key>::const_iterator &rDummyIter, _t_iterator &rIterFirst, _t_iterator &rIterLast)
 	{
@@ -109,6 +100,9 @@ typedef enum
 	BTREETEST_MULTISET_STL_IF_INSERT_HINT_MINOR, 
 	BTREETEST_MULTISET_STL_IF_INSERT_HINT_SIGNIFICANT, 
 	BTREETEST_MULTISET_STL_IF_INSERT_HINT_LARGE, 
+	BTREETEST_MULTISET_STL_IF_EMPLACE_VIA_CTOR, 
+	BTREETEST_MULTISET_STL_IF_EMPLACE_HINT_VIA_CTOR, 
+	BTREETEST_MULTISET_STL_IF_EQUAL_RANGE, 
 } btreetest_multiset_t;
 
 template<class _t_container>

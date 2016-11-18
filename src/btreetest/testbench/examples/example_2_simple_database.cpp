@@ -25,6 +25,7 @@ typedef struct car_holders_s
 		strLicensePlate = _strLicensePlate;
 		strPhoneNumber = _strPhoneNumber;
 
+#if defined(__GNUC__) || defined(__GNUG__)
 		// this is a work around for GNU STL implementations, which
 		// store their string data inside the instance for as long as
 		// the buffer size is less than 16 bytes...
@@ -34,6 +35,7 @@ typedef struct car_holders_s
 		if (strLastName.size () < 16) strLastName.resize (16);
 		if (strLicensePlate.size () < 16) strLicensePlate.resize (16);
 		if (strPhoneNumber.size () < 16) strPhoneNumber.resize (16);
+#endif
 	};
 
 	::std::string		strLastName;

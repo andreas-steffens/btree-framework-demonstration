@@ -23,7 +23,6 @@
 
 #include "testbench/application_classes/regression/btreetestmultimap.h"
 
-//#include "testbench/primitives/btreemultimapprimitives.h"
 #include "testbench/primitives/btreecommonprimitives.h"
 
 #include "testbench/common/btreetestcommon.h"
@@ -106,6 +105,9 @@ typedef enum
 	BTREETEST_MULTIMAP_STL_IF_INSERT_HINT_MINOR, 
 	BTREETEST_MULTIMAP_STL_IF_INSERT_HINT_SIGNIFICANT, 
 	BTREETEST_MULTIMAP_STL_IF_INSERT_HINT_LARGE, 
+	BTREETEST_MULTIMAP_STL_IF_EMPLACE_VIA_CTOR, 
+	BTREETEST_MULTIMAP_STL_IF_EMPLACE_HINT_VIA_CTOR, 
+	BTREETEST_MULTIMAP_STL_IF_EQUAL_RANGE, 
 } btreetest_multimap_t;
 
 template<class _t_container>

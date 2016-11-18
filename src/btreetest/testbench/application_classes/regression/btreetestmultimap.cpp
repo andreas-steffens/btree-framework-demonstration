@@ -237,28 +237,6 @@ void CBTreeTestMultiMap<_t_datalayerproperties>::clear ()
 	test ();
 }
 
-//template<class _t_datalayerproperties>
-//typename CBTreeTestMultiMap<_t_datalayerproperties>::key_compare
-//	CBTreeTestMultiMap<_t_datalayerproperties>::key_comp () const
-//{
-//	key_compare		sRslt;
-//
-//	sRslt.pThis = (CBTreeAssociativeIf_t *) (this);
-//
-//	return (sRslt);
-//}
-//
-//template<class _t_datalayerproperties>
-//typename CBTreeTestMultiMap<_t_datalayerproperties>::value_compare
-//	CBTreeTestMultiMap<_t_datalayerproperties>::value_comp () const
-//{
-//	value_compare	sRslt;
-//
-//	sRslt.pThis = (CBTreeAssociativeIf_t *) (this);
-//
-//	return (sRslt);
-//}
-
 template<class _t_datalayerproperties>
 bool CBTreeTestMultiMap<_t_datalayerproperties>::operator== (const CBTreeTestMultiMap_t &rTMM) const
 {

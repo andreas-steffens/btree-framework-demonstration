@@ -186,52 +186,11 @@ void CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::swap
 }
 
 template<class _t_data, class _t_key, class _t_datalayerproperties>
-typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::iterator
-	CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::find (const typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::key_type &rKey)
-{
-	return (CBTreeKeySort_t::find (rKey));
-}
-
-template<class _t_data, class _t_key, class _t_datalayerproperties>
-typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::iterator
-	CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::lower_bound (const typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::key_type &rKey)
-{
-	return (CBTreeKeySort_t::lower_bound (rKey));
-}
-
-template<class _t_data, class _t_key, class _t_datalayerproperties>
-typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::const_iterator
-	CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::lower_bound (const typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::key_type &rKey) const
-{
-	return (CBTreeKeySort_t::lower_bound (rKey));
-}
-
-template<class _t_data, class _t_key, class _t_datalayerproperties>
-typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::iterator
-	CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::upper_bound (const typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::key_type &rKey)
-{
-	return (CBTreeKeySort_t::upper_bound (rKey));
-}
-
-template<class _t_data, class _t_key, class _t_datalayerproperties>
-typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::const_iterator
-	CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::upper_bound (const typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::key_type &rKey) const
-{
-	return (CBTreeKeySort_t::upper_bound (rKey));
-}
-
-template<class _t_data, class _t_key, class _t_datalayerproperties>
 void CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::clear ()
 {
 	CBTreeKeySort_t::clear ();
 
 	test ();
-}
-
-template<class _t_data, class _t_key, class _t_datalayerproperties>
-typename _t_datalayerproperties::size_type CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::count (const typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::key_type &rKey) const
-{
-	return (CBTreeKeySort_t::count (rKey));
 }
 
 template<class _t_data, class _t_key, class _t_datalayerproperties>
@@ -928,87 +887,6 @@ CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties> &CBTreeKeySo
 	return (*this);
 }
 
-//template<class _t_datalayerproperties>
-//bool CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::operator== (const CBTreeKeySortTest &rKeySort) const
-//{
-//	typedef typename CBTreeKeySort_t::const_iterator		keysort_citer_t;
-//
-//	if (this == &rKeySort)
-//	{
-//		return (true);
-//	}
-//
-//	if (this->size () != rKeySort.size ())
-//	{
-//		return (false);
-//	}
-//
-//	CBTreeKeySortTest_t							*pKeySetTest;
-//
-//	pKeySetTest = new CBTreeKeySortTest_t (*(this->m_pClDataLayerProperties), &(this->m_sCacheDescription), this->m_nNodeSize, NULL);
-//
-//	BTREE_ASSERT (pKeySetTest != NULL, "CBTreeKeySortTest::operator== (const CBTreeKeySortTest &): insufficient memory!");
-//
-//	const CBTreeKeySort_t	*pKeySort = dynamic_cast <const CBTreeKeySort_t *> (&rKeySort);
-//	CBTreeKeySort_t			*pKeySet;
-//	size_type				i;
-//	size_type				j;
-//	size_type				k;
-//	size_type				nKeySetSize;
-//	value_type				sThisData;
-//	value_type				sData;
-//	value_type				sKey;
-//	keysort_citer_t			sKeySortCIter;
-//
-//	pKeySet = dynamic_cast <CBTreeKeySort_t *> (pKeySetTest);
-//
-//	for (i = 0; i < this->size (); i += nKeySetSize)
-//	{
-//		this->get_at (i, sKey);
-//
-//		nKeySetSize = pKeySort->get (sKey, *pKeySet);
-//
-//		if (nKeySetSize != this->count (sKey))
-//		{
-//			break;
-//		}
-//
-//		for (j = 0; j < nKeySetSize; j++)
-//		{
-//			this->get_at (i + j, sThisData);
-//
-//			sKeySortCIter = pKeySet->cbegin ();
-//
-//			for (k = 0; k < pKeySet->size (); k++, sKeySortCIter++)
-//			{
-//				sData = *sKeySortCIter;
-//
-//				if ((sThisData.nKey == sData.nKey) && (sThisData.nData == sData.nData))
-//				{
-//					pKeySet->erase_tb (sKey, k);
-//
-//					break;
-//				}
-//			}
-//		}
-//
-//		if (pKeySet->size () != 0)
-//		{
-//			break;
-//		}
-//	}
-//
-//	delete pKeySetTest;
-//
-//	return (i >= this->size ());
-//}
-//
-//template<class _t_datalayerproperties>
-//bool CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::operator!= (const CBTreeKeySortTest &rKeySort) const
-//{
-//	return ( ! (*this == rKeySort));
-//}
-//
 template<class _t_datalayerproperties>
 void CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::test () const
 {

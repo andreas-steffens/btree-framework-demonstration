@@ -24,6 +24,7 @@ void associative_container_add_primitive (_t_container *pContainer, typename _t_
 
 	size_type		i;
 	data_t			sData;
+	const char		*pszTitle = "insert";
 
 	container_data_reset (sData);
 
@@ -34,7 +35,7 @@ void associative_container_add_primitive (_t_container *pContainer, typename _t_
 
 	for (i = 0; i < nEntries; i++)
 	{
-		::std::cout << "insert: " << i << " / " << nEntries << "\r" << ::std::flush;
+		::std::cout << pszTitle << ": " << i << " / " << nEntries << "\r" << ::std::flush;
 
 		container_data_set (sData, g_nDebug, nFromWhereOrSeed, eGenerator);
 
@@ -43,17 +44,51 @@ void associative_container_add_primitive (_t_container *pContainer, typename _t_
 		pContainer->insert (sData);
 	}
 
-	::std::cout << "insert: " << i << " / " << nEntries << ::std::endl;
+	::std::cout << pszTitle << ": " << i << " / " << nEntries << ::std::endl;
 }
 
 template<class _t_container>
-void associative_container_insert_hint_primitive (_t_container *pContainer, typename _t_container::size_type nEntries, typename _t_container::size_type nHintVariation, uint32_t &nFromWhereOrSeed, btreetest_key_generation_e eGenerator)
+void associative_container_add_primitive (_t_container *pContainer, typename _t_container::size_type nEntries, typename _t_container::size_type nHintVariation, uint32_t &nFromWhereOrSeed, btreetest_key_generation_e eGenerator, associative_add_method_e eMethod)
 {
 	typedef typename _t_container::value_type		data_t;
 	typedef typename _t_container::size_type		size_type;
 
 	size_type		i;
 	data_t			sData;
+	char			*pszTitle;
+
+	switch (eMethod)
+	{
+	case ASSOCIATIVE_ADD_METHOD_INSERT					:	pszTitle = (char *)"insert";
+
+															break;
+
+	case ASSOCIATIVE_ADD_METHOD_INSERT_HINT				:	pszTitle = (char *)"insert with hint";
+
+															break;
+
+	case ASSOCIATIVE_ADD_METHOD_EMPLACE					:	pszTitle = (char *)"emplace";
+
+															break;
+
+	case ASSOCIATIVE_ADD_METHOD_EMPLACE_HINT			:	pszTitle = (char *)"emplace with hint";
+
+															break;
+
+	case ASSOCIATIVE_ADD_METHOD_ABSTRACT_EMPLACE		:	pszTitle = (char *)"emplace via ctor";
+
+															break;
+
+	case ASSOCIATIVE_ADD_METHOD_ABSTRACT_EMPLACE_HINT	:	pszTitle = (char *)"emplace with hint via ctor";
+
+															break;
+
+	default												:	::std::cerr << "associative_container_add_primitive: ERROR: unknown add method selected!" << ::std::endl;
+
+															exit (-1);
+															
+															break;
+	}
 
 	container_data_reset (sData);
 
@@ -66,78 +101,47 @@ void associative_container_insert_hint_primitive (_t_container *pContainer, type
 
 	for (i = 0; i < nEntries; i++)
 	{
-		::std::cout << "insert with hint: " << i << " / " << nEntries << "\r" << ::std::flush;
+		::std::cout << pszTitle << ": " << i << " / " << nEntries << "\r" << ::std::flush;
 
 		container_data_set (sData, g_nDebug, nFromWhereOrSeed, eGenerator);
 
 		g_nDebug++;
 
-		pContainer->insert_hint (sData);
+		switch (eMethod)
+		{
+		case ASSOCIATIVE_ADD_METHOD_INSERT					:	pContainer->insert (sData);
+
+																break;
+
+		case ASSOCIATIVE_ADD_METHOD_INSERT_HINT				:	pContainer->insert_hint (sData);
+
+																break;
+
+		case ASSOCIATIVE_ADD_METHOD_EMPLACE					:	pContainer->emplace (sData);
+
+																break;
+
+		case ASSOCIATIVE_ADD_METHOD_EMPLACE_HINT			:	pContainer->emplace_hint (sData);
+
+																break;
+
+		case ASSOCIATIVE_ADD_METHOD_ABSTRACT_EMPLACE		:	pContainer->insert (sData, false);
+
+																break;
+
+		case ASSOCIATIVE_ADD_METHOD_ABSTRACT_EMPLACE_HINT	:	pContainer->insert_hint (sData, false);
+
+																break;
+
+		default												:	::std::cerr << "associative_container_add_primitive: ERROR: add method setting corrupted!" << ::std::endl;
+
+																exit (-1);
+																
+																break;
+		}
 	}
 
-	::std::cout << "insert with hint: " << i << " / " << nEntries << ::std::endl;
-}
-
-template<class _t_container>
-void associative_container_emplace_primitive (_t_container *pContainer, typename _t_container::size_type nEntries, uint32_t &nFromWhereOrSeed, btreetest_key_generation_e eGenerator)
-{
-	typedef typename _t_container::value_type		data_t;
-	typedef typename _t_container::size_type		size_type;
-
-	size_type		i;
-	data_t			sData;
-
-	container_data_reset (sData);
-
-	if (eGenerator == BTREETEST_KEY_GENERATION_RANDOM)
-	{
-		srand (nFromWhereOrSeed);
-	}
-
-	for (i = 0; i < nEntries; i++)
-	{
-		::std::cout << "emplace: " << i << " / " << nEntries << "\r" << ::std::flush;
-
-		container_data_set (sData, g_nDebug, nFromWhereOrSeed, eGenerator);
-
-		g_nDebug++;
-
-		pContainer->emplace (sData);
-	}
-
-	::std::cout << "emplace: " << i << " / " << nEntries << ::std::endl;
-}
-
-template<class _t_container>
-void associative_container_emplace_hint_primitive (_t_container *pContainer, typename _t_container::size_type nEntries, typename _t_container::size_type nHintVariation, uint32_t &nFromWhereOrSeed, btreetest_key_generation_e eGenerator)
-{
-	typedef typename _t_container::value_type		data_t;
-	typedef typename _t_container::size_type		size_type;
-
-	size_type		i;
-	data_t			sData;
-
-	container_data_reset (sData);
-
-	if (eGenerator == BTREETEST_KEY_GENERATION_RANDOM)
-	{
-		srand (nFromWhereOrSeed);
-	}
-
-	pContainer->set_hint_variation (nHintVariation);
-
-	for (i = 0; i < nEntries; i++)
-	{
-		::std::cout << "emplace with hint: " << i << " / " << nEntries << "\r" << ::std::flush;
-
-		container_data_set (sData, g_nDebug, nFromWhereOrSeed, eGenerator);
-
-		g_nDebug++;
-
-		pContainer->emplace_hint (sData);
-	}
-
-	::std::cout << "emplace with hint: " << i << " / " << nEntries << ::std::endl;
+	::std::cout << pszTitle << ": " << i << " / " << nEntries << ::std::endl;
 }
 
 template<class _t_container>

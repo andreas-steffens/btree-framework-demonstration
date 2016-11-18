@@ -113,7 +113,7 @@ void TestBTreeKeySortBasic (_t_container *pContainer, typename _t_container::siz
 
 	nLastKey = nLastKeyInit;
 
-	associative_container_add_primitive (pContainer, nMaxEntries, nLastKey, eGeneratorAdd);
+	associative_container_add_primitive (pContainer, nMaxEntries, 0, nLastKey, eGeneratorAdd);
 
 	for (ui32 = 0; ui32 < nRepetitions; ui32++)
 	{
@@ -125,7 +125,7 @@ void TestBTreeKeySortBasic (_t_container *pContainer, typename _t_container::siz
 
 		nLastKey = nLastKeyInit;
 
-		associative_container_add_primitive (pContainer, nVariation, nLastKey, eGeneratorAdd);
+		associative_container_add_primitive (pContainer, nVariation, 0, nLastKey, eGeneratorAdd);
 	}
 
 	nLastKey = nLastKeyInit;
@@ -142,7 +142,7 @@ void TestBTreeKeySortRemoveAll (_t_container *pContainer, typename _t_container:
 
 	::std::cout << "test inserts data and empties the data container by calling clear" << ::std::endl;
 
-	associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	pContainer->clear ();
 }
@@ -154,11 +154,11 @@ void TestBTreeKeySortMultiRemove (_t_container *pContainer, typename _t_containe
 
 	::std::cout << "test removes key sets" << ::std::endl;
 
-	associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
-	associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
-	associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	associative_container_remove_primitive (pContainer, nEntries, ~0x0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 }
@@ -174,7 +174,7 @@ void TestBTreeKeySortUnload (_t_container *pContainer, typename _t_container::si
 
 	pContainer->unload ();
 
-	associative_container_add_primitive (pContainer, nInitEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nInitEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	::std::cout << "unloading..." << ::std::endl;
 
@@ -182,7 +182,7 @@ void TestBTreeKeySortUnload (_t_container *pContainer, typename _t_container::si
 
 	nLastKey++;
 
-	associative_container_add_primitive (pContainer, nAddEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nAddEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	::std::cout << "unloading..." << ::std::endl;
 
@@ -202,7 +202,7 @@ void TestBTreeKeySortUnload (_t_container *pContainer, typename _t_container::si
 
 	pContainer->unload ();
 
-	associative_container_add_primitive (pContainer, nInitEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nInitEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	::std::cout << "unloading..." << ::std::endl;
 
@@ -231,7 +231,7 @@ void TestBTreeKeySortRemoveInstance (_t_container *pContainer, typename _t_conta
 
 	for (ui32 = 0; ui32 < nInstances; ui32++)
 	{
-		associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	associative_container_remove_primitive (pContainer, nEntries, 2, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
@@ -252,7 +252,7 @@ void TestBTreeKeySortCCdeterminePosition (_t_container *pContainer, uint32_t nNo
 
 	nEntries = nNodeSize * 2 + (nNodeSize * 2) - 1;
 
-	associative_container_add_primitive (pContainer, nEntries, nKey, BTREETEST_KEY_GENERATION_CONST);
+	associative_container_add_primitive (pContainer, nEntries, 0, nKey, BTREETEST_KEY_GENERATION_CONST);
 
 	nInst = nNodeSize * 2 - 1;
 
@@ -275,7 +275,7 @@ void TestBTreeKeySortCCfindFirstKey (_t_container *pContainer, uint32_t nNodeSiz
 		nEntries *= nNodeSize;
 	}
 
-	associative_container_add_primitive (pContainer, nEntries, nKey, BTREETEST_KEY_GENERATION_CONST);
+	associative_container_add_primitive (pContainer, nEntries, 0, nKey, BTREETEST_KEY_GENERATION_CONST);
 
 	while (pContainer->size () > 0)
 	{
@@ -299,19 +299,19 @@ void TestBTreeKeySortHTMLoutput (_t_container *pContainer, typename _t_container
 
 	::std::cout << "tests if instance is left in undefined state after HTML output" << ::std::endl;
 
-	associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	nLastKey++;
 
 	pContainer->show_integrity ("test_keysort_output0_");
 
-	associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	nLastKey++;
 
 	pContainer->show_integrity ("test_keysort_output1_");
 
-	associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 }
 
 template<class _t_container>
@@ -333,7 +333,7 @@ void TestBTreeKeySortCopyConstructorTest (_t_container *pClRef, _t_container sCl
 		exit (-1);
 	}
 
-	associative_container_add_primitive (&sClCopy, 1, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (&sClCopy, 1, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	if (sClCopy == *pClRef)
 	{
@@ -359,19 +359,19 @@ void TestBTreeKeySortCopyConstructor (_t_container *pContainer, typename _t_cont
 
 	TestBTreeKeySortCopyConstructorTest (pContainer, *pContainer);
 
-	associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	TestBTreeKeySortCopyConstructorTest (pContainer, *pContainer);
 
 	nLastKey++;
 
-	associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	TestBTreeKeySortCopyConstructorTest (pContainer, *pContainer);
 
 	nLastKey++;
 
-	associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	TestBTreeKeySortCopyConstructorTest (pContainer, *pContainer);
 
@@ -417,7 +417,7 @@ void TestBTreeKeySortOperatorOverloadAssign (_t_container *pContainer, typename 
 
 	associative_container_compare_primitive (pContainer, pTarget);
 
-	associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	*pTarget = *pContainer;
 
@@ -425,7 +425,7 @@ void TestBTreeKeySortOperatorOverloadAssign (_t_container *pContainer, typename 
 
 	nLastKey++;
 
-	associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	*pTarget = *pContainer;
 
@@ -433,7 +433,7 @@ void TestBTreeKeySortOperatorOverloadAssign (_t_container *pContainer, typename 
 
 	nLastKey++;
 
-	associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	*pTarget = *pContainer;
 
@@ -504,7 +504,7 @@ void TestBTreeKeySortOperatorOverloadAssignMultiInstance (_t_container *pContain
 			nEntries = nInnerEntries;
 		}
 
-		associative_container_add_primitive (pContainer, nEntries, nLastKey, BTREETEST_KEY_GENERATION_CONST);
+		associative_container_add_primitive (pContainer, nEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_CONST);
 
 		nLastKey++;
 
@@ -553,7 +553,7 @@ void TestBTreeKeySortLowerBoundOnLeafNode (_t_container *pContainer, uint32_t nN
 
 	::std::cout << "exercises lower_bound on leaf node with node size " << nNodeSize << ::std::endl;
 
-	associative_container_add_primitive (pContainer, nNodeSize * 2 - 1, nLastKey, BTREETEST_KEY_GENERATION_CONST);
+	associative_container_add_primitive (pContainer, nNodeSize * 2 - 1, 0, nLastKey, BTREETEST_KEY_GENERATION_CONST);
 
 	sCIter = pContainer->lower_bound (nLastKey);
 
@@ -570,11 +570,11 @@ void TestBTreeKeySortLowerBoundOnLeafNode (_t_container *pContainer, uint32_t nN
 
 	pContainer->clear ();
 
-	associative_container_add_primitive (pContainer, nNodeSize - 1, nLastKey, BTREETEST_KEY_GENERATION_CONST);
+	associative_container_add_primitive (pContainer, nNodeSize - 1, 0, nLastKey, BTREETEST_KEY_GENERATION_CONST);
 
 	nLastKey += 2;
 
-	associative_container_add_primitive (pContainer, nNodeSize - 1, nLastKey, BTREETEST_KEY_GENERATION_CONST);
+	associative_container_add_primitive (pContainer, nNodeSize - 1, 0, nLastKey, BTREETEST_KEY_GENERATION_CONST);
 
 	sCIter = pContainer->lower_bound (nLastKey);
 
@@ -606,7 +606,7 @@ void TestBTreeKeySortLowerBoundOnLeafNode (_t_container *pContainer, uint32_t nN
 
 	nLastKey++;
 
-	associative_container_add_primitive (pContainer, 2, nLastKey, BTREETEST_KEY_GENERATION_CONST);
+	associative_container_add_primitive (pContainer, 2, 0, nLastKey, BTREETEST_KEY_GENERATION_CONST);
 
 	sCIter = pContainer->lower_bound (nLastKey);
 
@@ -623,7 +623,7 @@ void TestBTreeKeySortLowerBoundOnLeafNode (_t_container *pContainer, uint32_t nN
 
 	nLastKey--;
 
-	associative_container_add_primitive (pContainer, nNodeSize * 2 - 1, nLastKey, BTREETEST_KEY_GENERATION_CONST);
+	associative_container_add_primitive (pContainer, nNodeSize * 2 - 1, 0, nLastKey, BTREETEST_KEY_GENERATION_CONST);
 
 	sCIter = pContainer->lower_bound (nLastKey);
 
@@ -678,7 +678,7 @@ void TestBTreeKeySortSerialize (_t_container *pContainer, uint32_t nInstance, ty
 
 	for (ui32 = 0; ui32 < nInstance; ui32++)
 	{
-		associative_container_add_primitive (pContainer, nSize, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		associative_container_add_primitive (pContainer, nSize, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 		nLastKey = 0;
 	}
@@ -728,7 +728,7 @@ void TestBTreeKeySortSerializeIncomplete (_t_container *pContainer, uint32_t nNo
 		exit (-1);
 	}
 
-	associative_container_add_primitive (pContainer, nSize, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nSize, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	::std::cout << "testing from " << nOffset << " to " << nWindowSize + nOffset << ::std::endl;
 
@@ -838,7 +838,7 @@ void TestBTreeKeySortSTLifInsertViaIteratorEx (btreetest_keysort_stl_if_insert_v
 
 	::std::cout << pszTestTitle << ::std::endl;
 
-	associative_container_add_primitive (pSrcContainer, nNumEntries, rLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pSrcContainer, nNumEntries, 0, rLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	get_begin (pSrcContainer, sIterBegin);
 	get_end (pSrcContainer, sIterEnd);
@@ -1382,7 +1382,7 @@ void TestBTreeKeySortSTLifSwap (_t_container *pContainer, _t_pair_container *pPa
 
 	::std::cout << "exercises method compatible to STL interface CBTreeBaseDefaults<>::CBTreeKeysort<>:: swap ()" << ::std::endl;
 
-	associative_container_add_primitive (pContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	sContainerRef.insert (pContainer->cbegin (), pContainer->cend ());
 
@@ -1393,7 +1393,7 @@ void TestBTreeKeySortSTLifSwap (_t_container *pContainer, _t_pair_container *pPa
 		exit (-1);
 	}
 
-	associative_container_add_primitive (&sContainerTarget, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (&sContainerTarget, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	sContainerTargetRef.insert (sContainerTarget.cbegin (), sContainerTarget.cend ());
 
@@ -1534,7 +1534,7 @@ void TestBTreeKeySortSTLifFind (_t_container *pContainer, _t_pair_container *pPa
 
 	::std::cout << "exercises method compatible to STL interface CBTreeBaseDefaults<>::CBTreeKeysort<>:: find ()" << ::std::endl;
 
-	associative_container_add_primitive (pContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_ASCEND);
+	associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_ASCEND);
 
 	for (sCIter = pContainer->cbegin (); sCIter != pContainer->cend (); sCIter++)
 	{
@@ -1708,7 +1708,7 @@ void TestBTreeKeySortSTLifLowerBoundUpperBound (_t_container *pContainer, _t_pai
 	{
 		nLastKey = 1;
 
-		associative_container_add_primitive (pContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_ASCEND);
+		associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_ASCEND);
 	}
 
 	for (i = 0; i < nNumEntries; i++)
@@ -1822,7 +1822,7 @@ void TestBTreeKeySortSTLifLowerBoundUpperBound (_t_container *pContainer, _t_pai
 	if (sCItPairUpper != pPairContainer->cend ())
 	{
 		::std::cerr << ::std::endl;
-		::std::cerr << "TestBTreeKeySortSTLifLowerBoundUpperBound: ERROR: upper_bound () didn't return cend () when testing for lowest key! (pair)" << ::std::endl;
+		::std::cerr << "TestBTreeKeySortSTLifLowerBoundUpperBound: ERROR: upper_bound () didn't return cend () when testing for highest key! (pair)" << ::std::endl;
 
 		exit (-1);
 	}
@@ -1835,7 +1835,11 @@ void TestBTreeKeySortSTLifEmplace (_t_container *pContainer, typename _t_contain
 
 	::std::cout << "exercises method compatible to STL interface CBTreeBaseDefaults<>::CBTreeKeysort<>:: emplace ()" << ::std::endl;
 
-	associative_container_emplace_primitive (pContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_EMPLACE);
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_EMPLACE);
 }
 
 template<class _t_container>
@@ -1845,7 +1849,11 @@ void TestBTreeKeySortSTLifEmplaceHint (_t_container *pContainer, typename _t_con
 
 	::std::cout << "exercises method compatible to STL interface CBTreeBaseDefaults<>::CBTreeKeysort<>:: emplace_hint () with hint variation set to " << nHintVariation << ::std::endl;
 
-	associative_container_emplace_hint_primitive (pContainer, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_EMPLACE_HINT);
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pContainer, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_EMPLACE_HINT);
 }
 
 template<class _t_container>
@@ -1855,7 +1863,11 @@ void TestBTreeKeySortSTLifInsertHint (_t_container *pContainer, typename _t_cont
 
 	::std::cout << "exercises method compatible to STL interface CBTreeBaseDefaults<>::CBTreeKeysort<>:: insert (hint) with hint variation set to " << nHintVariation << ::std::endl;
 
-	associative_container_insert_hint_primitive (pContainer, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_INSERT_HINT);
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pContainer, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_INSERT_HINT);
 }
 
 template<class _t_container, class _t_pair_container>
@@ -1880,7 +1892,7 @@ void TestBTreeKeySortCCsetIterData (_t_container *pContainer, _t_pair_container 
 
 	::std::cout << "this test exercises method CBTreeKeysort<>::set_iter_data ()" << ::std::endl;
 
-	associative_container_add_primitive (pContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	for (i = 0; i < pContainer->size (); i++)
 	{
@@ -1900,7 +1912,7 @@ void TestBTreeKeySortCCsetIterData (_t_container *pContainer, _t_pair_container 
 		pContainer->set_iter_data (sCIter, sValue);
 	}
 
-	associative_container_add_primitive (pPairContainer, nNumEntries, nLastPairKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pPairContainer, nNumEntries, 0, nLastPairKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	for (ip = 0; ip < pPairContainer->size (); ip++)
 	{
@@ -1947,7 +1959,7 @@ void TestBTreeKeySortSTLifEraseViaIterator (_t_container *pContainer, _t_pair_co
 
 	::std::cout << "exercises method compatible to STL interface CBTreeBaseDefaults<>::CBTreeKeySort<>:: erase (const_iterator)" << ::std::endl;
 
-	associative_container_add_primitive (pContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	while (pContainer->size () > 0)
 	{
@@ -2033,7 +2045,7 @@ void TestBTreeKeySortSTLifEraseViaKey (_t_container *pContainer, _t_pair_contain
 	{
 		nLastKey = 0;
 
-		associative_container_add_primitive (pContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	while (pContainer->size () > 0)
@@ -2130,7 +2142,7 @@ void TestBTreeKeySortSTLifEraseViaIteratorMultiple (_t_container *pContainer, _t
 	{
 		nLastKey = 0;
 
-		associative_container_add_primitive (pContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+		associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 	}
 
 	while (pContainer->size () > 0)
@@ -2203,6 +2215,34 @@ void TestBTreeKeySortSTLifEraseViaIteratorMultiple (_t_container *pContainer, _t
 }
 
 template<class _t_container>
+void TestBTreeKeySortSTLifEmplaceViaCtor (_t_container *pContainer, typename _t_container::size_type nNumEntries, typename _t_container::size_type nHintVariation)
+{
+	uint32_t		nLastKey = 1;
+
+	::std::cout << "exercises method compatible to STL interface CBTreeKeySort<>:: emplace (ctor)" << ::std::endl;
+
+	associative_container_add_primitive (pContainer, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_ABSTRACT_EMPLACE);
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pContainer, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_ABSTRACT_EMPLACE);
+}
+
+template<class _t_container>
+void TestBTreeKeySortSTLifEmplaceHintViaCtor (_t_container *pContainer, typename _t_container::size_type nNumEntries, typename _t_container::size_type nHintVariation)
+{
+	uint32_t		nLastKey = 1;
+
+	::std::cout << "exercises method compatible to STL interface CBTreeKeySort<>:: emplace_hint (ctor)" << ::std::endl;
+
+	associative_container_add_primitive (pContainer, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_ABSTRACT_EMPLACE_HINT);
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pContainer, nNumEntries, nHintVariation, nLastKey, BTREETEST_KEY_GENERATION_RANDOM, ASSOCIATIVE_ADD_METHOD_ABSTRACT_EMPLACE_HINT);
+}
+
+template<class _t_container>
 void TestBTreeKeySortCCoperatorOverloadCompare (_t_container *pContainer, typename _t_container::size_type nNumEntries)
 {
 	typedef typename _t_container::iterator						iter_t;
@@ -2217,7 +2257,7 @@ void TestBTreeKeySortCCoperatorOverloadCompare (_t_container *pContainer, typena
 	citer_t				sCIterHalf;
 	citer_t				sCIterEnd;
 
-	associative_container_add_primitive (pContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	if (!pContainer->compare_individual_containers (*pContainer))
 	{
@@ -2249,7 +2289,7 @@ void TestBTreeKeySortCCoperatorOverloadCompare (_t_container *pContainer, typena
 
 	nLastKey = 2;
 
-	associative_container_add_primitive (&sCntContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (&sCntContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	if (pContainer->compare_individual_containers (sCntContainer))
 	{
@@ -2269,7 +2309,7 @@ void TestBTreeKeySortCCoperatorOverloadCompare (_t_container *pContainer, typena
 
 	nLastKey = 0;
 
-	associative_container_add_primitive (&sCntContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (&sCntContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	if (!pContainer->compare_individual_containers (sCntContainer))
 	{
@@ -2306,7 +2346,7 @@ void TestBTreeKeySortCCoperatorOverloadCompare (_t_container *pContainer, typena
 		exit (-1);
 	}
 
-	associative_container_add_primitive (pContainer, nNumEntries, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+	associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
 
 	{
 		sCntContainer = *pContainer;
@@ -2368,7 +2408,7 @@ void TestBTreeKeySortCCoperatorOverloadCompare (_t_container *pContainer, typena
 
 	nLastKey = 0;
 
-	associative_container_add_primitive (pContainer, 64, nLastKey, BTREETEST_KEY_GENERATION_CONST);
+	associative_container_add_primitive (pContainer, 64, 0, nLastKey, BTREETEST_KEY_GENERATION_CONST);
 
 	sCntContainer = *pContainer;
 
@@ -2404,6 +2444,132 @@ void TestBTreeKeySortCCoperatorOverloadCompare (_t_container *pContainer, typena
 
 	pContainer->clear ();
 	sCntContainer.clear ();
+}
+
+template<class _t_container>
+void TestBTreeKeySortSTLifEqualRange (_t_container *pContainer, typename _t_container::size_type nNumEntries, uint32_t nInstance)
+{
+	typedef typename _t_container::const_iterator			citer_t;
+
+	typedef typename _t_container::key_type					key_type;
+	typedef typename _t_container::size_type				size_type;
+
+	typedef typename _t_container::equal_range_type			equal_range_type;
+	typedef typename _t_container::equal_range_const_type	equal_range_const_type;
+
+	key_type								nLastKey;
+	key_type								nKey;
+	uint32_t								i;
+	size_type								j;
+	equal_range_type						sEqRange;
+	equal_range_const_type					sCEqRange;
+
+	::std::cout << "exercises methods compatible to STL interface CBTreeBaseDefaults<>::CBTreeKeysort<>:: equal_range ()" << ::std::endl;
+
+	for (i = 0; i < nInstance; i++)
+	{
+		nLastKey = 1;
+
+		associative_container_add_primitive (pContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_ASCEND);
+
+		for (j = 0; j < nNumEntries; j++)
+		{
+			nKey = key_type (j + 1);
+
+			sEqRange = pContainer->equal_range (nKey);
+			sCEqRange = ((const _t_container *) pContainer)->equal_range (nKey);
+
+			if (::std::distance (sEqRange.first, sEqRange.second) != size_type (i + 1))
+			{
+				::std::cerr << ::std::endl;
+				::std::cerr << "TestBTreeKeySortSTLifEqualRange: ERROR: rw distance mismatch!" << ::std::endl;
+
+				exit (-1);
+			}
+
+			if (::std::distance (sCEqRange.first, sCEqRange.second) != size_type (i + 1))
+			{
+				::std::cerr << ::std::endl;
+				::std::cerr << "TestBTreeKeySortSTLifEqualRange: ERROR: ro distance mismatch!" << ::std::endl;
+
+				exit (-1);
+			}
+		}
+
+		nKey = 0;
+
+		sEqRange = pContainer->equal_range (nKey);
+		sCEqRange = ((const _t_container *) pContainer)->equal_range (nKey);
+
+		if (sEqRange.first != pContainer->begin ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeKeySortSTLifEqualRange: ERROR: equal_range ().first didn't return begin () when testing for lowest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		if (sEqRange.second != pContainer->begin ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeKeySortSTLifEqualRange: ERROR: equal_range ().second didn't return begin () when testing for lowest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		if (sCEqRange.first != pContainer->cbegin ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeKeySortSTLifEqualRange: ERROR: equal_range () const.first didn't return cbegin () when testing for lowest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		if (sCEqRange.second != pContainer->cbegin ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeKeySortSTLifEqualRange: ERROR: equal_range () const.second didn't return cbegin () when testing for lowest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		nKey = (key_type) (nNumEntries + 1);
+
+		sEqRange = pContainer->equal_range (nKey);
+		sCEqRange = ((const _t_container *) pContainer)->equal_range (nKey);
+
+		if (sEqRange.first != pContainer->end ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeKeySortSTLifEqualRange: ERROR: equal_range ().first didn't return end () when testing for highest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		if (sEqRange.second != pContainer->end ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeKeySortSTLifEqualRange: ERROR: equal_range ().second didn't return end () when testing for highest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		if (sCEqRange.first != pContainer->cend ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeKeySortSTLifEqualRange: ERROR: equal_range () const.first didn't return cend () when testing for highest key!" << ::std::endl;
+
+			exit (-1);
+		}
+
+		if (sCEqRange.second != pContainer->cend ())
+		{
+			::std::cerr << ::std::endl;
+			::std::cerr << "TestBTreeKeySortSTLifEqualRange: ERROR: equal_range () const.second didn't return cend () when testing for highest key!" << ::std::endl;
+
+			exit (-1);
+		}
+	}
 }
 
 template<class _t_container, class _t_pair_container>
@@ -2729,6 +2895,30 @@ void TestBTreeKeySort (uint32_t nTest, uint32_t nNodeSize, uint32_t nPageSize, _
 		{
 			TestBTreeKeySortSTLifInsertHint (pKeySortTestWrapper, 64, 64);
 			TestBTreeKeySortSTLifInsertHint (pKeySortPairTestWrapper, 64, 64);
+
+			break;
+		}
+	
+	case BTREETEST_KEYSORT_STL_IF_EMPLACE_VIA_CTOR	:
+		{
+			TestBTreeKeySortSTLifEmplaceViaCtor (pKeySortTestWrapper, 64, 0);
+			TestBTreeKeySortSTLifEmplaceViaCtor (pKeySortPairTestWrapper, 64, 0);
+
+			break;
+		}
+	
+	case BTREETEST_KEYSORT_STL_IF_EMPLACE_HINT_VIA_CTOR	:
+		{
+			TestBTreeKeySortSTLifEmplaceHintViaCtor (pKeySortTestWrapper, 64, 0);
+			TestBTreeKeySortSTLifEmplaceHintViaCtor (pKeySortPairTestWrapper, 64, 0);
+
+			break;
+		}
+
+	case BTREETEST_KEYSORT_STL_IF_EQUAL_RANGE	:
+		{
+			TestBTreeKeySortSTLifEqualRange (pKeySortTestWrapper, 64, 5);
+			TestBTreeKeySortSTLifEqualRange (pKeySortPairTestWrapper, 64, 5);
 
 			break;
 		}

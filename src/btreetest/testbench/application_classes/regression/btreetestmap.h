@@ -108,9 +108,6 @@ public:
 	void					swap					(CBTreeTestMap &rTMM);
 
 	void					clear					();
-
-//	key_compare				key_comp				() const;
-//	value_compare			value_comp				() const;
 	
 	bool					operator==				(const CBTreeTestMap &rTMM) const;
 	bool					operator!=				(const CBTreeTestMap &rTMM) const;

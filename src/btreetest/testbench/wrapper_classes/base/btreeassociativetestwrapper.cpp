@@ -189,7 +189,7 @@ void CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_contain
 }
 
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
-typename CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::iterator CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::insert (const typename CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::value_type &rData)
+typename CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::iterator CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::insert (const typename CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::value_type &rData, const bool bInsertNotEmplace)
 {
 	iterator			sRefIter;
 	size_type			nRefDiff;
@@ -212,7 +212,14 @@ typename CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_con
 	{
 		entry_conversion (sData, rData);
 
-		sTestIter = m_ppContainers[i]->insert (sData);
+		if (bInsertNotEmplace)
+		{
+			sTestIter = m_ppContainers[i]->insert (sData);
+		}
+		else
+		{
+			sTestIter = m_ppContainers[i]->emplace (::std::forward<value_test_type> (value_test_type (sData)));
+		}
 
 		nTestDiff = ::std::distance (m_ppContainers[i]->begin (), sTestIter);
 
@@ -243,7 +250,7 @@ typename CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_con
 }
 
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
-void CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::insert_hint (const typename CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::value_type &rData)
+void CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::insert_hint (const typename CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::value_type &rData, const bool bInsertNotEmplace)
 {
 	iterator					sRefIter;
 	iterator					sIterBegin;
@@ -294,7 +301,14 @@ void CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_contain
 
 		sCIterTestHint.sync ();
 
-		sTestIter = m_ppContainers[i]->insert (sCIterTestHint, sData);
+		if (bInsertNotEmplace)
+		{
+			sTestIter = m_ppContainers[i]->insert (sCIterTestHint, sData);
+		}
+		else
+		{
+			sTestIter = m_ppContainers[i]->emplace_hint (sCIterTestHint, ::std::forward<value_test_type> (value_test_type (sData)));
+		}
 
 		nTestDiff = ::std::distance (m_ppContainers[i]->begin (), sTestIter);
 
@@ -575,62 +589,11 @@ typename _t_ref_container::const_iterator CBTreeAssociativeTestWrapper<_t_data, 
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
 typename _t_ref_container::iterator CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::lower_bound (typename _t_ref_container::key_type &rKey)
 {
-	iterator		sIter = m_pReference->lower_bound (rKey);
-	size_type		nRefOffset = ::std::distance (m_pReference->begin (), sIter);
-	uint32_t		i;
+	const_iterator		sCIter = this->template _bound <test_iterator, CBTreeAssociativeIf_t> (rKey, true);
+	size_type			nDiff = ::std::distance (this->m_pReference->cbegin (), sCIter);
+	iterator			sIter = this->m_pReference->begin ();
 
-	for (i = 0; i < this->get_num_containers (); i++)
-	{
-		test_iterator	sTestIter = m_ppContainers[i]->lower_bound (rKey);
-		size_test_type	nTestOffset = ::std::distance (m_ppContainers[i]->begin (), sTestIter);
-
-		if (sIter == this->m_pReference->end ())
-		{
-			if (sTestIter != m_ppContainers[i]->end ())
-			{
-				::std::cerr << "Container didn't return end (iterator) while the reference container did" << ::std::endl;
-				::std::cerr << "reference offset:" << nRefOffset << ::std::endl;
-				::std::cerr << "container key value (" << i << "):" << nTestOffset << ::std::endl;
-				::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
-
-				m_ppContainers[i]->show_integrity ("mismatch.html");
-
-				::std::cerr << "completed" << ::std::endl << ::std::flush;
-
-				exit (-1);
-			}
-
-			continue;
-		}
-
-		if (get_entry_key (*sIter) != get_entry_key ((const _t_value &) *sTestIter))
-		{
-			::std::cerr << "Container returned iterator pointing at an entry displaying a different key than reference container" << ::std::endl;
-			::std::cerr << "reference key value:" << get_entry_key (*sIter) << " at " << nRefOffset << ::std::endl;
-			::std::cerr << "container key value (" << i << "):" << get_entry_key ((const _t_value &) *sTestIter) << " at " << nTestOffset << ::std::endl;
-			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
-
-			m_ppContainers[i]->show_integrity ("mismatch.html");
-
-			::std::cerr << "completed" << ::std::endl << ::std::flush;
-
-			exit (-1);
-		}
-
-		if (nRefOffset != nTestOffset)
-		{
-			::std::cerr << "Container returned different offset than reference container" << ::std::endl;
-			::std::cerr << "reference key value:" << get_entry_key (*sIter) << " at " << nRefOffset << ::std::endl;
-			::std::cerr << "container key value (" << i << "):" << get_entry_key ((const _t_value &) *sTestIter) << " at " << nTestOffset << ::std::endl;
-			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
-
-			m_ppContainers[i]->show_integrity ("mismatch.html");
-
-			::std::cerr << "completed" << ::std::endl << ::std::flush;
-
-			exit (-1);
-		}
-	}
+	::std::advance (sIter, nDiff);
 
 	return (sIter);
 }
@@ -638,122 +601,17 @@ typename _t_ref_container::iterator CBTreeAssociativeTestWrapper<_t_data, _t_val
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
 typename _t_ref_container::const_iterator CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::lower_bound (typename _t_ref_container::key_type &rKey) const
 {
-	const_iterator		sCIter = this->m_pReference->lower_bound (rKey);
-	size_type			nRefOffset = ::std::distance (m_pReference->cbegin (), sCIter);
-	uint32_t			i;
-
-	for (i = 0; i < this->get_num_containers (); i++)
-	{
-		test_const_iterator		sTestCIter = ((const CBTreeAssociativeIf_t *) m_ppContainers[i])->lower_bound (rKey);
-		size_test_type			nTestOffset = ::std::distance (m_ppContainers[i]->cbegin (), sTestCIter);
-
-		if ((*sCIter).first != (*sTestCIter).nKey)
-		{
-			::std::cerr << "Container returned iterator pointing at an entry displaying a different key than reference container" << ::std::endl;
-			::std::cerr << "reference key value:" << (*sCIter).first << " at " << nRefOffset << ::std::endl;
-			::std::cerr << "container key value (" << i << "):" << (*sTestCIter).nKey << " at " << nTestOffset << ::std::endl;
-			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
-
-			m_ppContainers[i]->show_integrity ("mismatch.html");
-
-			::std::cerr << "completed" << ::std::endl << ::std::flush;
-
-			exit (-1);
-		}
-
-		if (nRefOffset != nTestOffset)
-		{
-			::std::cerr << "Container returned different offset than reference container" << ::std::endl;
-			::std::cerr << "reference key value:" << (*sCIter).first << " at " << nRefOffset << ::std::endl;
-			::std::cerr << "container key value (" << i << "):" << (*sTestCIter).nKey << " at " << nTestOffset << ::std::endl;
-			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
-
-			m_ppContainers[i]->show_integrity ("mismatch.html");
-
-			::std::cerr << "completed" << ::std::endl << ::std::flush;
-
-			exit (-1);
-		}
-	}
-
-	return (sCIter);
+	return (this->template _bound <test_const_iterator, const CBTreeAssociativeIf_t> (rKey, true));
 }
 
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
 typename _t_ref_container::iterator CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::upper_bound (typename _t_ref_container::key_type &rKey)
 {
-	iterator		sIter = this->m_pReference->upper_bound (rKey);
-	size_type		nRefOffset = ::std::distance (m_pReference->begin (), sIter);
-	uint32_t		i;
+	const_iterator	sCIter = this->template _bound <test_iterator, CBTreeAssociativeIf_t> (rKey, false);
+	iterator		sIter = this->m_pReference->begin ();
+	size_type		nDiff = ::std::distance (this->m_pReference->cbegin (), sCIter);
 
-	for (i = 0; i < this->get_num_containers (); i++)
-	{
-		test_iterator	sTestIter = m_ppContainers[i]->upper_bound (rKey);
-		size_test_type	nTestOffset = ::std::distance (m_ppContainers[i]->begin (), sTestIter);
-
-		if (((sIter == m_pReference->end ()) != (sTestIter == m_ppContainers[i]->end ())) || 
-			((sIter != m_pReference->end ()) && (get_entry_key (*sIter) != get_entry_key ((const _t_value &) *sTestIter))))
-		{
-			::std::cerr << "Container returned iterator pointing at an entry displaying a different key than reference container" << ::std::endl;
-
-			if (sIter == m_pReference->end ())
-			{
-				::std::cerr << "reference key value: ? at " << nRefOffset << ::std::endl;
-			}
-			else
-			{
-				::std::cerr << "reference key value: " << get_entry_key (*sIter) << " at " << nRefOffset << ::std::endl;
-			}
-
-			if (sTestIter == m_ppContainers[i]->end ())
-			{
-				::std::cerr << "container key value (" << i << "): ? at " << nTestOffset << ::std::endl;
-			}
-			else
-			{
-				::std::cerr << "container key value (" << i << "): " << get_entry_key ((const _t_value &) *sTestIter) << " at " << nTestOffset << ::std::endl;
-			}
-
-			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
-
-			m_ppContainers[i]->show_integrity ("mismatch.html");
-
-			::std::cerr << "completed" << ::std::endl << ::std::flush;
-
-			exit (-1);
-		}
-
-		if (nRefOffset != nTestOffset)
-		{
-			::std::cerr << "Container returned different offset than reference container" << ::std::endl;
-			
-			if (sIter == m_pReference->end ())
-			{
-				::std::cerr << "reference key value: ? at " << nRefOffset << ::std::endl;
-			}
-			else
-			{
-				::std::cerr << "reference key value: " << get_entry_key (*sIter) << " at " << nRefOffset << ::std::endl;
-			}
-
-			if (sTestIter == m_ppContainers[i]->end ())
-			{
-				::std::cerr << "container key value (" << i << "): ? at " << nTestOffset << ::std::endl;
-			}
-			else
-			{
-				::std::cerr << "container key value (" << i << "): " << get_entry_key ((const _t_value &) *sTestIter) << " at " << nTestOffset << ::std::endl;
-			}
-			
-			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
-
-			m_ppContainers[i]->show_integrity ("mismatch.html");
-
-			::std::cerr << "completed" << ::std::endl << ::std::flush;
-
-			exit (-1);
-		}
-	}
+	::std::advance (sIter, nDiff);
 
 	return (sIter);
 }
@@ -761,45 +619,34 @@ typename _t_ref_container::iterator CBTreeAssociativeTestWrapper<_t_data, _t_val
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
 typename _t_ref_container::const_iterator CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::upper_bound (typename _t_ref_container::key_type &rKey) const
 {
-	const_iterator		sCIter = this->m_pReference->upper_bound (rKey);
-	size_type			nRefOffset = ::std::distance (m_pReference->cbegin (), sCIter);
-	uint32_t			i;
+	return (this->template _bound <test_const_iterator, const CBTreeAssociativeIf_t> (rKey, false));
+}
 
-	for (i = 0; i < this->get_num_containers (); i++)
-	{
-		test_const_iterator		sTestCIter = ((const CBTreeAssociativeIf_t *) m_ppContainers[i])->upper_bound (rKey);
-		size_test_type			nTestOffset = ::std::distance (m_ppContainers[i]->cbegin (), sTestCIter);
+template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
+typename CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::equal_range_type
+	CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::equal_range (key_type &rKey)
+{
+	equal_range_const_type		sCEqRange = this->template _equal_range <test_iterator, CBTreeAssociativeIf_t> (rKey);
 
-		if ((*sCIter).first != (*sTestCIter).nKey)
-		{
-			::std::cerr << "Container returned iterator pointing at an entry displaying a different key than reference container" << ::std::endl;
-			::std::cerr << "reference key value:" << (*sCIter).first << " at " << nRefOffset << ::std::endl;
-			::std::cerr << "container key value (" << i << "):" << (*sTestCIter).nKey << " at " << nTestOffset << ::std::endl;
-			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
+	iterator					sIterLower = this->m_pReference->begin ();
+	size_type					nDiff = ::std::distance (this->m_pReference->cbegin (), sCEqRange.first);
 
-			m_ppContainers[i]->show_integrity ("mismatch.html");
+	::std::advance (sIterLower, nDiff);
 
-			::std::cerr << "completed" << ::std::endl << ::std::flush;
+	iterator					sIterUpper = this->m_pReference->begin ();
 
-			exit (-1);
-		}
+	nDiff = ::std::distance (this->m_pReference->cbegin (), sCEqRange.second);
 
-		if (nRefOffset != nTestOffset)
-		{
-			::std::cerr << "Container returned different offset than reference container" << ::std::endl;
-			::std::cerr << "reference key value:" << (*sCIter).first << " at " << nRefOffset << ::std::endl;
-			::std::cerr << "container key value (" << i << "):" << (*sTestCIter).nKey << " at " << nTestOffset << ::std::endl;
-			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
+	::std::advance (sIterUpper, nDiff);
 
-			m_ppContainers[i]->show_integrity ("mismatch.html");
+	return (equal_range_type (sIterLower, sIterUpper));
+}
 
-			::std::cerr << "completed" << ::std::endl << ::std::flush;
-
-			exit (-1);
-		}
-	}
-
-	return (sCIter);
+template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
+typename CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::equal_range_const_type
+	CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::equal_range (key_type &rKey) const
+{
+	return (this->template _equal_range <test_const_iterator, const CBTreeAssociativeIf_t> (rKey));
 }
 
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
@@ -1041,80 +888,6 @@ bool CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_contain
 		{
 			return (false);
 		}
-
-//		test_const_iterator		sTestCIter;
-//		test_const_iterator		sExtTestCIter;
-//
-//		sTestCIter = m_ppContainers[i]->cbegin ();
-//		sExtTestCIter = rContainer.m_ppContainers[i]->cbegin ();
-//
-//		while (sTestCIter != m_ppContainers[i]->cend ())
-//		{
-//			value_test_type				sTestEntry (*sTestCIter);
-//			value_test_type				sExtTestEntry (*sExtTestCIter);
-//
-//			if (is_entry_not_equal_to_entry (sTestEntry, sExtTestEntry))
-//			{
-//				if (get_entry_key (sTestEntry) != get_entry_key (sExtTestEntry))
-//				{
-//					return (false);
-//				}
-//				else
-//				{
-//					test_const_iterator		sTestBeginCIter = m_ppContainers[i]->lower_bound (get_entry_key (sTestEntry));
-//					test_const_iterator		sTestEndCIter = m_ppContainers[i]->upper_bound (get_entry_key (sTestEntry));
-//					test_const_iterator		sExtTestBeginCIter = rContainer.m_ppContainers[i]->lower_bound (get_entry_key (sTestEntry));
-//					test_const_iterator		sExtTestEndCIter = rContainer.m_ppContainers[i]->upper_bound (get_entry_key (sTestEntry));
-//
-//					size_test_type			nKeySetSize = ::std::distance (sTestBeginCIter, sTestEndCIter);
-//					size_test_type			nExtKeySetSize = ::std::distance (sExtTestBeginCIter, sExtTestEndCIter);
-//
-//					if (nKeySetSize != nExtKeySetSize)
-//					{
-//						return (false);
-//					}
-//					else
-//					{
-//						::std::list<value_test_type>								sList;
-//						typename ::std::list<value_test_type>::const_iterator		sListCIter;
-//
-//						sList.insert (sList.cbegin (), sExtTestBeginCIter, sExtTestEndCIter);
-//
-//						while (sTestBeginCIter != sTestEndCIter)
-//						{
-//							sListCIter = sList.cbegin ();
-//
-//							while (sListCIter != sList.cend ())
-//							{
-//								if (get_entry_data ((value_test_type &) *sListCIter) == get_entry_data ((value_test_type &) *sTestBeginCIter))
-//								{
-//									sList.erase (sListCIter);
-//
-//									break;
-//								}
-//
-//								::std::advance (sListCIter, 1);
-//							}
-//
-//							::std::advance (sTestBeginCIter, 1);
-//						}
-//
-//						if (sList.size () > 0)
-//						{
-//							return (false);
-//						}
-//					}
-//
-//					sExtTestCIter = sExtTestEndCIter;
-//					sTestCIter = sTestEndCIter;
-//				}
-//			}
-//			else
-//			{
-//				::std::advance (sExtTestCIter, 1);
-//				::std::advance (sTestCIter, 1);
-//			}
-//		}
 	}
 
 	return (true);
@@ -1186,6 +959,230 @@ template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_containe
 uint32_t CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::get_num_containers () const
 {
 	return (m_nNumContainers);
+}
+
+template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
+template<class _t_test_iterator, class _t_test_call_type>
+typename CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::const_iterator
+	CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::_bound (key_type &rKey, const bool bLowerNotUpper) const
+{
+	const_iterator		sCIter;
+	size_type			nRefOffset;
+	uint32_t			i;
+
+	if (bLowerNotUpper)
+	{
+		sCIter = m_pReference->lower_bound (rKey);
+	}
+	else
+	{
+		sCIter = m_pReference->upper_bound (rKey);
+	}
+
+	nRefOffset = ::std::distance (m_pReference->cbegin (), sCIter);
+
+	for (i = 0; i < this->get_num_containers (); i++)
+	{
+		_t_test_iterator	sTestIter;
+		size_test_type		nTestOffset;
+
+		if (bLowerNotUpper)
+		{
+			sTestIter = ((_t_test_call_type *) m_ppContainers[i])->lower_bound (rKey);
+		}
+		else
+		{
+			sTestIter = ((_t_test_call_type *) m_ppContainers[i])->upper_bound (rKey);
+		}
+
+		nTestOffset = ::std::distance (((_t_test_call_type *) m_ppContainers[i])->begin (), sTestIter);
+
+		if (sCIter == this->m_pReference->cend ())
+		{
+			if (sTestIter != ((_t_test_call_type *) m_ppContainers[i])->end ())
+			{
+				::std::cerr << "Container didn't return end (iterator) while the reference container did" << ::std::endl;
+				::std::cerr << "reference offset:" << nRefOffset << ::std::endl;
+				::std::cerr << "container key value (" << i << "):" << nTestOffset << ::std::endl;
+				::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
+
+				m_ppContainers[i]->show_integrity ("mismatch.html");
+
+				::std::cerr << "completed" << ::std::endl << ::std::flush;
+
+				exit (-1);
+			}
+
+			continue;
+		}
+
+		if (get_entry_key (*sCIter) != get_entry_key ((const _t_value &) *sTestIter))
+		{
+			::std::cerr << "Container returned iterator pointing at an entry displaying a different key than reference container" << ::std::endl;
+			::std::cerr << "reference key value:" << get_entry_key (*sCIter) << " at " << nRefOffset << ::std::endl;
+			::std::cerr << "container key value (" << i << "):" << get_entry_key ((const _t_value &) *sTestIter) << " at " << nTestOffset << ::std::endl;
+			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
+
+			m_ppContainers[i]->show_integrity ("mismatch.html");
+
+			::std::cerr << "completed" << ::std::endl << ::std::flush;
+
+			exit (-1);
+		}
+
+		if (nRefOffset != nTestOffset)
+		{
+			::std::cerr << "Container returned different offset than reference container" << ::std::endl;
+			::std::cerr << "reference key value:" << get_entry_key (*sCIter) << " at " << nRefOffset << ::std::endl;
+			::std::cerr << "container key value (" << i << "):" << get_entry_key ((const _t_value &) *sTestIter) << " at " << nTestOffset << ::std::endl;
+			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
+
+			m_ppContainers[i]->show_integrity ("mismatch.html");
+
+			::std::cerr << "completed" << ::std::endl << ::std::flush;
+
+			exit (-1);
+		}
+	}
+
+	return (sCIter);
+}
+
+template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
+template<class _t_test_iterator, class _t_test_call_type>
+typename CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::equal_range_const_type
+	CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::_equal_range (key_type &rKey) const
+{
+	typedef typename ::std::pair<_t_test_iterator, _t_test_iterator>		test_equal_range_type;
+
+	equal_range_const_type		sCEqRange;
+	size_type					anRefOffset[2];
+	uint32_t					i;
+
+	sCEqRange = m_pReference->equal_range (rKey);
+
+	anRefOffset[0] = ::std::distance (m_pReference->cbegin (), sCEqRange.first);
+	anRefOffset[1] = ::std::distance (m_pReference->cbegin (), sCEqRange.second);
+
+	for (i = 0; i < this->get_num_containers (); i++)
+	{
+		test_equal_range_type	sTestEqRange;
+		size_test_type			anTestOffset[2];
+
+		sTestEqRange = ((_t_test_call_type *) m_ppContainers[i])->equal_range (rKey);
+
+		anTestOffset[0] = ::std::distance (((_t_test_call_type *) m_ppContainers[i])->begin (), sTestEqRange.first);
+		anTestOffset[1] = ::std::distance (((_t_test_call_type *) m_ppContainers[i])->begin (), sTestEqRange.second);
+
+		if (((sCEqRange.first == this->m_pReference->cend ()) && (sTestEqRange.first != ((_t_test_call_type *) m_ppContainers[i])->end ())) ||
+			((sCEqRange.second == this->m_pReference->cend ()) && (sTestEqRange.second != ((_t_test_call_type *) m_ppContainers[i])->end ())))
+		{
+			::std::cerr << "Container (" << i << ") didn't return end (iterator) while the reference container did" << ::std::endl;
+			::std::cerr << "reference offset lower" << anRefOffset[0] << ::std::endl;
+			::std::cerr << "container offset lower" << anTestOffset[0] << ::std::endl;
+			::std::cerr << "reference offset upper" << anRefOffset[1] << ::std::endl;
+			::std::cerr << "container offset upper" << anTestOffset[1] << ::std::endl;
+			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
+
+			m_ppContainers[i]->show_integrity ("mismatch.html");
+
+			::std::cerr << "completed" << ::std::endl << ::std::flush;
+
+			exit (-1);
+		}
+
+		if (sCEqRange.first == this->m_pReference->cend ())
+		{
+			continue;
+		}
+
+		_t_test_iterator	sIterTestLower = ((_t_test_call_type *) m_ppContainers[i])->lower_bound (rKey);
+
+		if (sTestEqRange.first != sIterTestLower)
+		{
+			_t_test_iterator	sIterTestBegin = ((_t_test_call_type *) m_ppContainers[i])->begin ();
+
+			::std::cerr << "equal_range.first and lower_bound () mismatch --> container(" << i << ")" << ::std::endl;
+			::std::cerr << "equal_range.first:" << ::std::distance (sIterTestBegin, sTestEqRange.first) << ::std::endl;
+			::std::cerr << "lower_bound ()   :" << ::std::distance (sIterTestBegin, sIterTestLower) << ::std::endl;
+			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
+
+			m_ppContainers[i]->show_integrity ("mismatch.html");
+
+			::std::cerr << "completed" << ::std::endl << ::std::flush;
+
+			exit (-1);
+		}
+
+		if (get_entry_key ((const _t_value &) *sTestEqRange.first) != get_entry_key (*sCEqRange.first))
+		{
+			::std::cerr << "Container (" << i << ") returned iterator (first) pointing at an entry displaying a different key than reference container" << ::std::endl;
+			::std::cerr << "reference key value:" << get_entry_key (*sCEqRange.first) << " at " << anRefOffset[0] << ::std::endl;
+			::std::cerr << "container key value:" << get_entry_key ((const _t_value &) *sTestEqRange.first) << " at " << anTestOffset[0] << ::std::endl;
+			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
+
+			m_ppContainers[i]->show_integrity ("mismatch.html");
+
+			::std::cerr << "completed" << ::std::endl << ::std::flush;
+
+			exit (-1);
+		}
+
+		if (sCEqRange.second == this->m_pReference->cend ())
+		{
+			continue;
+		}
+
+		_t_test_iterator	sIterTestUpper = ((_t_test_call_type *) m_ppContainers[i])->upper_bound (rKey);
+
+		if (sTestEqRange.second != sIterTestUpper)
+		{
+			_t_test_iterator	sIterTestBegin = ((_t_test_call_type *) m_ppContainers[i])->begin ();
+
+			::std::cerr << "equal_range.first and upper_bound () mismatch --> container(" << i << ")" << ::std::endl;
+			::std::cerr << "equal_range.first:" << ::std::distance (sIterTestBegin, sTestEqRange.second) << ::std::endl;
+			::std::cerr << "upper_bound ()   :" << ::std::distance (sIterTestBegin, sIterTestUpper) << ::std::endl;
+			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
+
+			m_ppContainers[i]->show_integrity ("mismatch.html");
+
+			::std::cerr << "completed" << ::std::endl << ::std::flush;
+
+			exit (-1);
+		}
+
+		if (get_entry_key ((const _t_value &) *sTestEqRange.second) != get_entry_key (*sCEqRange.second))
+		{
+			::std::cerr << "Container (" << i << ") returned iterator (second) pointing at an entry displaying a different key than reference container" << ::std::endl;
+			::std::cerr << "reference key value:" << get_entry_key (*sCEqRange.second) << " at " << anRefOffset[1] << ::std::endl;
+			::std::cerr << "container key value:" << get_entry_key ((const _t_value &) *sTestEqRange.second) << " at " << anTestOffset[1] << ::std::endl;
+			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
+
+			m_ppContainers[i]->show_integrity ("mismatch.html");
+
+			::std::cerr << "completed" << ::std::endl << ::std::flush;
+
+			exit (-1);
+		}
+
+		if ((anRefOffset[0] != anTestOffset[0]) || (anRefOffset[1] != anTestOffset[1]))
+		{
+			::std::cerr << "Container returned different offset than reference container (" << i << ")" << ::std::endl;
+			::std::cerr << "reference offset lower" << anRefOffset[0] << ::std::endl;
+			::std::cerr << "container offset lower" << anTestOffset[0] << ::std::endl;
+			::std::cerr << "reference offset upper" << anRefOffset[1] << ::std::endl;
+			::std::cerr << "container offset upper" << anTestOffset[1] << ::std::endl;
+			::std::cerr << "writing output to mismatch.html" << ::std::endl << ::std::flush;
+
+			m_ppContainers[i]->show_integrity ("mismatch.html");
+
+			::std::cerr << "completed" << ::std::endl << ::std::flush;
+
+			exit (-1);
+		}
+	}
+
+	return (sCEqRange);
 }
 
 #endif // BTREEASSOCIATIVETESTWRAPPER_CPP

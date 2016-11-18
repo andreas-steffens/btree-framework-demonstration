@@ -236,28 +236,6 @@ void CBTreeTestMultiSet<_t_datalayerproperties>::clear ()
 	test ();
 }
 
-//template<class _t_datalayerproperties>
-//typename CBTreeTestMultiSet<_t_datalayerproperties>::key_compare
-//	CBTreeTestMultiSet<_t_datalayerproperties>::key_comp () const
-//{
-//	key_compare		sRslt;
-//
-//	sRslt.pThis = (CBTreeAssociativeIf_t *) (this);
-//
-//	return (sRslt);
-//}
-//
-//template<class _t_datalayerproperties>
-//typename CBTreeTestMultiSet<_t_datalayerproperties>::value_compare
-//	CBTreeTestMultiSet<_t_datalayerproperties>::value_comp () const
-//{
-//	value_compare	sRslt;
-//
-//	sRslt.pThis = (CBTreeAssociativeIf_t *) (this);
-//
-//	return (sRslt);
-//}
-
 template<class _t_datalayerproperties>
 bool CBTreeTestMultiSet<_t_datalayerproperties>::operator== (const CBTreeTestMultiSet_t &rTMM) const
 {

@@ -104,18 +104,19 @@ void CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>:
 }
 
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
-typename CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::iterator CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::insert (const typename CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::value_type &rData)
+typename CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::iterator CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::insert (const typename CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::value_type &rData, const bool bInsertNotEmplace)
 {
-	return (CBTreeAssociativeTestWrapper_t::insert (rData));
+	return (CBTreeAssociativeTestWrapper_t::insert (rData, bInsertNotEmplace));
 }
 
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
 void CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::insert_hint
 	(
-		const typename CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::value_type &rData
+		const typename CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::value_type &rData, 
+		const bool bInsertNotEmplace
 	)
 {
-	CBTreeAssociativeTestWrapper_t::insert_hint (rData);
+	CBTreeAssociativeTestWrapper_t::insert_hint (rData, bInsertNotEmplace);
 }
 
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
@@ -207,11 +208,7 @@ void CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>:
 	CBTreeIOpropertiesFile<_t_sizetype, uint32_t, uint32_t, uint32_t, uint32_t>		sFilePropertiesLarge5555 ("./", 1048576, 1);
 	CBTreeIOpropertiesFile<_t_sizetype, uint32_t, uint32_t, uint32_t, uint16_t>		sFilePropertiesLarge5554 ("./", 1048576, nPageSize * 2 / 3);
 	CBTreeIOpropertiesFile<_t_sizetype, uint32_t, uint16_t, uint32_t, uint16_t>		sFilePropertiesLarge5454 ("./", 1048576, nPageSize * 16);
-//	btree_cache_description_t															sCacheDescPageSize = {nPageSize};
-//	btree_cache_description_t															sCacheDescMin = {1};
-//	btree_cache_description_t															sCacheDescNearestBigger = {nPageSize * 2 / 3};
-//	btree_cache_description_t															sCacheDescLarge = {nPageSize * 16};
-	uint32_t																			i = 0;
+	uint32_t																		i = 0;
 
 	m_pContainerRAM6565_n = new CBTreeKeySortTest<value_test_type, uint32_t, CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (sRAMprop6565, nNodeSize, this->m_pReference);
 	m_pContainerRAM6555_n = new CBTreeKeySortTest<value_test_type, uint32_t, CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (sRAMprop6555, nNodeSize, this->m_pReference);

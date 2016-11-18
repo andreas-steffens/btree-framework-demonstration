@@ -111,9 +111,9 @@ public:
 	template<class _t_iterator, class _t_dummy_iterator>
 	void					insert								(_t_dummy_iterator &rIterDummy, _t_iterator sIterFirst, _t_iterator sIterLast);
 	
-	iterator				insert								(const value_type &rData);
+	iterator				insert								(const value_type &rData, const bool bInsertNotEmplace = true);
 
-	void					insert_hint							(const value_type &rData);
+	void					insert_hint							(const value_type &rData, const bool bInsertNotEmplace = true);
 	
 	template<class _t_iterator, class _t_test_iterator>
 	void					insert_self_reference				(_t_iterator sIterFirst, _t_iterator sIterLast, _t_test_iterator &rIterTest);

@@ -114,9 +114,6 @@ public:
 
 	void					clear					();
 
-//	key_compare				key_comp				() const;
-//	value_compare			value_comp				() const;
-	
 	bool					operator==				(const CBTreeTestMultiMap &rTMM) const;
 	bool					operator!=				(const CBTreeTestMultiMap &rTMM) const;
 
