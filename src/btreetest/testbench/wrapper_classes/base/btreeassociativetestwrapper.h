@@ -71,6 +71,9 @@ public:
 								CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>
 																	(const CBTreeAssociativeTestWrapper &rContainer);
 
+								CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>
+																	(CBTreeAssociativeTestWrapper &&rRhsContainer);
+
 	virtual						~CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>
 																	();
 
@@ -127,6 +130,9 @@ public:
 	CBTreeAssociativeTestWrapper &
 								operator=							(const CBTreeAssociativeTestWrapper &rContainer);
 
+	CBTreeAssociativeTestWrapper &
+								operator=							(CBTreeAssociativeTestWrapper &&rRhsContainer);
+
 	bool						operator==							(const CBTreeAssociativeTestWrapper &rContainer) const;
 	bool						operator!=							(const CBTreeAssociativeTestWrapper &rContainer) const;
 
@@ -145,7 +151,7 @@ protected:
 
 	virtual void				init_containers						(const uint32_t nNodeSize, const uint32_t nPageSize) = 0;
 
-	virtual void				init_containers						(const CBTreeAssociativeTestWrapper &rWrapper) = 0;
+	virtual void				init_containers						(const CBTreeAssociativeTestWrapper &rWrapper, const bool bAssign = true) = 0;
 
 	virtual void				transfer_containers					() = 0;
 
@@ -154,6 +160,9 @@ protected:
 
 	template<class _t_test_iterator, class _t_test_call_type>
 	equal_range_const_type		_equal_range						(key_type &rKey) const;
+
+	template<class _t_container>
+	_t_container				generate_move_construction			(_t_container *pContainer, _t_ref_container *pReference) const;
 
 	size_type					m_nHintVariation;
 

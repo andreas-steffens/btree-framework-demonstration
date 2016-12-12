@@ -23,8 +23,8 @@
 #include <type_traits>
 
 #include "testbench/common/btreetestcommon.h"
+#include "testbench/application_classes/regression/base/btreetestbaseassociative.h"
 
-#include "base_class_stack/btreebasedefaults.h"
 #include "specific_data_classes/btreemultimap.h"
 
 typedef struct multiMapMap_s
@@ -40,9 +40,27 @@ typedef struct multiMapMap_s
 
 template<class _t_datalayerproperties>
 class CBTreeTestMultiMap
-	:	public CBTreeMultiMap<uint32_t, multiMapMap_t, _t_datalayerproperties>
+	:	public CBTreeTestBaseAssociative
+				<
+					CBTreeMultiMap<uint32_t, multiMapMap_t, _t_datalayerproperties>, 
+					::std::multimap<uint32_t, multiMapMap_t>, 
+					::std::pair<uint32_t, multiMapMap_t>, 
+					uint32_t, 
+					_t_datalayerproperties
+				>
 {
 public:
+
+	typedef CBTreeTestMultiMap											CBTreeTestMultiMap_t;
+
+	typedef CBTreeTestBaseAssociative
+		<
+			CBTreeMultiMap<uint32_t, multiMapMap_t, _t_datalayerproperties>, 
+			::std::multimap<uint32_t, multiMapMap_t>, 
+			::std::pair<uint32_t, multiMapMap_t>, 
+			uint32_t, 
+			_t_datalayerproperties
+		>																CBTreeTestBaseAssociative_t;
 
 	typedef multiMapMap_t												map_type;
 	typedef uint32_t													key_type;
@@ -59,8 +77,6 @@ public:
 	typedef const value_type*											const_pointer;
 	typedef	typename ::std::make_signed<size_type>::type				difference_type;
 
-	typedef CBTreeTestMultiMap											CBTreeTestMultiMap_t;
-	
 	typedef CBTreeMultiMap<key_type, map_type, _t_datalayerproperties>	CBTreeMultiMap_t;
 
 	typedef typename CBTreeMultiMap_t::CBTreeAssociativeBase_t			CBTreeAssociativeBase_t;
@@ -91,12 +107,16 @@ public:
 								(_t_datalayerproperties &rDataLayerProperties, sub_node_iter_type nNodeSize, reference_t *pClRefData);
 
 							CBTreeTestMultiMap<_t_datalayerproperties>
-								(const CBTreeTestMultiMap<_t_datalayerproperties> &rBT, bool bAssign = true);
+								(const CBTreeTestMultiMap<_t_datalayerproperties> &rContainer, const bool bAssign = true);
+
+							CBTreeTestMultiMap<_t_datalayerproperties>
+								(CBTreeTestMultiMap<_t_datalayerproperties> &&rRhsContainer);
 
 							~CBTreeTestMultiMap<_t_datalayerproperties>
 								();
 
-	CBTreeTestMultiMap_t &	operator=				(const CBTreeTestMultiMap_t &rBT);
+	CBTreeTestMultiMap_t &	operator=				(const CBTreeTestMultiMap_t &rContainer);
+	CBTreeTestMultiMap_t &	operator=				(CBTreeTestMultiMap_t &&rRhsContainer);
 
 	template<class _t_iterator>
 	void					insert					(_t_iterator sItFirst, _t_iterator sItLast);
@@ -110,25 +130,16 @@ public:
 	size_type				erase					(const key_type &rKey);
 	iterator				erase					(const_iterator sCIterFirst, const_iterator sCIterLast);
 
-	void					swap					(CBTreeTestMultiMap &rTMM);
+	void					swap					(CBTreeTestMultiMap &rContainer);
 
 	void					clear					();
 
 	bool					operator==				(const CBTreeTestMultiMap &rTMM) const;
 	bool					operator!=				(const CBTreeTestMultiMap &rTMM) const;
 
-	void					test					() const;
-
-	void					set_reference			(reference_t *pReference);
-
-	void					set_atomic_testing		(bool bEnable);
-
 protected:
 
-	reference_t				*m_pClRef;
-
-	bool					m_bAtomicTesting;
-	btree_time_stamp_t		*m_psTestTimeStamp;
+	void					_swap					(CBTreeTestMultiMap_t &rContainer);
 
 public:
 

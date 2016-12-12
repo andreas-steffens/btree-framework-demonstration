@@ -76,6 +76,41 @@ CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::CBTreeArrayTestW
 }
 
 template<class _t_data, class _t_sizetype, class _t_ref_container>
+CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::CBTreeArrayTestWrapper (CBTreeArrayTestWrapper_t &&rRhsContainer)
+	:	m_nNodeSize (rRhsContainer.m_nNodeSize)
+	,	m_nPageSize (rRhsContainer.m_nPageSize)
+	,	m_bSkipLimitedContainers (rRhsContainer.m_bSkipLimitedContainers)
+	,	m_pClAccessWrapper (NULL)
+	,	m_psReturnData (NULL)
+{
+	m_pReference = new reference_t;
+
+	BTREE_ASSERT (m_pReference != NULL, "CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::CBTreeArrayTestWrapper (const CBTreeArrayTestWrapper_t &): ERROR: insufficient memory! (m_pReference)");
+
+	fast_swap (this->m_pReference, rRhsContainer.m_pReference);
+
+	m_pClAccessWrapper = new CBTreeArrayTestAccessWrapper_t (*this);
+
+	BTREE_ASSERT (m_pClAccessWrapper != NULL, "CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::CBTreeArrayTestWrapper (const CBTreeArrayTestWrapper_t &): ERROR: insufficient memory! (m_pClAccessWrapper)");
+
+	m_psReturnData = new value_type ();
+
+	BTREE_ASSERT (m_pClAccessWrapper != NULL, "CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::CBTreeArrayTestWrapper (const CBTreeArrayTestWrapper_t &): ERROR: insufficient memory! (m_psReturnData)");
+
+	this->m_nNumContainers = CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::m_nNumArrays;
+
+	this->instantiate_container_array ();
+
+	this->init_containers (rRhsContainer);
+
+	this->move_construct_containers (::std::forward<CBTreeArrayTestWrapper_t> (rRhsContainer));
+
+	this->transfer_containers ();
+
+	this->test ();
+}
+
+template<class _t_data, class _t_sizetype, class _t_ref_container>
 CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::~CBTreeArrayTestWrapper ()
 {
 	uint32_t	ui32;
@@ -1017,11 +1052,11 @@ CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container> & CBTreeArrayTest
 	return (*this);
 }
 
-template<class _t_data, class _t_sizetype, class _t_ref_container>
-CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container> & CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::operator= (CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container> &&rRhBT)
-{
-
-}
+//template<class _t_data, class _t_sizetype, class _t_ref_container>
+//CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container> & CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::operator= (CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container> &&rRhsContainer)
+//{
+//
+//}
 
 template<class _t_data, class _t_sizetype, class _t_ref_container>
 typename CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::CBTreeArrayTestAccessWrapper_t CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::operator[] (const typename reference_t::size_type nPos)
@@ -1634,7 +1669,59 @@ void CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::insert_via_
 
 	pContainer->insert (sCItPos, sItFirst, sItLast);
 }
-	
+
+template<class _t_data, class _t_sizetype, class _t_ref_container>
+void CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::move_construct_containers (CBTreeArrayTestWrapper_t &&rRhsContainer)
+{
+	*m_pContainerRAM6565_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM6565_n, this->m_pReference);
+	*m_pContainerRAM6555_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM6555_n, this->m_pReference);
+	*m_pContainerRAM5555_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5555_n, this->m_pReference);
+	*m_pContainerRAM5554_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5554_n, this->m_pReference);
+	*m_pContainerRAM5454_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5454_n, this->m_pReference);
+	*m_pContainerRAM5444_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5444_n, this->m_pReference);
+	*m_pContainerRAM4444_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM4444_n, this->m_pReference);
+	*m_pContainerRAM6565_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM6565_2n, this->m_pReference);
+	*m_pContainerRAM6555_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM6555_2n, this->m_pReference);
+	*m_pContainerRAM5555_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5555_2n, this->m_pReference);
+	*m_pContainerRAM5554_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5554_2n, this->m_pReference);
+	*m_pContainerRAM5454_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5454_2n, this->m_pReference);
+	*m_pContainerRAM5444_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5444_2n, this->m_pReference);
+	*m_pContainerRAM4444_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM4444_2n, this->m_pReference);
+	*m_pContainerRAM6565_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM6565_4n, this->m_pReference);
+	*m_pContainerRAM6555_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM6555_4n, this->m_pReference);
+	*m_pContainerRAM5555_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5555_4n, this->m_pReference);
+	*m_pContainerRAM5554_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5554_4n, this->m_pReference);
+	*m_pContainerRAM5454_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5454_4n, this->m_pReference);
+	*m_pContainerRAM5444_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5444_4n, this->m_pReference);
+	*m_pContainerRAM4444_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM4444_4n, this->m_pReference);
+	*m_pContainerFile6565min = this->generate_move_construction (rRhsContainer.m_pContainerFile6565min, this->m_pReference);
+	*m_pContainerFile6555min = this->generate_move_construction (rRhsContainer.m_pContainerFile6555min, this->m_pReference);
+	*m_pContainerFile5555min = this->generate_move_construction (rRhsContainer.m_pContainerFile5555min, this->m_pReference);
+	*m_pContainerFile5554min = this->generate_move_construction (rRhsContainer.m_pContainerFile5554min, this->m_pReference);
+	*m_pContainerFile5454min = this->generate_move_construction (rRhsContainer.m_pContainerFile5454min, this->m_pReference);
+	*m_pContainerFile6565default = this->generate_move_construction (rRhsContainer.m_pContainerFile6565default, this->m_pReference);
+	*m_pContainerFile6555default = this->generate_move_construction (rRhsContainer.m_pContainerFile6555default, this->m_pReference);
+	*m_pContainerFile5555default = this->generate_move_construction (rRhsContainer.m_pContainerFile5555default, this->m_pReference);
+	*m_pContainerFile5554default = this->generate_move_construction (rRhsContainer.m_pContainerFile5554default, this->m_pReference);
+	*m_pContainerFile5454default = this->generate_move_construction (rRhsContainer.m_pContainerFile5454default, this->m_pReference);
+	*m_pContainerFile6565large = this->generate_move_construction (rRhsContainer.m_pContainerFile6565large, this->m_pReference);
+	*m_pContainerFile6555large = this->generate_move_construction (rRhsContainer.m_pContainerFile6555large, this->m_pReference);
+	*m_pContainerFile5555large = this->generate_move_construction (rRhsContainer.m_pContainerFile5555large, this->m_pReference);
+	*m_pContainerFile5554large = this->generate_move_construction (rRhsContainer.m_pContainerFile5554large, this->m_pReference);
+	*m_pContainerFile5454large = this->generate_move_construction (rRhsContainer.m_pContainerFile5454large, this->m_pReference);
+}
+
+template<class _t_data, class _t_sizetype, class _t_ref_container>
+template<class _t_container>
+_t_container CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::generate_move_construction (_t_container *pContainer, _t_ref_container *pReference) const
+{
+	_t_container	sContainer (*pContainer);
+
+	sContainer.set_reference (pReference);
+
+	return (sContainer);
+}
+
 template<class _t_data, class _t_sizetype, class _t_ref_container>
 const uint32_t CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>::m_nNumArrays = 36;
 

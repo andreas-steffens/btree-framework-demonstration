@@ -25,69 +25,112 @@ CBTreeTestMultiSet<_t_datalayerproperties>::CBTreeTestMultiSet
 		typename _t_datalayerproperties::sub_node_iter_type nNodeSize, 
 		typename CBTreeTestMultiSet<_t_datalayerproperties>::reference_t *pClRefData
 	)
-	:	CBTreeMultiSet<uint32_t, _t_datalayerproperties>
-	(
-		rDataLayerProperties, 
-		nNodeSize
-	)
-	,	m_pClRef (pClRefData)
-	,	m_bAtomicTesting (true)
-	,	m_psTestTimeStamp (NULL)
+	:	CBTreeTestBaseSet
+			<
+				CBTreeMultiSet<uint32_t, _t_datalayerproperties>, 
+				::std::multiset<uint32_t>, 
+				uint32_t, 
+				_t_datalayerproperties
+			>
+		(
+			rDataLayerProperties, 
+			nNodeSize, 
+			pClRefData, 
+			true
+		)
 {
-	m_psTestTimeStamp = new btree_time_stamp_t (this->get_time_stamp ());
 }
 
 template<class _t_datalayerproperties>
 CBTreeTestMultiSet<_t_datalayerproperties>::CBTreeTestMultiSet
-	(const CBTreeTestMultiSet<_t_datalayerproperties> &rBT, bool bAssign)
-	:	CBTreeMultiSet<uint32_t, _t_datalayerproperties>
-	(
-		dynamic_cast<const CBTreeMultiSet<uint32_t, _t_datalayerproperties> &> (rBT), 
-		false
-	)
-	,	m_pClRef (NULL)
-	,	m_bAtomicTesting (false)
-	,	m_psTestTimeStamp (NULL)
+	(const CBTreeTestMultiSet<_t_datalayerproperties> &rContainer, const bool bAssign)
+	:	CBTreeTestBaseSet
+			<
+				CBTreeMultiSet<uint32_t, _t_datalayerproperties>, 
+				::std::multiset<uint32_t>, 
+				uint32_t, 
+				_t_datalayerproperties
+			>
+		(
+			dynamic_cast<const CBTreeTestBaseSet
+							<
+								CBTreeMultiSet<uint32_t, _t_datalayerproperties>, 
+								::std::multiset<uint32_t>, 
+								uint32_t, 
+								_t_datalayerproperties
+							> &> (rContainer), 
+							false
+		)
 {
-	m_psTestTimeStamp = new btree_time_stamp_t (this->get_time_stamp ());
-
 	if (bAssign)
 	{
-		this->_assign (rBT);
+		this->_assign (rContainer);
 	}
 
 	this->set_atomic_testing (true);
 }
 
 template<class _t_datalayerproperties>
+CBTreeTestMultiSet<_t_datalayerproperties>::CBTreeTestMultiSet
+	(CBTreeTestMultiSet<_t_datalayerproperties> &&rRhsContainer)
+	:	CBTreeTestBaseSet
+			<
+				CBTreeMultiSet<uint32_t, _t_datalayerproperties>, 
+				::std::multiset<uint32_t>, 
+				uint32_t, 
+				_t_datalayerproperties
+			>
+		(
+			dynamic_cast<CBTreeTestBaseSet
+							<
+								CBTreeMultiSet<uint32_t, _t_datalayerproperties>, 
+								::std::multiset<uint32_t>, 
+								uint32_t, 
+								_t_datalayerproperties
+							> &&> (rRhsContainer)
+		)
+{
+	this->test ();
+}
+
+template<class _t_datalayerproperties>
 CBTreeTestMultiSet<_t_datalayerproperties>::~CBTreeTestMultiSet ()
 {
-	if (m_psTestTimeStamp != NULL)
-	{
-		delete m_psTestTimeStamp;
-
-		m_psTestTimeStamp = NULL;
-	}
 }
 
 template<class _t_datalayerproperties>
 CBTreeTestMultiSet<_t_datalayerproperties>&
 	CBTreeTestMultiSet<_t_datalayerproperties>::operator=
 	(
-		const CBTreeTestMultiSet<_t_datalayerproperties> &rBT
+		const CBTreeTestMultiSet<_t_datalayerproperties> &rContainer
 	)
 {
-	if (this != &rBT)
+	if (this != &rContainer)
 	{
-		CBTreeMultiSet_t		&rThisMM = dynamic_cast<CBTreeMultiSet_t &> (*this);
-		const CBTreeMultiSet_t	&rBTMM = dynamic_cast<const CBTreeMultiSet_t &> (rBT);
+		CBTreeTestBaseSet_t			&rAssociativeThis = dynamic_cast<CBTreeTestBaseSet_t &> (*this);
+		const CBTreeTestBaseSet_t	&rAssociativeContainer = dynamic_cast<const CBTreeTestBaseSet_t &> (rContainer);
 
-		rThisMM = rBTMM;
+		rAssociativeThis = rAssociativeContainer;
 
-		(*m_pClRef) = *(rBT.m_pClRef);
-
-		test ();
+		this->test ();
 	}
+
+	return (*this);
+}
+
+template<class _t_datalayerproperties>
+CBTreeTestMultiSet<_t_datalayerproperties>&
+	CBTreeTestMultiSet<_t_datalayerproperties>::operator=
+	(
+		CBTreeTestMultiSet<_t_datalayerproperties> &&rRhsContainer
+	)
+{
+	CBTreeTestBaseSet_t		&rAssociativeThis = dynamic_cast<CBTreeTestBaseSet_t &> (*this);
+	CBTreeTestBaseSet_t		&rAssociativeContainer = dynamic_cast<CBTreeTestBaseSet_t &> (rRhsContainer);
+
+	rAssociativeThis = ::std::move (rAssociativeContainer);
+
+	this->test ();
 
 	return (*this);
 }
@@ -98,7 +141,7 @@ void CBTreeTestMultiSet<_t_datalayerproperties>::insert (_t_iterator sItFirst, _
 {
 	CBTreeMultiSet_t::insert (sItFirst, sItLast);
 
-	test ();
+	this->test ();
 }
 
 template<class _t_datalayerproperties>
@@ -110,7 +153,7 @@ void CBTreeTestMultiSet<_t_datalayerproperties>::insert (_t_iterator sItFirst, _
 
 	CBTreeMultiSet_t::insert (sItFirst, sItLast);
 
-	test ();
+	this->test ();
 }
 
 template<class _t_datalayerproperties>
@@ -125,9 +168,9 @@ typename CBTreeTestMultiSet<_t_datalayerproperties>::iterator
 
 	sIter = CBTreeMultiSet_t::insert (sData);
 
-	if (m_pClRef != NULL)
+	if (this->m_pClRef != NULL)
 	{
-		if (CBTreeMultiSet_t::count (sData) != m_pClRef->count (sData))
+		if (CBTreeMultiSet_t::count (sData) != this->m_pClRef->count (sData))
 		{
 			::std::cerr << ::std::endl;
 			::std::cerr << "CBTreeTestMultiSet<>::insert: ERROR: multi key size mismatch!" << ::std::endl;
@@ -137,7 +180,7 @@ typename CBTreeTestMultiSet<_t_datalayerproperties>::iterator
 				::std::cerr << sData;
 			}
 			::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-			::std::cerr << "reference: " << m_pClRef->count (sData) << ::std::endl;
+			::std::cerr << "reference: " << this->m_pClRef->count (sData) << ::std::endl;
 			::std::cerr << "container: " << CBTreeMultiSet_t::count (sData) << ::std::endl;
 			
 			::std::cerr << "creating count.html... ";
@@ -150,7 +193,7 @@ typename CBTreeTestMultiSet<_t_datalayerproperties>::iterator
 		}
 	}
 	
-	test ();
+	this->test ();
 
 	return (sIter);
 }
@@ -168,7 +211,7 @@ typename CBTreeTestMultiSet<_t_datalayerproperties>::iterator
 
 	sIter = CBTreeMultiSet_t::insert (sCIterHint, ::std::forward<_t_va_args> (rrArgs) ...);
 
-	test ();
+	this->test ();
 
 	return (sIter);
 }
@@ -184,7 +227,7 @@ typename CBTreeTestMultiSet<_t_datalayerproperties>::iterator
 
 	sRslt = CBTreeMultiSet_t::erase (sCIterPos);
 
-	test ();
+	this->test ();
 
 	return (sRslt);
 }
@@ -196,7 +239,7 @@ typename _t_datalayerproperties::size_type CBTreeTestMultiSet<_t_datalayerproper
 
 	nRslt = CBTreeMultiSet_t::erase (rKey);
 
-	test ();
+	this->test ();
 
 	return (nRslt);
 }
@@ -211,20 +254,19 @@ typename CBTreeTestMultiSet<_t_datalayerproperties>::iterator
 {
 	iterator	nRslt = CBTreeMultiSet_t::erase (sCIterFirst, sCIterLast);
 
-	test ();
+	this->test ();
 
 	return (nRslt);
 }
 
 template<class _t_datalayerproperties>
-void CBTreeTestMultiSet<_t_datalayerproperties>::swap (CBTreeTestMultiSet_t &rTMM)
+void CBTreeTestMultiSet<_t_datalayerproperties>::swap (CBTreeTestMultiSet_t &rContainer)
 {
-	if (this != &rTMM)
+	if (this != &rContainer)
 	{
-		CBTreeMultiSet_t	&rThisMM = dynamic_cast<CBTreeMultiSet_t &> (*this);
-		CBTreeMultiSet_t	&rMM = dynamic_cast<CBTreeMultiSet_t &> (rTMM);
+		CBTreeTestMultiSet_t::_swap (rContainer);
 
-		rThisMM.swap (rMM);
+		this->test ();
 	}
 }
 
@@ -233,7 +275,7 @@ void CBTreeTestMultiSet<_t_datalayerproperties>::clear ()
 {
 	CBTreeMultiSet_t::clear ();
 
-	test ();
+	this->test ();
 }
 
 template<class _t_datalayerproperties>
@@ -283,238 +325,11 @@ bool CBTreeTestMultiSet<_t_datalayerproperties>::operator!= (const CBTreeTestMul
 }
 
 template<class _t_datalayerproperties>
-void CBTreeTestMultiSet<_t_datalayerproperties>::test () const
+void CBTreeTestMultiSet<_t_datalayerproperties>::_swap (CBTreeTestMultiSet_t &rContainer)
 {
-	if (!m_bAtomicTesting)
-	{
-		return;
-	}
+	CBTreeTestBaseSet_t		&rAssociative = dynamic_cast<CBTreeTestBaseSet_t &> (*this);
 
-	if (*m_psTestTimeStamp == this->get_time_stamp ())
-	{
-		return;
-	}
-
-	*m_psTestTimeStamp = this->get_time_stamp ();
-
-	typedef typename reference_t::const_iterator	citer_mmap_t;
-
-	reference_t										sMSet;
-	key_type										nKey;
-	key_type										*pnKey;
-	bool											bBounce;
-	size_type										nTotalCount = 0;
-	value_type										sEntry;
-	value_type										sValue;
-	citer_mmap_t									sItMSetLower;
-	citer_mmap_t									sItMSetUpper;
-	citer_mmap_t									sItMSet;
-	const_iterator									sCIterBegin;
-	const_iterator									sCIterEnd;
-	const_iterator									sCIterLower;
-	const_iterator									sCIterUpper;
-	const_iterator									sCIter;
-	bool											bDeleted;
-	
-	if (!this->test_integrity ())
-	{
-		::std::cerr << ::std::endl;
-		::std::cerr << "integrity test failed" << ::std::endl;
-
-		::std::cerr << "creating integrity.html..." << ::std::endl;
-
-		this->show_integrity ("integrity.html");
-
-		::std::cerr << "finished!" << ::std::endl;
-
-		exit (-1);
-	}
-
-	sCIterBegin = this->cbegin ();
-	sCIterEnd = this->cend ();
-
-	sCIter = sCIterBegin;
-
-	if (this->size () > 0)
-	{
-		pnKey = this->extract_key (&nKey, ((value_type) (*sCIter)));
-	}
-
-	while (sCIter != sCIterEnd)
-	{
-		if (m_pClRef->count (*pnKey) != this->count (*pnKey))
-		{
-			::std::cerr << ::std::endl;
-			::std::cerr << "number of instances mismatches" << ::std::endl;
-			::std::cerr << "key: " << std::setfill ('0') << std::hex << std::setw (8) << *pnKey << ::std::endl;
-			::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-			::std::cerr << "count: " << this->count (*pnKey) << ::std::endl;
-			::std::cerr << "reference: " << m_pClRef->count (*pnKey) << ::std::endl;
-			
-			::std::cerr << "creating count.html..." << ::std::endl;
-
-			this->show_integrity ("count.html");
-
-			::std::cerr << "finished!" << ::std::endl;
-
-			exit (-1);
-		}
-
-		if (this->count (*pnKey) == 1)
-		{
-			sItMSetLower = m_pClRef->lower_bound (*pnKey);
-
-			sCIterLower = this->lower_bound (*pnKey);
-
-			sValue = *sItMSetLower;
-
-			sEntry = ((value_type) (*sCIterLower));
-
-			if (sEntry != sValue)
-			{
-				::std::cerr << ::std::endl;
-				::std::cerr << "data mismatches" << ::std::endl;
-				::std::cerr << "key: " << std::setfill ('0') << std::hex << std::setw (8) << sEntry << ::std::endl;
-				
-				::std::cerr << "reference" << ::std::endl;
-
-				::std::cerr << "key: " << std::setfill ('0') << std::hex << std::setw (8) << sValue << ::std::endl;
-
-				::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-				
-				::std::cerr << "creating data.html..." << ::std::endl;
-
-				this->show_integrity ("data.html");
-
-				::std::cerr << "finished!" << ::std::endl;
-
-				exit (-1);
-			}
-		}
-		else
-		{
-			sItMSetLower = m_pClRef->lower_bound (*pnKey);
-			sItMSetUpper = m_pClRef->upper_bound (*pnKey);
-
-			sMSet.insert<citer_mmap_t> (sItMSetLower, sItMSetUpper);
-
-			sCIterLower = this->lower_bound (*pnKey);
-			sCIterUpper = this->upper_bound (*pnKey);
-
-			for (sCIter = sCIterLower; sCIter != sCIterUpper; sCIter++)
-			{
-				sEntry = ((value_type) (*sCIter));
-
-				bDeleted = false;
-
-				for (sItMSet = sMSet.cbegin (); sItMSet != sMSet.cend (); sItMSet++)
-				{
-					sValue = *sItMSet;
-
-					if (sEntry == sValue)
-					{
-						sMSet.erase (sItMSet);
-
-						bDeleted = true;
-
-						break;
-					}
-				}
-
-				if (!bDeleted)
-				{
-					::std::cerr << ::std::endl;
-					::std::cerr << "number of instances mismatches" << ::std::endl;
-					::std::cerr << "key: " << std::setfill ('0') << std::hex << std::setw (8) << sEntry << ::std::endl;
-					
-					::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-					::std::cerr << "Instance not found in reference!" << ::std::endl;
-
-					::std::cerr << "creating error.html..." << ::std::endl;
-
-					this->show_integrity ("error.html");
-
-					::std::cerr << "finished!" << ::std::endl;
-
-					exit (-1);
-				}
-			}
-
-			if (sMSet.size () != 0)
-			{
-				::std::cerr << ::std::endl;
-				::std::cerr << "number of instances mismatches" << ::std::endl;
-				::std::cerr << "the following entries are still present in reference:" << ::std::endl;
-
-				for (sItMSet = sMSet.cbegin (); sItMSet != sMSet.cend (); sItMSet++)
-				{
-					sValue = *sItMSet;
-
-					::std::cerr << "key: ";
-
-					::std::cerr << std::setfill ('0') << std::hex << std::setw (8);
-					{
-						::std::cerr << sValue << " ";
-					}
-					::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-				}
-
-				::std::cerr << "creating error.html..." << ::std::endl;
-
-				this->show_integrity ("error.html");
-
-				::std::cerr << "finished!" << ::std::endl;
-
-				exit (-1);
-			}
-		}
-
-		this->get_next_key (*pnKey, *pnKey, bBounce);
-
-		if (bBounce)
-		{
-			break;
-		}
-	}
-	
-	if ((m_pClRef == NULL) && (!this->empty ()))
-	{
-		::std::cerr << ::std::endl;
-		::std::cerr << "reference not set while data container not empty" << ::std::endl;
-		::std::cerr << "size: " << this->size () << ::std::endl;
-
-		exit (-1);
-	}
-	
-	if ((m_pClRef != NULL) && (m_pClRef->size () != this->size ()))
-	{
-		::std::cerr << ::std::endl;
-		::std::cerr << "size mismatches" << ::std::endl;
-		::std::cerr << "size: " << this->size () << ::std::endl;
-		::std::cerr << "reference size: " << m_pClRef->size () << ::std::endl;
-
-		::std::cerr << "creating size.html..." << ::std::endl;
-
-		this->show_integrity ("size.html");
-
-		::std::cerr << "finished!" << ::std::endl;
-
-		exit (-1);
-	}
-}
-
-template<class _t_datalayerproperties>
-void CBTreeTestMultiSet<_t_datalayerproperties>::set_reference (typename CBTreeTestMultiSet<_t_datalayerproperties>::reference_t *pReference)
-{
-	m_pClRef = pReference;
-}
-
-template<class _t_datalayerproperties>
-void CBTreeTestMultiSet<_t_datalayerproperties>::set_atomic_testing (bool bEnable)
-{
-	m_bAtomicTesting = bEnable;
+	CBTreeTestBaseSet_t::_swap (rAssociative);
 }
 
 template<class _t_datalayerproperties>
@@ -542,11 +357,11 @@ bool CBTreeTestMultiSet<_t_datalayerproperties>::show_data (std::ofstream &ofs, 
 
 		rstrData << "<td align=\"top\">";
 
-		if (nOffset < m_pClRef->size ())
+		if (nOffset < this->m_pClRef->size ())
 		{
 			reference_t::const_iterator		sItSet;
 
-			sItSet = m_pClRef->cbegin ();
+			sItSet = this->m_pClRef->cbegin ();
 
 			::std::advance (sItSet, nDiff);
 

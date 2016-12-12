@@ -665,6 +665,38 @@ void TestBTreeSetSTLifEqualRange (_t_set *pClSet, typename _t_set::size_type nNu
 }
 
 template<class _t_container>
+_t_container TestBTreeSetMoveConstructorAndAssignmentEx (_t_container *pClSet, typename _t_container::size_type nNumEntries)
+{
+	_t_container	sClSet (*pClSet);
+
+	return (sClSet);
+}
+
+template<class _t_container>
+void TestBTreeSetMoveConstructorAndAssignment (_t_container *pClSet, typename _t_container::size_type nNumEntries)
+{
+	typedef typename _t_container::key_type					key_type;
+
+	key_type								nLastKey;
+
+	_t_container							sClSet (*pClSet);
+
+	::std::cout << "exercises CBTreeSet<>:: CBTreeSet (CBTreeSet<> &&) and operator= (CBTreeSet<> &&)" << ::std::endl;
+
+	associative_container_add_primitive (&sClSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+
+	*pClSet = TestBTreeSetMoveConstructorAndAssignmentEx (&sClSet, nNumEntries);
+
+	pClSet->clear ();
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pClSet, 1, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+
+	*pClSet = TestBTreeSetMoveConstructorAndAssignmentEx (&sClSet, nNumEntries);
+}
+
+template<class _t_container>
 void TestBTreeSTLset (uint32_t nTestNum, uint32_t nNodeSize, uint32_t nPageSize, _t_container *pSetWrapper)
 {
 	typename _t_container::size_test_type		sTypeSelect;
@@ -688,6 +720,13 @@ void TestBTreeSTLset (uint32_t nTestNum, uint32_t nNodeSize, uint32_t nPageSize,
 	case BTREETEST_SET_ASSIGNMENT_OPERATOR	:
 		{
 			TestBTreeSetSTLifAssignmentOperator (pSetWrapper, 64);
+
+			break;
+		}
+
+	case BTREETEST_SET_MOVE_CONSTRUCTOR_AND_ASSIGNMENT:
+		{
+			TestBTreeSetMoveConstructorAndAssignment (pSetWrapper, 64);
 
 			break;
 		}

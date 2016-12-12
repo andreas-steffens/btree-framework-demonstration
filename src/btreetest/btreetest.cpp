@@ -135,6 +135,7 @@ void print_usage (const char *pszBinary)
 	::std::cerr << ::std::endl;
 	::std::cerr << "stl-set, stl-multiset, stl-map and stl-multimap" << ::std::endl;
 	::std::cerr << "0       - test exercises assignment operator of selected container type" << ::std::endl;
+	::std::cerr << "1       - test exercises move constructor and move assignment operator of selected container type" << ::std::endl;
 	::std::cerr << ::std::endl;
 	::std::cerr << "1000    - test exercises interface method insert (const value_type &)" << ::std::endl;
 	::std::cerr << "1001    - test exercises interface method insert<iterator> (iterator &, iterator &)" << ::std::endl;
@@ -180,6 +181,7 @@ void print_usage (const char *pszBinary)
 	::std::cerr << "16      - test reads data from from container using method serialize (), while parameters exceeding container size" << ::std::endl;
 	::std::cerr << "17      - test exercises situation where a container is self-referenced using iterators" << ::std::endl;
 	::std::cerr << "18      - test reads no data from container using method serialize () with read length set to zero" << ::std::endl;
+	::std::cerr << "19      - test exercises move constructor and move assignment operator" << ::std::endl;
 	::std::cerr << ::std::endl;
 	::std::cerr << "1000    - test exercises interface method assign (const size_type, const value_type &)" << ::std::endl;
 	::std::cerr << "1001    - test exercises interface method assign<iterator> (iterator &, iterator &)" << ::std::endl;
@@ -221,6 +223,7 @@ void print_usage (const char *pszBinary)
 	::std::cerr << "18      - test reads all data from container using method serialize (), while making sure key sets remain in order" << ::std::endl;
 	::std::cerr << "19      - test reads data from half of a random node using method serialize (), while making sure key sets remain in order" << ::std::endl;
 	::std::cerr << "20      - test reads data from part of a random node using method serialize (), while making sure key sets remain in order" << ::std::endl;
+	::std::cerr << "21      - test exercises move constructor and move assignment operator" << ::std::endl;
 	::std::cerr << ::std::endl;
 	::std::cerr << "1000    - test exercises interface method insert (const value_type &)" << ::std::endl;
 	::std::cerr << "1001    - test exercises interface method insert<iterator> (iterator &, iterator &)" << ::std::endl;

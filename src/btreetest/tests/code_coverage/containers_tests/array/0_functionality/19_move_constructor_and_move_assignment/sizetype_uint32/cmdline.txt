@@ -1,0 +1,1 @@
+-type array -test 19 -sizetype 32

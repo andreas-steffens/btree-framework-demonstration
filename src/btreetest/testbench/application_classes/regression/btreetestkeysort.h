@@ -26,6 +26,7 @@
 #include <sstream>
 
 #include "testbench/common/btreetestcommon.h"
+#include "testbench/application_classes/regression/base/btreetestbaseassociative.h"
 
 #include "btreekeysort.h"
 
@@ -123,9 +124,27 @@ struct btree_key_sort_test_insert_reference_via_iterator_arbiter<_t_iterator, ke
 
 template<class _t_data, class _t_key, class _t_datalayerproperties = CBTreeIOpropertiesRAM <> >
 class CBTreeKeySortTest
-	:	public CBTreeKeySort<_t_data, _t_key, _t_datalayerproperties>
+	:	public CBTreeTestBaseAssociative
+				<
+					CBTreeKeySort<_t_data, _t_key, _t_datalayerproperties>, 
+					::std::multimap<_t_key, keySortMap_t>, 
+					_t_data, 
+					_t_key, 
+					_t_datalayerproperties
+				>
 {
 public:
+
+	typedef CBTreeKeySortTest										CBTreeKeySortTest_t;
+
+	typedef CBTreeTestBaseAssociative
+		<
+			CBTreeKeySort<_t_data, _t_key, _t_datalayerproperties>, 
+			::std::multimap<_t_key, keySortMap_t>, 
+			_t_data, 
+			_t_key, 
+			_t_datalayerproperties
+		>															CBTreeTestBaseAssociative_t;
 
 	typedef _t_data													value_type;
 	typedef	keySortMap_t											map_type;
@@ -142,8 +161,6 @@ public:
 	typedef const value_type*										const_pointer;
 	typedef	typename ::std::make_signed<size_type>::type			difference_type;
 
-	typedef CBTreeKeySortTest										CBTreeKeySortTest_t;
-
 	typedef CBTreeKeySort<_t_data, _t_key, _t_datalayerproperties>	CBTreeKeySort_t;
 
 	typedef typename CBTreeKeySort_t::iterator						iterator;
@@ -157,7 +174,10 @@ public:
 													(_t_datalayerproperties &rDataLayerProperties, sub_node_iter_type nNodeSize, reference_t *pClRefData);
 
 						CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>
-													(CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &rBT, bool bAssign = true);
+													(const CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &rContainer, const bool bAssign = true);
+
+						CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>
+													(CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &&rRhsContainer);
 
 	virtual				~CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>
 													();
@@ -180,21 +200,12 @@ public:
 	value_type			get_data_reference			(const_iterator &rCIter);
 	value_type			get_data_reference			(const_reverse_iterator &rCRIter);
 	
-	CBTreeKeySortTest	&operator=					(const CBTreeKeySortTest &rBT);
-
-	void				test						() const;
-
-	void				set_reference				(reference_t *pReference);
-
-	void				set_atomic_testing			(bool bEnable);
+	CBTreeKeySortTest	&operator=					(const CBTreeKeySortTest &rContainer);
+	CBTreeKeySortTest	&operator=					(CBTreeKeySortTest &&rRhsContainer);
 
 protected:
 
 	int					comp						(const key_type &rKey0, const key_type &rKey1) const;
-
-	_t_key				*extract_key				(key_type *pKey, const node_iter_type nNode, const sub_node_iter_type nEntry) const;
-
-	virtual _t_key		*extract_key				(key_type *pKey, const value_type &rData) const;
 
 	template<class _t_iterator>
 	void				insert_via_iterator			(_t_iterator sItFirst, _t_iterator sItLast)
@@ -205,103 +216,9 @@ protected:
 	template<class _t_iterator, class _t_ref_iterator>
 	_t_data				get_data_reference			(_t_iterator &rIter);
 
-	bool				show_data					(std::ofstream &ofs, std::stringstream &rstrData, std::stringstream &rszMsg, const node_iter_type nNode, const sub_node_iter_type nSubPos) const;
-
-	reference_t			*m_pClRefData;
-
-	bool				m_bAtomicTesting;
-	btree_time_stamp_t	*m_psTestTimeStamp;
-};
-
-template<class _t_datalayerproperties>
-class CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>
-	:	public CBTreeKeySort<keySortEntry_t, uint32_t, _t_datalayerproperties>
-{
-public:
-
-	typedef keySortEntry_t											value_type;
-	typedef	keySortMap_t											map_type;
-	typedef uint32_t												key_type;
-	typedef typename _t_datalayerproperties::size_type				size_type;
-	typedef typename _t_datalayerproperties::node_iter_type			node_iter_type;
-	typedef typename _t_datalayerproperties::sub_node_iter_type		sub_node_iter_type;
-	typedef _t_datalayerproperties									data_layer_properties_type;
-	typedef typename _t_datalayerproperties::data_layer_type		data_layer_type;
-	
-	typedef CBTreeKeySortTest										CBTreeKeySortTest_t;
-
-	typedef CBTreeKeySort<keySortEntry_t, uint32_t, _t_datalayerproperties>
-																	CBTreeKeySort_t;
-
-	typedef typename CBTreeKeySort_t::iterator						iterator;
-	typedef typename CBTreeKeySort_t::const_iterator				const_iterator;
-	typedef typename CBTreeKeySort_t::reverse_iterator				reverse_iterator;
-	typedef typename CBTreeKeySort_t::const_reverse_iterator		const_reverse_iterator;
-
-	typedef ::std::multimap<key_type, map_type>						reference_t;
-
-						CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>
-													(_t_datalayerproperties &rDataLayerProperties, sub_node_iter_type nNodeSize, reference_t *pClRefData);
-
-						CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>
-													(CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties> &rBT, bool bAssign = true);
-
-	virtual				~CBTreeKeySortTest <keySortEntry_t, uint32_t, _t_datalayerproperties>
-													();
-
-	template<class _t_iterator>
-	void				insert						(_t_iterator sItFirst, _t_iterator sItLast);
-	iterator			insert						(const value_type &rData);
-
-	template<class ..._t_va_args>
-	iterator			insert						(const_iterator sCIterHint, _t_va_args && ... rrArgs);
-
-	iterator			erase						(const_iterator sCIterPos);
-	size_type			erase						(const key_type &rKey);
-	iterator			erase						(const_iterator sCIterFirst, const_iterator sCIterLast);
-
-	void				swap						(CBTreeKeySortTest &rKeySort);
-
-	iterator			find						(const key_type &rKey);
-	
-	iterator			lower_bound					(const key_type &rKey);
-	const_iterator		lower_bound					(const key_type &rKey) const;
-
-	iterator			upper_bound					(const key_type &rKey);
-	const_iterator		upper_bound					(const key_type &rKey) const;
-	
-	value_type			get_data_reference			(const_iterator &rCIter);
-	value_type			get_data_reference			(const_reverse_iterator &rCRIter);
-	
-	void				clear						();
-
-	CBTreeKeySortTest	&operator=					(const CBTreeKeySortTest &rBT);
-
-	void				test						() const;
-
-	void				set_reference				(reference_t *pReference);
-
-	void				set_atomic_testing			(bool bEnable);
-
-protected:
-
-	int					comp						(const key_type &rKey0, const key_type &rKey1) const;
-
-	template<class _t_iterator>
-	void				insert_via_iterator			(_t_iterator sItFirst, _t_iterator sItLast)
-	{
-		CBTreeKeySort<value_type, key_type, _t_datalayerproperties>::insert (sItFirst, sItLast);
-	}
-
-	template<class _t_iterator, class _t_ref_iterator>
-	value_type			get_data_reference			(_t_iterator &rIter);
+	void				_swap						(CBTreeKeySortTest_t &rContainer);
 
 	bool				show_data					(std::ofstream &ofs, std::stringstream &rstrData, std::stringstream &rszMsg, const node_iter_type nNode, const sub_node_iter_type nSubPos) const;
-
-	reference_t			*m_pClRefData;
-
-	bool				m_bAtomicTesting;
-	btree_time_stamp_t	*m_psTestTimeStamp;
 };
 
 #endif // BTREETESTKEYSORT_H

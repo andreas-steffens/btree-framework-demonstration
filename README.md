@@ -73,12 +73,11 @@ Please read section "2.1. Linux - How to build the test bench using cmake" of th
 <br>
 ## Version
 
-The current version of the project is: 0.07 (alpha)
+The current version of the project is: 0.08 (alpha)
 
 Please don't be discouraged by the fact that the version contains the word "alpha". What this means is that the feature set is incomplete, but what has been implemented is stable and thoroughly tested. See below to find out what is missing:
 
 - initializer&#95;list<> support
-- move constructors and move assignment operators for all container types
  
 <br>
 <br>
@@ -155,6 +154,7 @@ The project is cmake based and is therefore very easy to set up. The two "How to
 stl-set, stl-multiset, stl-map and stl-multimap
 
 	0		- test exercises assignment operator of selected container type
+	1       - test exercises move constructor and move assignment operator of selected container type
 
 	1000	- test exercises interface method insert (const value_type &)
 	1001	- test exercises interface method insert<iterator> (iterator &, iterator &)
@@ -200,6 +200,7 @@ array
 	16		- test reads data from from container using method serialize (), while parameters exceeding container size
 	17		- test exercises situation where a container is self-referenced using iterators
 	18		- test reads no data from container using method serialize () with read length set to zero
+	19      - test exercises move constructor and move assignment operator
 
 	1000	- test exercises interface method assign (const size_type, const value_type &)
 	1001	- test exercises interface method assign<iterator> (iterator &, iterator &)
@@ -241,6 +242,7 @@ keysort
 	18		- test reads all data from container using method serialize (), while making sure key sets remain in order
 	19		- test reads data from half of a random node using method serialize (), while making sure key sets remain in order
 	20		- test reads data from part of a random node using method serialize (), while making sure key sets remain in order
+	21      - test exercises move constructor and move assignment operator
 
 	1000	- test exercises interface method insert (const value_type &)
 	1001	- test exercises interface method insert<iterator> (iterator &, iterator &)

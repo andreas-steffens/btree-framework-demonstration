@@ -47,6 +47,23 @@ CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::CBT
 }
 
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
+CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::CBTreeMultiSetTestWrapper (CBTreeMultiSetTestWrapper &&rRhsContainer)
+	:	CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container> (rRhsContainer)
+{
+	this->m_nNumContainers = CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::m_nNumContainersMS;
+
+	this->instantiate_container_array ();
+
+	this->init_containers (rRhsContainer, false);
+
+	this->move_construct_containers (::std::forward<CBTreeMultiSetTestWrapper_t> (rRhsContainer));
+
+	this->transfer_containers ();
+
+	this->test ();
+}
+
+template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
 CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::~CBTreeMultiSetTestWrapper ()
 {
 }
@@ -468,6 +485,33 @@ bool CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>
 }
 
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
+CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container> &
+CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::operator= (const CBTreeMultiSetTestWrapper_t &rContainer)
+{
+	if (this != &rContainer)
+	{
+		CBTreeAssociativeTestWrapper_t			&rAssociativeTestWrapperThis = dynamic_cast<CBTreeAssociativeTestWrapper_t &> (*this);
+		const CBTreeAssociativeTestWrapper_t	&rAssociativeTestWrapperContainer = dynamic_cast<const CBTreeAssociativeTestWrapper_t &> (rContainer);
+
+		rAssociativeTestWrapperThis = rAssociativeTestWrapperContainer;
+	}
+
+	return (*this);
+}
+
+template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
+CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container> &
+CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::operator= (CBTreeMultiSetTestWrapper_t &&rRhsContainer)
+{
+	CBTreeAssociativeTestWrapper_t		&rAssociativeTestWrapperThis = dynamic_cast<CBTreeAssociativeTestWrapper_t &> (*this);
+	CBTreeAssociativeTestWrapper_t		&rAssociativeTestWrapperContainer = dynamic_cast<CBTreeAssociativeTestWrapper_t &> (rRhsContainer);
+
+	rAssociativeTestWrapperThis = ::std::move (rAssociativeTestWrapperContainer);
+
+	return (*this);
+}
+
+template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
 void CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::init_containers (const uint32_t nNodeSize, const uint32_t nPageSize)
 {
 	CBTreeIOpropertiesRAM<size_test_type, uint64_t, uint32_t, uint64_t, uint32_t>		sRAMprop6565;
@@ -574,50 +618,50 @@ void CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>
 }
 
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
-void CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::init_containers (const CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container> &rWrapper)
+void CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::init_containers (const CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container> &rWrapper, const bool bAssign)
 {
 	uint32_t	i = 0;
 
 	const CBTreeMultiSetTestWrapper_t		&rThisWrapper = dynamic_cast<const CBTreeMultiSetTestWrapper_t &> (rWrapper);
 
-	m_pContainerRAM6565_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (*rThisWrapper.m_pContainerRAM6565_n); i++;
-	m_pContainerRAM6555_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerRAM6555_n); i++;
-	m_pContainerRAM5555_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerRAM5555_n); i++;
-	m_pContainerRAM5554_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint32_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5554_n); i++;
-	m_pContainerRAM5454_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint16_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5454_n); i++;
-	m_pContainerRAM5444_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint16_t, uint16_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5444_n); i++;
-	m_pContainerRAM4444_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint16_t, uint16_t, uint16_t, uint16_t> > (*rThisWrapper.m_pContainerRAM4444_n); i++;
-	m_pContainerRAM6565_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (*rThisWrapper.m_pContainerRAM6565_2n); i++;
-	m_pContainerRAM6555_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerRAM6555_2n); i++;
-	m_pContainerRAM5555_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerRAM5555_2n); i++;
-	m_pContainerRAM5554_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint32_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5554_2n); i++;
-	m_pContainerRAM5454_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint16_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5454_2n); i++;
-	m_pContainerRAM5444_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint16_t, uint16_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5444_2n); i++;
-	m_pContainerRAM4444_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint16_t, uint16_t, uint16_t, uint16_t> > (*rThisWrapper.m_pContainerRAM4444_2n); i++;
-	m_pContainerRAM6565_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (*rThisWrapper.m_pContainerRAM6565_4n); i++;
-	m_pContainerRAM6555_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerRAM6555_4n); i++;
-	m_pContainerRAM5555_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerRAM5555_4n); i++;
-	m_pContainerRAM5554_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint32_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5554_4n); i++;
-	m_pContainerRAM5454_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint16_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5454_4n); i++;
-	m_pContainerRAM5444_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint16_t, uint16_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5444_4n); i++;
-	m_pContainerRAM4444_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint16_t, uint16_t, uint16_t, uint16_t> > (*rThisWrapper.m_pContainerRAM4444_4n); i++;
-	m_pContainerFile6565min = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (*rThisWrapper.m_pContainerFile6565min); i++;
-	m_pContainerFile6555min = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerFile6555min); i++;
-	m_pContainerFile5555min = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerFile5555min); i++;
-	m_pContainerFile5554min = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint32_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerFile5554min); i++;
-	m_pContainerFile5454min = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint16_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerFile5454min); i++;
+	m_pContainerRAM6565_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (*rThisWrapper.m_pContainerRAM6565_n, bAssign); i++;
+	m_pContainerRAM6555_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerRAM6555_n, bAssign); i++;
+	m_pContainerRAM5555_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerRAM5555_n, bAssign); i++;
+	m_pContainerRAM5554_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint32_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5554_n, bAssign); i++;
+	m_pContainerRAM5454_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint16_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5454_n, bAssign); i++;
+	m_pContainerRAM5444_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint16_t, uint16_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5444_n, bAssign); i++;
+	m_pContainerRAM4444_n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint16_t, uint16_t, uint16_t, uint16_t> > (*rThisWrapper.m_pContainerRAM4444_n, bAssign); i++;
+	m_pContainerRAM6565_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (*rThisWrapper.m_pContainerRAM6565_2n, bAssign); i++;
+	m_pContainerRAM6555_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerRAM6555_2n, bAssign); i++;
+	m_pContainerRAM5555_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerRAM5555_2n, bAssign); i++;
+	m_pContainerRAM5554_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint32_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5554_2n, bAssign); i++;
+	m_pContainerRAM5454_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint16_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5454_2n, bAssign); i++;
+	m_pContainerRAM5444_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint16_t, uint16_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5444_2n, bAssign); i++;
+	m_pContainerRAM4444_2n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint16_t, uint16_t, uint16_t, uint16_t> > (*rThisWrapper.m_pContainerRAM4444_2n, bAssign); i++;
+	m_pContainerRAM6565_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (*rThisWrapper.m_pContainerRAM6565_4n, bAssign); i++;
+	m_pContainerRAM6555_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerRAM6555_4n, bAssign); i++;
+	m_pContainerRAM5555_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerRAM5555_4n, bAssign); i++;
+	m_pContainerRAM5554_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint32_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5554_4n, bAssign); i++;
+	m_pContainerRAM5454_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint16_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5454_4n, bAssign); i++;
+	m_pContainerRAM5444_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint32_t, uint16_t, uint16_t, uint16_t> > (*rThisWrapper.m_pContainerRAM5444_4n, bAssign); i++;
+	m_pContainerRAM4444_4n = new CBTreeTestMultiSet<CBTreeIOpropertiesRAM <size_test_type, uint16_t, uint16_t, uint16_t, uint16_t> > (*rThisWrapper.m_pContainerRAM4444_4n, bAssign); i++;
+	m_pContainerFile6565min = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (*rThisWrapper.m_pContainerFile6565min, bAssign); i++;
+	m_pContainerFile6555min = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerFile6555min, bAssign); i++;
+	m_pContainerFile5555min = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerFile5555min, bAssign); i++;
+	m_pContainerFile5554min = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint32_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerFile5554min, bAssign); i++;
+	m_pContainerFile5454min = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint16_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerFile5454min, bAssign); i++;
 
-	m_pContainerFile6565default = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (*rThisWrapper.m_pContainerFile6565default); i++;
-	m_pContainerFile6555default = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerFile6555default); i++;
-	m_pContainerFile5555default = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerFile5555default); i++;
-	m_pContainerFile5554default = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint32_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerFile5554default); i++;
-	m_pContainerFile5454default = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint16_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerFile5454default); i++;
+	m_pContainerFile6565default = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (*rThisWrapper.m_pContainerFile6565default, bAssign); i++;
+	m_pContainerFile6555default = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerFile6555default, bAssign); i++;
+	m_pContainerFile5555default = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerFile5555default, bAssign); i++;
+	m_pContainerFile5554default = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint32_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerFile5554default, bAssign); i++;
+	m_pContainerFile5454default = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint16_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerFile5454default, bAssign); i++;
 
-	m_pContainerFile6565large = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (*rThisWrapper.m_pContainerFile6565large); i++;
-	m_pContainerFile6555large = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerFile6555large); i++;
-	m_pContainerFile5555large = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerFile5555large); i++;
-	m_pContainerFile5554large = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint32_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerFile5554large); i++;
-	m_pContainerFile5454large = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint16_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerFile5454large); i++;
+	m_pContainerFile6565large = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> > (*rThisWrapper.m_pContainerFile6565large, bAssign); i++;
+	m_pContainerFile6555large = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerFile6555large, bAssign); i++;
+	m_pContainerFile5555large = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint32_t, uint32_t, uint32_t> > (*rThisWrapper.m_pContainerFile5555large, bAssign); i++;
+	m_pContainerFile5554large = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint32_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerFile5554large, bAssign); i++;
+	m_pContainerFile5454large = new CBTreeTestMultiSet<CBTreeIOpropertiesFile <size_test_type, uint32_t, uint16_t, uint32_t, uint16_t> > (*rThisWrapper.m_pContainerFile5454large, bAssign); i++;
 
 	BTREE_ASSERT (i == this->get_num_containers (), "CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::init_containers (const CBTreeAssociativeTestWrapper &): ERROR: Unexpected number of test containers instantiated!");
 
@@ -860,6 +904,47 @@ void CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>
 	pSrc->test ();
 }
 	
+template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
+void CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::move_construct_containers (CBTreeMultiSetTestWrapper_t &&rRhsContainer)
+{
+	*m_pContainerRAM6565_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM6565_n, this->m_pReference);
+	*m_pContainerRAM6555_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM6555_n, this->m_pReference);
+	*m_pContainerRAM5555_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5555_n, this->m_pReference);
+	*m_pContainerRAM5554_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5554_n, this->m_pReference);
+	*m_pContainerRAM5454_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5454_n, this->m_pReference);
+	*m_pContainerRAM5444_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5444_n, this->m_pReference);
+	*m_pContainerRAM4444_n = this->generate_move_construction (rRhsContainer.m_pContainerRAM4444_n, this->m_pReference);
+	*m_pContainerRAM6565_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM6565_2n, this->m_pReference);
+	*m_pContainerRAM6555_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM6555_2n, this->m_pReference);
+	*m_pContainerRAM5555_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5555_2n, this->m_pReference);
+	*m_pContainerRAM5554_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5554_2n, this->m_pReference);
+	*m_pContainerRAM5454_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5454_2n, this->m_pReference);
+	*m_pContainerRAM5444_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5444_2n, this->m_pReference);
+	*m_pContainerRAM4444_2n = this->generate_move_construction (rRhsContainer.m_pContainerRAM4444_2n, this->m_pReference);
+	*m_pContainerRAM6565_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM6565_4n, this->m_pReference);
+	*m_pContainerRAM6555_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM6555_4n, this->m_pReference);
+	*m_pContainerRAM5555_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5555_4n, this->m_pReference);
+	*m_pContainerRAM5554_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5554_4n, this->m_pReference);
+	*m_pContainerRAM5454_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5454_4n, this->m_pReference);
+	*m_pContainerRAM5444_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM5444_4n, this->m_pReference);
+	*m_pContainerRAM4444_4n = this->generate_move_construction (rRhsContainer.m_pContainerRAM4444_4n, this->m_pReference);
+	*m_pContainerFile6565min = this->generate_move_construction (rRhsContainer.m_pContainerFile6565min, this->m_pReference);
+	*m_pContainerFile6555min = this->generate_move_construction (rRhsContainer.m_pContainerFile6555min, this->m_pReference);
+	*m_pContainerFile5555min = this->generate_move_construction (rRhsContainer.m_pContainerFile5555min, this->m_pReference);
+	*m_pContainerFile5554min = this->generate_move_construction (rRhsContainer.m_pContainerFile5554min, this->m_pReference);
+	*m_pContainerFile5454min = this->generate_move_construction (rRhsContainer.m_pContainerFile5454min, this->m_pReference);
+	*m_pContainerFile6565default = this->generate_move_construction (rRhsContainer.m_pContainerFile6565default, this->m_pReference);
+	*m_pContainerFile6555default = this->generate_move_construction (rRhsContainer.m_pContainerFile6555default, this->m_pReference);
+	*m_pContainerFile5555default = this->generate_move_construction (rRhsContainer.m_pContainerFile5555default, this->m_pReference);
+	*m_pContainerFile5554default = this->generate_move_construction (rRhsContainer.m_pContainerFile5554default, this->m_pReference);
+	*m_pContainerFile5454default = this->generate_move_construction (rRhsContainer.m_pContainerFile5454default, this->m_pReference);
+	*m_pContainerFile6565large = this->generate_move_construction (rRhsContainer.m_pContainerFile6565large, this->m_pReference);
+	*m_pContainerFile6555large = this->generate_move_construction (rRhsContainer.m_pContainerFile6555large, this->m_pReference);
+	*m_pContainerFile5555large = this->generate_move_construction (rRhsContainer.m_pContainerFile5555large, this->m_pReference);
+	*m_pContainerFile5554large = this->generate_move_construction (rRhsContainer.m_pContainerFile5554large, this->m_pReference);
+	*m_pContainerFile5454large = this->generate_move_construction (rRhsContainer.m_pContainerFile5454large, this->m_pReference);
+}
+
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
 const uint32_t CBTreeMultiSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::m_nNumContainersMS = 36;
 

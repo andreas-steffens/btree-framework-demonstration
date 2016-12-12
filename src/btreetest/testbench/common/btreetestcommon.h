@@ -25,10 +25,6 @@
 
 #include <typeinfo>
 
-#if defined(__GNUC__) || defined(__GNUG__)
- #include <cxxabi.h>
-#endif
-
 #include "common/btreecommon.h"
 
 typedef enum
@@ -98,6 +94,11 @@ public:
 
 					return (*this);
 				};
+
+				operator	const _t_key ()
+				{
+					return ((_t_key) this->first);
+				}
 
 	bool		operator== (const CBTreePairTest &rRhs) const
 				{
@@ -316,32 +317,6 @@ template<class _t_container>
 bool is_reverse_iterator (_t_container *pContainer, typename _t_container::const_reverse_iterator &)
 {
 	return (true);
-}
-
-template<class _t>
-void get_typename (_t &rType, ::std::string &rString)
-{
-#if defined(__GNUC__) || defined(__GNUG__)
-
-	int		nStatus;
-	char	*pszTypeid = abi::__cxa_demangle (typeid (_t).name (), 0, 0, &nStatus);
-
-	if (pszTypeid != NULL)
-	{
-		rString = pszTypeid;
-		
-		free ((void *) pszTypeid);
-	}
-	else
-	{
-		rString = typeid (_t).name ();
-	}
-	
-#else
-
-	rString = typeid (_t).name ();
-	
-#endif
 }
 
 #endif // BTREETESTCOMMON_H

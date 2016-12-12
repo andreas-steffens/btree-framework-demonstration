@@ -1459,6 +1459,32 @@ void TestBTreeArraySTLifEmplaceBack (_t_container *pContainer, typename _t_conta
 }
 
 template<class _t_container>
+_t_container TestBTreeArrayMoveConstructorAndMoveAssigmentEx (_t_container *pContainer, typename _t_container::size_type nNumEntries)
+{
+	_t_container	sContainer (*pContainer);
+
+	return (sContainer);
+}
+
+template<class _t_container>
+void TestBTreeArrayMoveConstructorAndMoveAssigment (_t_container *pContainer, typename _t_container::size_type nNumEntries)
+{
+	_t_container		sContainer (*pContainer);
+
+	::std::cout << "exercises CBTreeArray<>:: CBTreeArray (CBTreeArray<> &&) and operator= (CBTreeArray<> &&)" << ::std::endl;
+
+	arrayPrim_add (pContainer, nNumEntries, BTREETEST_ARRAY_PRIMITIVE_SEEK_RANDOM);
+
+	*pContainer = TestBTreeArrayMoveConstructorAndMoveAssigmentEx (&sContainer, nNumEntries);
+
+	pContainer->clear ();
+
+	arrayPrim_add (pContainer, 1, BTREETEST_ARRAY_PRIMITIVE_SEEK_RANDOM);
+
+	*pContainer = TestBTreeArrayMoveConstructorAndMoveAssigmentEx (&sContainer, nNumEntries);
+}
+
+template<class _t_container>
 void TestBTreeArray (uint32_t nTest, uint32_t nNodeSize, uint32_t nPageSize, _t_container *pArrayWrapper)
 {
 	typename _t_container::size_test_type		sTypeSelect;
@@ -1734,6 +1760,13 @@ void TestBTreeArray (uint32_t nTest, uint32_t nNodeSize, uint32_t nPageSize, _t_
 	case BTREETEST_ARRAY_SERLIALIZE_ZERO_LENGTH			:
 		{
 			TestBTreeArraySerializeIncomplete (pArrayWrapper, 0, 1, 0);
+
+			break;
+		}
+
+	case BTREETEST_ARRAY_MOVE_CONSTRUCTOR_AND_ASSIGNMENT	:	
+		{
+			TestBTreeArrayMoveConstructorAndMoveAssigment (pArrayWrapper, 64);
 
 			break;
 		}

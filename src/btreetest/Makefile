@@ -133,7 +133,7 @@ coverage_report: $(COVERAGE_COMB)
 
 
 valgrind_report: $(MAKEFILE_VALIDATION_TESTS) debug
-	$(MAKE) -f $(MAKEFILE_VALIDATION_TESTS) $(TEST_DIR_VALIDATION_VALGRIND)
+	$(MAKE) -f $(MAKEFILE_VALIDATION_TESTS) tests
 
 
 clean: 

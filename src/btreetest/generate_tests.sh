@@ -42,7 +42,7 @@ do
 	if [ $VALIDATION -ne 0 ]; then
 		if [ $VALGRIND -ne 0 ]; then
 			echo -ne "\\t" >> $OUTFILE
-			echo "cat $TESTDIR./valgrind.log > valgrind_report.txt" >> $OUTFILE
+			echo "cat $TESTDIR./valgrind.log >> valgrind_report.txt" >> $OUTFILE
 
 			echo -ne "\\t" >> $OUTFILE
 			echo "rm -fv $TESTDIR./valgrind.log" >> $OUTFILE

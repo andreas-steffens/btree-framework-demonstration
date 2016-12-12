@@ -16,6 +16,10 @@ find_package	(btree_framework	REQUIRED)
 set		(	sources
 			./applications/avp_path_find/avp_path_find_core.cpp
 			./testbench/application_classes/performance/btreetestarrayperf.cpp
+			./testbench/application_classes/regression/base/btreetestbase.cpp
+			./testbench/application_classes/regression/base/btreetestbaselinear.cpp
+			./testbench/application_classes/regression/base/btreetestbaseassociative.cpp
+			./testbench/application_classes/regression/base/btreetestbaseset.cpp
 			./testbench/application_classes/regression/btreetestarray.cpp
 			./testbench/application_classes/regression/btreetestkeysort.cpp
 			./testbench/application_classes/regression/btreetestmap.cpp
@@ -77,6 +81,10 @@ set		(	headers
 			./applications/avp_path_find/sublevel4.h
 			./applications/avp_path_find/sublevel5.h
 			./testbench/application_classes/performance/btreetestarrayperf.h
+			./testbench/application_classes/regression/base/btreetestbase.h
+			./testbench/application_classes/regression/base/btreetestbaselinear.h
+			./testbench/application_classes/regression/base/btreetestbaseassociative.h
+			./testbench/application_classes/regression/base/btreetestbaseset.h
 			./testbench/application_classes/regression/btreetestarray.h
 			./testbench/application_classes/regression/btreetestkeysort.h
 			./testbench/application_classes/regression/btreetestmap.h
@@ -134,6 +142,7 @@ include_directories	(
 # source groups as they displayed in IDEs
 source_group ("sources\\applications\\avp_path_find" REGULAR_EXPRESSION \./applications/avp_path_find/.*\\.cpp)
 source_group ("sources\\testbench\\application_classes\\performance" REGULAR_EXPRESSION \./testbench/application_classes/performance/.*\\.cpp)
+source_group ("sources\\testbench\\application_classes\\regression\\base" REGULAR_EXPRESSION \./testbench/application_classes/regression/base/.*\\.cpp)
 source_group ("sources\\testbench\\application_classes\\regression" REGULAR_EXPRESSION \./testbench/application_classes/regression/.*\\.cpp)
 source_group ("sources\\testbench\\common" REGULAR_EXPRESSION \./testbench/common/.*\\.cpp)
 source_group ("sources\\testbench\\primitives" REGULAR_EXPRESSION \./testbench/primitives/.*\\.cpp)
@@ -147,6 +156,7 @@ source_group ("sources\\testbench" REGULAR_EXPRESSION \./.*\.cpp)
 
 source_group ("headers\\applications\\avp_path_find" REGULAR_EXPRESSION \./applications/avp_path_find/.*\\.h)
 source_group ("headers\\testbench\\application_classes\\performance" REGULAR_EXPRESSION \./testbench/application_classes/performance/.*\\.h)
+source_group ("headers\\testbench\\application_classes\\regression\\base" REGULAR_EXPRESSION \./testbench/application_classes/regression/base/.*\\.h)
 source_group ("headers\\testbench\\application_classes\\regression" REGULAR_EXPRESSION \./testbench/application_classes/regression/.*\\.h)
 source_group ("headers\\testbench\\common" REGULAR_EXPRESSION \./testbench/common/.*\\.h)
 source_group ("headers\\testbench\\primitives" REGULAR_EXPRESSION \./testbench/primitives/.*\\.h)
@@ -244,7 +254,7 @@ elseif (UNIX)
 		set		(CMAKE_EXE_LINKER_FLAGS		"${CMAKE_EXE_LINKER_FLAGS}" CACHE STRING "linker flags used during linux debug binary builds." FORCE)
 		set		(CMAKE_SHARED_LINKER_FLAGS	"${CMAKE_SHARED_LINKER_FLAGS}" CACHE STRING "linker flags used during linux debug shared library builds." FORCE)
 
-#		add_definitions ("-D_DEBUG")
+		add_definitions ("-D_DEBUG")
 	endif ()
 	
 	if (LINUX_BUILD_RELEASE)
@@ -260,7 +270,7 @@ elseif (UNIX)
 		set		(CMAKE_EXE_LINKER_FLAGS		"${CMAKE_EXE_LINKER_FLAGS}" CACHE STRING "linker flags used during linux release binary builds." FORCE)
 		set		(CMAKE_SHARED_LINKER_FLAGS	"${CMAKE_SHARED_LINKER_FLAGS}" CACHE STRING "linker flags used during linux release shared library builds." FORCE)
 
-#		add_definitions ("-D_DEBUG")
+		add_definitions ("-D_DEBUG")
 	endif ()
 	
 	if (LINUX_BUILD_COVERAGE)

@@ -25,72 +25,117 @@ CBTreeTestMap<_t_datalayerproperties>::CBTreeTestMap
 		typename _t_datalayerproperties::sub_node_iter_type nNodeSize, 
 		typename CBTreeTestMap<_t_datalayerproperties>::reference_t *pClRefData
 	)
-	:	CBTreeMap<uint32_t, mapMap_t, _t_datalayerproperties>
-	(
-		rDataLayerProperties, 
-		nNodeSize
-	)
-	,	m_pClRef (pClRefData)
-	,	m_bAtomicTesting (true)
-	,	m_psTestTimeStamp (NULL)
+	:	CBTreeTestBaseAssociative
+			<
+				CBTreeMap<uint32_t, mapMap_t, _t_datalayerproperties>, 
+				::std::map<uint32_t, mapMap_t>, 
+				::std::pair<uint32_t, mapMap_t>, 
+				uint32_t, 
+				_t_datalayerproperties
+			>
+		(
+			rDataLayerProperties, 
+			nNodeSize, 
+			pClRefData, 
+			true
+		)
 {
-	m_psTestTimeStamp = new btree_time_stamp_t (this->get_time_stamp ());
 }
 
 template<class _t_datalayerproperties>
 CBTreeTestMap<_t_datalayerproperties>::CBTreeTestMap
-	(const CBTreeTestMap<_t_datalayerproperties> &rBT, bool bAssign)
-	:	CBTreeMap<uint32_t, mapMap_t, _t_datalayerproperties>
-	(
-		dynamic_cast<const CBTreeMap<uint32_t, mapMap_t, _t_datalayerproperties> &> (rBT), 
-		false
-	)
-	,	m_pClRef (NULL)
-	,	m_bAtomicTesting (false)
-	,	m_psTestTimeStamp (NULL)
+	(const CBTreeTestMap<_t_datalayerproperties> &rContainer, const bool bAssign)
+	:	CBTreeTestBaseAssociative
+			<
+				CBTreeMap<uint32_t, mapMap_t, _t_datalayerproperties>, 
+				::std::map<uint32_t, mapMap_t>, 
+				::std::pair<uint32_t, mapMap_t>, 
+				uint32_t, 
+				_t_datalayerproperties
+			>
+		(
+			dynamic_cast<const CBTreeTestBaseAssociative
+							<
+								CBTreeMap<uint32_t, mapMap_t, _t_datalayerproperties>, 
+								::std::map<uint32_t, mapMap_t>, 
+								::std::pair<uint32_t, mapMap_t>, 
+								uint32_t, 
+								_t_datalayerproperties
+							> &> (rContainer), 
+							false
+		)
 {
-	m_psTestTimeStamp = new btree_time_stamp_t (this->get_time_stamp ());
-
 	if (bAssign)
 	{
-		this->_assign (rBT);
+		this->_assign (rContainer);
 	}
 
 	this->set_atomic_testing (true);
 }
 
 template<class _t_datalayerproperties>
+CBTreeTestMap<_t_datalayerproperties>::CBTreeTestMap
+	(CBTreeTestMap<_t_datalayerproperties> &&rRhsContainer)
+	:	CBTreeTestBaseAssociative
+			<
+				CBTreeMap<uint32_t, mapMap_t, _t_datalayerproperties>, 
+				::std::map<uint32_t, mapMap_t>, 
+				::std::pair<uint32_t, mapMap_t>, 
+				uint32_t, 
+				_t_datalayerproperties
+			>
+		(
+			dynamic_cast<CBTreeTestBaseAssociative
+							<
+								CBTreeMap<uint32_t, mapMap_t, _t_datalayerproperties>, 
+								::std::map<uint32_t, mapMap_t>, 
+								::std::pair<uint32_t, mapMap_t>, 
+								uint32_t, 
+								_t_datalayerproperties
+							> &&> (rRhsContainer)
+		)
+{
+	this->test ();
+}
+
+template<class _t_datalayerproperties>
 CBTreeTestMap<_t_datalayerproperties>::~CBTreeTestMap ()
 {
-	if (m_psTestTimeStamp != NULL)
-	{
-		delete m_psTestTimeStamp;
-
-		m_psTestTimeStamp = NULL;
-	}
 }
 
 template<class _t_datalayerproperties>
 CBTreeTestMap<_t_datalayerproperties>&
 	CBTreeTestMap<_t_datalayerproperties>::operator=
 	(
-		const CBTreeTestMap<_t_datalayerproperties> &rBT
+		const CBTreeTestMap<_t_datalayerproperties> &rContainer
 	)
 {
-	if (this != &rBT)
+	if (this != &rContainer)
 	{
-		CBTreeMap_t			&rThisMM = dynamic_cast<CBTreeMap_t &> (*this);
-		const CBTreeMap_t	&rBTMM = dynamic_cast<const CBTreeMap_t &> (rBT);
+		CBTreeTestBaseAssociative_t			&rMapThis = dynamic_cast<CBTreeTestBaseAssociative_t &> (*this);
+		const CBTreeTestBaseAssociative_t	&rMapContainer = dynamic_cast<const CBTreeTestBaseAssociative_t &> (rContainer);
 
-		rThisMM = rBTMM;
+		rMapThis = rMapContainer;
 
-		(*m_pClRef) = *(rBT.m_pClRef);
-
-		if (m_bAtomicTesting)
-		{
-			test ();
-		}
+		this->test ();
 	}
+
+	return (*this);
+}
+
+template<class _t_datalayerproperties>
+CBTreeTestMap<_t_datalayerproperties>&
+	CBTreeTestMap<_t_datalayerproperties>::operator=
+	(
+		CBTreeTestMap<_t_datalayerproperties> &&rRhsContainer
+	)
+{
+	CBTreeTestBaseAssociative_t			&rMapThis = dynamic_cast<CBTreeTestBaseAssociative_t &> (*this);
+	CBTreeTestBaseAssociative_t			&rMapContainer = dynamic_cast<CBTreeTestBaseAssociative_t &> (rRhsContainer);
+
+	rMapThis = ::std::move (rMapContainer);
+
+	this->test ();
 
 	return (*this);
 }
@@ -101,7 +146,7 @@ void CBTreeTestMap<_t_datalayerproperties>::insert (_t_iterator sItFirst, _t_ite
 {
 	CBTreeMap_t::insert (sItFirst, sItLast);
 
-	test ();
+	this->test ();
 }
 
 template<class _t_datalayerproperties>
@@ -116,18 +161,18 @@ typename CBTreeTestMap<_t_datalayerproperties>::iterator
 	value_type			sData = rData;
 	bool				bSuccess;
 
-	if (m_pClRef != NULL)
+	if (this->m_pClRef != NULL)
 	{
-		bRefRslt = m_pClRef->count (sData.first) != 0;
+		bRefRslt = this->m_pClRef->count (sData.first) != 0;
 	}
 
 	sIter = CBTreeMap_t::insert (sData);
 
-	if (m_pClRef != NULL)
+	if (this->m_pClRef != NULL)
 	{
 		bSuccess = sIter < this->end ();
 
-		if (CBTreeMap_t::count (sData.first) != m_pClRef->count (sData.first))
+		if (CBTreeMap_t::count (sData.first) != this->m_pClRef->count (sData.first))
 		{
 			::std::cerr << ::std::endl;
 			::std::cerr << "CBTreeTestMap<>::insert: ERROR: reference claims that key ";
@@ -161,7 +206,7 @@ typename CBTreeTestMap<_t_datalayerproperties>::iterator
 		}
 	}
 
-	test ();
+	this->test ();
 
 	return (sIter);
 }
@@ -178,7 +223,7 @@ typename CBTreeTestMap<_t_datalayerproperties>::iterator
 
 	sIter = CBTreeMap_t::insert (sCIterHint, rData);
 
-	test ();
+	this->test ();
 
 	return (sIter);
 }
@@ -194,7 +239,7 @@ typename CBTreeTestMap<_t_datalayerproperties>::iterator
 
 	sRslt = CBTreeMap_t::erase (sCIterPos);
 
-	test ();
+	this->test ();
 
 	return (sRslt);
 }
@@ -206,7 +251,7 @@ typename _t_datalayerproperties::size_type CBTreeTestMap<_t_datalayerproperties>
 
 	nRslt = CBTreeMap_t::erase (rKey);
 
-	test ();
+	this->test ();
 
 	return (nRslt);
 }
@@ -221,23 +266,20 @@ typename CBTreeTestMap<_t_datalayerproperties>::iterator
 {
 	iterator	sRslt = CBTreeMap_t::erase (sCIterFirst, sCIterLast);
 
-	test ();
+	this->test ();
 
 	return (sRslt);
 }
 
 template<class _t_datalayerproperties>
-void CBTreeTestMap<_t_datalayerproperties>::swap (CBTreeTestMap_t &rTMM)
+void CBTreeTestMap<_t_datalayerproperties>::swap (CBTreeTestMap_t &rContainer)
 {
-	if (this != &rTMM)
+	if (this != &rContainer)
 	{
-		CBTreeMap_t	&rThisMM = dynamic_cast<CBTreeMap_t &> (*this);
-		CBTreeMap_t	&rMM = dynamic_cast<CBTreeMap_t &> (rTMM);
+		CBTreeTestMap_t::_swap (rContainer);
 
-		rThisMM.swap (rMM);
+		this->test ();
 	}
-
-	test ();
 }
 
 template<class _t_datalayerproperties>
@@ -245,7 +287,7 @@ void CBTreeTestMap<_t_datalayerproperties>::clear ()
 {
 	CBTreeMap_t::clear ();
 
-	test ();
+	this->test ();
 }
 
 template<class _t_datalayerproperties>
@@ -297,253 +339,11 @@ bool CBTreeTestMap<_t_datalayerproperties>::operator!= (const CBTreeTestMap_t &r
 }
 
 template<class _t_datalayerproperties>
-void CBTreeTestMap<_t_datalayerproperties>::test () const
+void CBTreeTestMap<_t_datalayerproperties>::_swap (CBTreeTestMap_t &rContainer)
 {
-	if (!m_bAtomicTesting)
-	{
-		return;
-	}
+	CBTreeTestBaseAssociative_t		&rAssociative = dynamic_cast<CBTreeTestBaseAssociative_t &> (*this);
 
-	if (*m_psTestTimeStamp == this->get_time_stamp ())
-	{
-		return;
-	}
-
-	*m_psTestTimeStamp = this->get_time_stamp ();
-
-	typedef typename reference_t::const_iterator	citer_mmap_t;
-
-	reference_t										sMMap;
-	key_type										nKey;
-	key_type										*pnKey;
-	bool											bBounce;
-	size_type										nTotalCount = 0;
-	value_type										sEntry;
-	value_type										sValue;
-	citer_mmap_t									sItMMapLower;
-	citer_mmap_t									sItMMapUpper;
-	citer_mmap_t									sItMMap;
-	const_iterator									sCIterBegin;
-	const_iterator									sCIterEnd;
-	const_iterator									sCIterLower;
-	const_iterator									sCIterUpper;
-	const_iterator									sCIter;
-	bool											bDeleted;
-	
-	if (!this->test_integrity ())
-	{
-		::std::cerr << ::std::endl;
-		::std::cerr << "integrity test failed" << ::std::endl;
-
-		::std::cerr << "creating integrity.html..." << ::std::endl;
-
-		this->show_integrity ("integrity.html");
-
-		::std::cerr << "finished!" << ::std::endl;
-
-		exit (-1);
-	}
-
-	sCIterBegin = this->cbegin ();
-	sCIterEnd = this->cend ();
-
-	sCIter = sCIterBegin;
-
-	if (this->size () > 0)
-	{
-		pnKey = this->extract_key (&nKey, ((value_type) (*sCIter)));
-	}
-
-	while (sCIter != sCIterEnd)
-	{
-		if (m_pClRef->count (*pnKey) != this->count (*pnKey))
-		{
-			::std::cerr << ::std::endl;
-			::std::cerr << "number of instances mismatches" << ::std::endl;
-			::std::cerr << "key: " << std::setfill ('0') << std::hex << std::setw (8) << *pnKey << ::std::endl;
-			::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-			::std::cerr << "count: " << this->count (*pnKey) << ::std::endl;
-			::std::cerr << "reference: " << m_pClRef->count (*pnKey) << ::std::endl;
-			
-			::std::cerr << "creating count.html..." << ::std::endl;
-
-			this->show_integrity ("count.html");
-
-			::std::cerr << "finished!" << ::std::endl;
-
-			exit (-1);
-		}
-
-		if (this->count (*pnKey) == 1)
-		{
-			sItMMapLower = m_pClRef->lower_bound (*pnKey);
-
-			sCIterLower = this->lower_bound (*pnKey);
-
-			sValue = *sItMMapLower;
-
-			sEntry = ((value_type) (*sCIterLower));
-
-			if ((sEntry.second.nData != sValue.second.nData) || (sEntry.second.nDebug != sValue.second.nDebug))
-			{
-				::std::cerr << ::std::endl;
-				::std::cerr << "data mismatches" << ::std::endl;
-				::std::cerr << "key: " << std::setfill ('0') << std::hex << std::setw (8) << sEntry.first << ::std::endl;
-				::std::cerr << "data: " << sEntry.second.nData << ::std::endl;
-
-				::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-				::std::cerr << "debug: " << sEntry.second.nDebug << ::std::endl;
-				::std::cerr << "reference" << ::std::endl;
-
-				::std::cerr << "data: " << std::setfill ('0') << std::hex << std::setw (8) << sValue.second.nData << ::std::endl;
-
-				::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-				::std::cerr << "debug: " << sValue.second.nDebug << ::std::endl;
-				
-				::std::cerr << "creating data.html..." << ::std::endl;
-
-				this->show_integrity ("data.html");
-
-				::std::cerr << "finished!" << ::std::endl;
-
-				exit (-1);
-			}
-		}
-		else
-		{
-			sItMMapLower = m_pClRef->lower_bound (*pnKey);
-			sItMMapUpper = m_pClRef->upper_bound (*pnKey);
-
-			sMMap.insert<citer_mmap_t> (sItMMapLower, sItMMapUpper);
-
-			sCIterLower = this->lower_bound (*pnKey);
-			sCIterUpper = this->upper_bound (*pnKey);
-
-			for (sCIter = sCIterLower; sCIter != sCIterUpper; sCIter++)
-			{
-				sEntry = ((value_type) (*sCIter));
-
-				bDeleted = false;
-
-				for (sItMMap = sMMap.cbegin (); sItMMap != sMMap.cend (); sItMMap++)
-				{
-					sValue = *sItMMap;
-
-					if (sEntry.second.nData == sValue.second.nData)
-					{
-						if (sEntry.second.nDebug == sValue.second.nDebug)
-						{
-							sMMap.erase (sItMMap);
-
-							bDeleted = true;
-
-							break;
-						}
-					}
-				}
-
-				if (!bDeleted)
-				{
-					::std::cerr << ::std::endl;
-					::std::cerr << "number of instances mismatches" << ::std::endl;
-					::std::cerr << "key: " << std::setfill ('0') << std::hex << std::setw (8) << sEntry.first << ::std::endl;
-					::std::cerr << "data: " << sEntry.second.nData << ::std::endl;
-
-					::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-					::std::cerr << "debug: " << sEntry.second.nDebug << ::std::endl;
-					::std::cerr << "Instance not found in reference!" << ::std::endl;
-
-					::std::cerr << "creating error.html..." << ::std::endl;
-
-					this->show_integrity ("error.html");
-
-					::std::cerr << "finished!" << ::std::endl;
-
-					exit (-1);
-				}
-			}
-
-			if (sMMap.size () != 0)
-			{
-				::std::cerr << ::std::endl;
-				::std::cerr << "number of instances mismatches" << ::std::endl;
-				::std::cerr << "the following entries are still present in reference:" << ::std::endl;
-
-				for (sItMMap = sMMap.cbegin (); sItMMap != sMMap.cend (); sItMMap++)
-				{
-					sValue = *sItMMap;
-
-					::std::cerr << "key: ";
-
-					::std::cerr << std::setfill ('0') << std::hex << std::setw (8);
-					{
-						::std::cerr << sValue.first << " ";
-						::std::cerr << "data: " << ::std::flush;
-						::std::cerr << sValue.second.nData << " ";
-					}
-					::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-					::std::cerr << "debug: " << sValue.second.nDebug << ::std::endl;
-				}
-
-				::std::cerr << "creating error.html..." << ::std::endl;
-
-				this->show_integrity ("error.html");
-
-				::std::cerr << "finished!" << ::std::endl;
-
-				exit (-1);
-			}
-		}
-
-		this->get_next_key (*pnKey, *pnKey, bBounce);
-
-		if (bBounce)
-		{
-			break;
-		}
-	}
-
-	if ((m_pClRef == NULL) && (!this->empty ()))
-	{
-		::std::cerr << ::std::endl;
-		::std::cerr << "reference not set while data container not empty" << ::std::endl;
-		::std::cerr << "size: " << this->size () << ::std::endl;
-
-		exit (-1);
-	}
-	
-	if ((m_pClRef != NULL) && (m_pClRef->size () != this->size ()))
-	{
-		::std::cerr << ::std::endl;
-		::std::cerr << "size mismatches" << ::std::endl;
-		::std::cerr << "size: " << this->size () << ::std::endl;
-		::std::cerr << "reference size: " << m_pClRef->size () << ::std::endl;
-
-		::std::cerr << "creating size.html..." << ::std::endl;
-
-		this->show_integrity ("size.html");
-
-		::std::cerr << "finished!" << ::std::endl;
-
-		exit (-1);
-	}
-}
-
-template<class _t_datalayerproperties>
-void CBTreeTestMap<_t_datalayerproperties>::set_reference (typename CBTreeTestMap<_t_datalayerproperties>::reference_t *pReference)
-{
-	m_pClRef = pReference;
-}
-
-template<class _t_datalayerproperties>
-void CBTreeTestMap<_t_datalayerproperties>::set_atomic_testing (bool bEnable)
-{
-	m_bAtomicTesting = bEnable;
+	CBTreeTestBaseAssociative_t::_swap (rAssociative);
 }
 	
 template<class _t_datalayerproperties>
@@ -573,11 +373,11 @@ bool CBTreeTestMap<_t_datalayerproperties>::show_data (std::ofstream &ofs, std::
 
 		rstrData << "<td align=\"top\">";
 
-		if (nOffset < m_pClRef->size ())
+		if (nOffset < this->m_pClRef->size ())
 		{
 			reference_t::const_iterator		sItMMap;
 
-			sItMMap = m_pClRef->cbegin ();
+			sItMMap = this->m_pClRef->cbegin ();
 
 			::std::advance (sItMMap, nDiff);
 

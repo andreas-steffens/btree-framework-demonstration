@@ -43,6 +43,20 @@ CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::
 }
 
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
+CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::CBTreeAssociativeTestWrapper (CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container> &&rRhsContainer)
+	:	m_pReference (NULL)
+	,	m_nNodeSize (rRhsContainer.m_nNodeSize)
+	,	m_nPageSize (rRhsContainer.m_nPageSize)
+	,	m_nHintVariation (0)
+{
+	m_pReference = new reference_t;
+
+	BTREE_ASSERT (m_pReference != NULL, "CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::CBTreeAssociativeTestWrapper (const CBTreeAssociativeTestWrapper &): ERROR: insufficient memory! (m_pReference)");
+
+	fast_swap (m_pReference, rRhsContainer.m_pReference);
+}
+
+template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
 CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::~CBTreeAssociativeTestWrapper ()
 {
 	uint32_t		i;
@@ -847,6 +861,27 @@ CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>& 
 }
 
 template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
+CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>& CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::operator= (CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container> &&rRhsContainer)
+{
+	uint32_t		i;
+
+	this->m_pReference->swap (*(rRhsContainer.m_pReference));
+
+	disable_atomic_testing ();
+	{
+		for (i = 0; i < this->get_num_containers (); i++)
+		{
+			*(this->m_ppContainers[i]) = ::std::move (*(rRhsContainer.m_ppContainers[i]));
+		}
+	}
+	enable_atomic_testing ();
+
+	this->test ();
+
+	return (*this);
+}
+
+template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
 bool CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::operator== (const CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container> &rContainer) const
 {
 	if (this == &rContainer)
@@ -1183,6 +1218,17 @@ typename CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_con
 	}
 
 	return (sCEqRange);
+}
+
+template<class _t_data, class _t_value, class _t_sizetype, class _t_ref_container>
+template<class _t_container>
+_t_container CBTreeAssociativeTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>::generate_move_construction (_t_container *pContainer, _t_ref_container *pReference) const
+{
+	_t_container	sContainer (*pContainer);
+
+	sContainer.set_reference (pReference);
+
+	return (sContainer);
 }
 
 #endif // BTREEASSOCIATIVETESTWRAPPER_CPP

@@ -2572,6 +2572,38 @@ void TestBTreeKeySortSTLifEqualRange (_t_container *pContainer, typename _t_cont
 	}
 }
 
+template<class _t_container>
+_t_container TestBTreeKeySortMoveConstructorAndAssignmentEx (_t_container *pContainer, typename _t_container::size_type nNumEntries)
+{
+	_t_container	sContainer (*pContainer);
+
+	return (sContainer);
+}
+
+template<class _t_container>
+void TestBTreeKeySortMoveConstructorAndAssignment (_t_container *pContainer, typename _t_container::size_type nNumEntries)
+{
+	typedef typename _t_container::key_type					key_type;
+
+	key_type								nLastKey;
+
+	_t_container							sContainer (*pContainer);
+
+	::std::cout << "exercises CBTreeKeysort<>:: CBTreeKeysort (CBTreeKeysort<> &&) and operator= (CBTreeKeysort<> &&)" << ::std::endl;
+
+	associative_container_add_primitive (&sContainer, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+
+	*pContainer = TestBTreeKeySortMoveConstructorAndAssignmentEx (&sContainer, nNumEntries);
+
+	pContainer->clear ();
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pContainer, 1, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+
+	*pContainer = TestBTreeKeySortMoveConstructorAndAssignmentEx (&sContainer, nNumEntries);
+}
+
 template<class _t_container, class _t_pair_container>
 void TestBTreeKeySort (uint32_t nTest, uint32_t nNodeSize, uint32_t nPageSize, _t_container *pKeySortTestWrapper, _t_pair_container *pKeySortPairTestWrapper)
 {
@@ -2922,7 +2954,15 @@ void TestBTreeKeySort (uint32_t nTest, uint32_t nNodeSize, uint32_t nPageSize, _
 
 			break;
 		}
-	
+
+	case BTREETEST_KEYSORT_MOVE_CONSTRUCTOR_AND_ASSIGNMENT	:	
+		{
+			TestBTreeKeySortMoveConstructorAndAssignment (pKeySortTestWrapper, 64);
+			TestBTreeKeySortMoveConstructorAndAssignment (pKeySortPairTestWrapper, 64);
+
+			break;
+		}
+
 	case BTREETEST_KEYSORT_CODE_COVERAGE_DETERMINE_POSITION	:
 		{
 			TestBTreeKeySortCCdeterminePosition (pKeySortTestWrapper, nNodeSize);

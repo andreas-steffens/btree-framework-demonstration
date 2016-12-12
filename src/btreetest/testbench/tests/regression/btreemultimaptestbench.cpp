@@ -684,6 +684,38 @@ void TestBTreeMultiMapSTLifEqualRange (_t_multimap *pClMM, typename _t_multimap:
 }
 
 template<class _t_container>
+_t_container TestBTreeMultiMapMoveConstructorAndAssignmentEx (_t_container *pClMM, typename _t_container::size_type nNumEntries)
+{
+	_t_container	sClMM (*pClMM);
+
+	return (sClMM);
+}
+
+template<class _t_container>
+void TestBTreeMultiMapMoveConstructorAndAssignment (_t_container *pClMM, typename _t_container::size_type nNumEntries)
+{
+	typedef typename _t_container::key_type					key_type;
+
+	key_type								nLastKey;
+
+	_t_container							sClMM (*pClMM);
+
+	::std::cout << "exercises CBTreeMultiMap<>:: CBTreeMultiMap (CBTreeMultiMap<> &&) and operator= (CBTreeMultiMap<> &&)" << ::std::endl;
+
+	associative_container_add_primitive (&sClMM, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+
+	*pClMM = TestBTreeMultiMapMoveConstructorAndAssignmentEx (&sClMM, nNumEntries);
+
+	pClMM->clear ();
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pClMM, 1, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+
+	*pClMM = TestBTreeMultiMapMoveConstructorAndAssignmentEx (&sClMM, nNumEntries);
+}
+
+template<class _t_container>
 void TestBTreeSTLmultiMap (uint32_t nTestNum, uint32_t nNodeSize, uint32_t nPageSize, _t_container *pMMapWrapper)
 {
 	typename _t_container::size_test_type		sTypeSelect;
@@ -707,6 +739,13 @@ void TestBTreeSTLmultiMap (uint32_t nTestNum, uint32_t nNodeSize, uint32_t nPage
 	case BTREETEST_MULTIMAP_ASSIGNMENT_OPERATOR	:
 		{
 			TestBTreeMultiMapSTLifAssignmentOperator (pMMapWrapper, 64);
+
+			break;
+		}
+
+	case BTREETEST_MULTIMAP_MOVE_CONSTRUCTOR_AND_ASSIGNMENT	:
+		{
+			TestBTreeMultiMapMoveConstructorAndAssignment (pMMapWrapper, 64);
 
 			break;
 		}

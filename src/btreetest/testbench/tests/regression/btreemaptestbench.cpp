@@ -688,6 +688,38 @@ void TestBTreeMapSTLifEqualRange (_t_map *pClM, typename _t_map::size_type nNumE
 }
 
 template<class _t_container>
+_t_container TestBTreeMapMoveConstructorAndAssignmentEx (_t_container *pClM, typename _t_container::size_type nNumEntries)
+{
+	_t_container	sClM (*pClM);
+
+	return (sClM);
+}
+
+template<class _t_container>
+void TestBTreeMapMoveConstructorAndAssignment (_t_container *pClM, typename _t_container::size_type nNumEntries)
+{
+	typedef typename _t_container::key_type					key_type;
+
+	key_type								nLastKey;
+
+	_t_container							sClM (*pClM);
+
+	::std::cout << "exercises CBTreeMap<>:: CBTreeMap (CBTreeMap<> &&) and operator= (CBTreeMap<> &&)" << ::std::endl;
+
+	associative_container_add_primitive (&sClM, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+
+	*pClM = TestBTreeMapMoveConstructorAndAssignmentEx (&sClM, nNumEntries);
+
+	pClM->clear ();
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pClM, 1, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+
+	*pClM = TestBTreeMapMoveConstructorAndAssignmentEx (&sClM, nNumEntries);
+}
+
+template<class _t_container>
 void TestBTreeSTLmap (uint32_t nTestNum, uint32_t nNodeSize, uint32_t nPageSize, _t_container *pMapWrapper)
 {
 	typename _t_container::size_test_type		sTypeSelect;
@@ -711,6 +743,13 @@ void TestBTreeSTLmap (uint32_t nTestNum, uint32_t nNodeSize, uint32_t nPageSize,
 	case BTREETEST_MAP_ASSIGNMENT_OPERATOR	:
 		{
 			TestBTreeMapSTLifAssignmentOperator (pMapWrapper, 64);
+
+			break;
+		}
+
+	case BTREETEST_MAP_MOVE_CONSTRUCTOR_AND_ASSIGNMENT:
+		{
+			TestBTreeMapMoveConstructorAndAssignment (pMapWrapper, 64);
 
 			break;
 		}

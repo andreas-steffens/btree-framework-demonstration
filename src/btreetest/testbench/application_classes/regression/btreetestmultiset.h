@@ -23,15 +23,31 @@
 #include <sstream>
 
 #include "testbench/common/btreetestcommon.h"
+#include "testbench/application_classes/regression/base/btreetestbaseset.h"
 
-#include "base_class_stack/btreebasedefaults.h"
 #include "specific_data_classes/btreemultiset.h"
 
 template<class _t_datalayerproperties>
 class CBTreeTestMultiSet
-	:	public CBTreeMultiSet<uint32_t, _t_datalayerproperties>
+	:	public CBTreeTestBaseSet
+				<
+					CBTreeMultiSet<uint32_t, _t_datalayerproperties>, 
+					::std::multiset<uint32_t>, 
+					uint32_t, 
+					_t_datalayerproperties
+				>
 {
 public:
+
+	typedef CBTreeTestMultiSet											CBTreeTestMultiSet_t;
+
+	typedef CBTreeTestBaseSet
+		<
+			CBTreeMultiSet<uint32_t, _t_datalayerproperties>, 
+			::std::multiset<uint32_t>, 
+			uint32_t, 
+			_t_datalayerproperties
+		>																CBTreeTestBaseSet_t;
 
 	typedef uint32_t													value_type;
 	typedef uint32_t													key_type;
@@ -47,8 +63,6 @@ public:
 	typedef const value_type*											const_pointer;
 	typedef	typename ::std::make_signed<size_type>::type				difference_type;
 
-	typedef CBTreeTestMultiSet											CBTreeTestMultiSet_t;
-	
 	typedef CBTreeMultiSet<key_type, _t_datalayerproperties>			CBTreeMultiSet_t;
 
 	typedef typename CBTreeMultiSet_t::CBTreeAssociativeIf_t			CBTreeAssociativeIf_t;
@@ -80,12 +94,16 @@ public:
 								(_t_datalayerproperties &rDataLayerProperties, sub_node_iter_type nNodeSize, reference_t *pClRefData);
 
 							CBTreeTestMultiSet<_t_datalayerproperties>
-								(const CBTreeTestMultiSet<_t_datalayerproperties> &rBT, bool bAssign = true);
+								(const CBTreeTestMultiSet<_t_datalayerproperties> &rContainer, const bool bAssign = true);
+
+							CBTreeTestMultiSet<_t_datalayerproperties>
+								(CBTreeTestMultiSet<_t_datalayerproperties> &&rRhsContainer);
 
 							~CBTreeTestMultiSet<_t_datalayerproperties>
 								();
 
-	CBTreeTestMultiSet_t &	operator=				(const CBTreeTestMultiSet_t &rBT);
+	CBTreeTestMultiSet_t &	operator=				(const CBTreeTestMultiSet_t &rContainer);
+	CBTreeTestMultiSet_t &	operator=				(CBTreeTestMultiSet_t &&rRhsContainer);
 
 	template<class _t_iterator>
 	void					insert					(_t_iterator sItFirst, _t_iterator sItLast);
@@ -102,28 +120,19 @@ public:
 	size_type				erase					(const key_type &rKey);
 	iterator				erase					(const_iterator sCIterFirst, const_iterator sCIterLast);
 
-	void					swap					(CBTreeTestMultiSet &rTMM);
+	void					swap					(CBTreeTestMultiSet &rContainer);
 
 	void					clear					();
 
 	bool					operator==				(const CBTreeTestMultiSet &rTMM) const;
 	bool					operator!=				(const CBTreeTestMultiSet &rTMM) const;
 
-	void					test					() const;
-
-	void					set_reference			(reference_t *pReference);
-
-	void					set_atomic_testing		(bool bEnable);
-
 protected:
+
+	void					_swap					(CBTreeTestMultiSet_t &rContainer);
 
 	bool					show_data				(std::ofstream &ofs, std::stringstream &rstrData, std::stringstream &rszMsg, const node_iter_type nNode, const sub_node_iter_type nSubPos) const;
 	
-	reference_t				*m_pClRef;
-
-	bool					m_bAtomicTesting;
-	btree_time_stamp_t		*m_psTestTimeStamp;
-
 public:
 
 	friend class CBTreeIterator<CBTreeIf_t>;

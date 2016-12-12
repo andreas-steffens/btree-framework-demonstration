@@ -23,6 +23,8 @@
 #include <iostream>
 #include <iomanip>
 
+#include "testbench/application_classes/regression/base/btreetestbaselinear.h"
+
 #include <btreearray.h>
 
 template<class _t_datalayerproperties>
@@ -58,9 +60,24 @@ typedef struct arrayEntry_s
 
 template<class _t_datalayerproperties = CBTreeIOpropertiesRAM <> >
 class CBTreeTestArray
-	:	public CBTreeArray <arrayEntry_t, _t_datalayerproperties>
+	:	public CBTreeTestBaseLinear
+				<
+					CBTreeArray <arrayEntry_t, _t_datalayerproperties>, 
+					::std::list<arrayEntry_t>, 
+					arrayEntry_t, 
+					_t_datalayerproperties
+				>
 {
 public:
+
+	typedef CBTreeTestArray											CBTreeTestArray_t;
+
+	typedef CBTreeTestBaseLinear<
+									CBTreeArray <arrayEntry_t, _t_datalayerproperties>, 
+									::std::list<arrayEntry_t>, 
+									arrayEntry_t, 
+									_t_datalayerproperties
+								>									CBTreeTestBaseLinear_t;
 
 	typedef arrayEntry_t											value_type;
 	typedef typename _t_datalayerproperties::size_type				size_type;
@@ -90,14 +107,17 @@ public:
 													(_t_datalayerproperties &rDataLayerProperties, sub_node_iter_type nNodeSize, reference_t *pClRef);
 
 						CBTreeTestArray<_t_datalayerproperties>
-													(CBTreeTestArray<_t_datalayerproperties> &rBT, bool bAssign = true);
+													(const CBTreeTestArray<_t_datalayerproperties> &rContainer, const bool bAssign = true);
+
+						CBTreeTestArray<_t_datalayerproperties>
+													(CBTreeTestArray<_t_datalayerproperties> &&rRhsContainer);
 
 						~CBTreeTestArray<_t_datalayerproperties>
 													();
 
 	template<class _t_iterator>
 	void				assign						(_t_iterator sItFirst, _t_iterator sItLast);
-	void				assign						(size_type nNewSize, const value_type& rVal);
+	void				assign						(const size_type nNewSize, const value_type& rVal);
 
 	void				push_back					(const value_type& rData);
 
@@ -119,14 +139,11 @@ public:
 	bool				operator==					(const CBTreeTestArray &rArray) const;
 	bool				operator!=					(const CBTreeTestArray &rArray) const;
 
-	void				test						() const;
-
-	void				set_reference				(reference_t *pReference);
-
-	void				set_atomic_testing			(bool bEnable);
+	CBTreeTestArray<_t_datalayerproperties>
+						&operator=					(const CBTreeTestArray<_t_datalayerproperties> &rContainer);
 
 	CBTreeTestArray<_t_datalayerproperties>
-						&operator=					(const CBTreeTestArray<_t_datalayerproperties> &rBT);
+						&operator=					(CBTreeTestArray<_t_datalayerproperties> &&rRhsContainer);
 
 protected:
 
@@ -135,10 +152,7 @@ protected:
 	bool				set_at						(const size_type nPos, const value_type &rData);
 	bool				get_at						(const size_type nPos, value_type &rData) const;
 
-	reference_t			*m_pClRef;
-
-	bool				m_bAtomicTesting;
-	btree_time_stamp_t	*m_psTestTimeStamp;
+	void		_swap								(CBTreeTestArray<_t_datalayerproperties> &rContainer);
 };
 
 #endif // BTREETESTARRAY_H

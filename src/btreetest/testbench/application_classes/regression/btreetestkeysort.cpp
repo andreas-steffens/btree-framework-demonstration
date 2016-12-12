@@ -25,48 +25,87 @@ CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::CBTreeKeySortTest
 		typename _t_datalayerproperties::sub_node_iter_type nNodeSize, 
 		typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::reference_t *pClRefData
 	)
-	:	CBTreeKeySort<_t_data, _t_key, _t_datalayerproperties>
-	(
-		rDataLayerProperties, 
-		nNodeSize
-	)
-	,	m_pClRefData (pClRefData)
-	,	m_bAtomicTesting (true)
-	,	m_psTestTimeStamp (NULL)
+	:	CBTreeTestBaseAssociative
+			<
+				CBTreeKeySort<_t_data, _t_key, _t_datalayerproperties>, 
+				::std::multimap<_t_key, keySortMap_t>, 
+				_t_data, 
+				_t_key, 
+				_t_datalayerproperties
+			>
+		(
+			rDataLayerProperties, 
+			nNodeSize, 
+			pClRefData, 
+			true
+		)
 {
-	m_psTestTimeStamp = new btree_time_stamp_t (this->get_time_stamp ());
 }
 
 template<class _t_data, class _t_key, class _t_datalayerproperties>
 CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::CBTreeKeySortTest
 	(
-		CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &rBT, 
-		bool bAssign
+		const CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &rContainer, 
+		const bool bAssign
 	)
-	:	CBTreeKeySort<_t_data, _t_key, _t_datalayerproperties> (rBT, false)
-	,	m_pClRefData (NULL)
-	,	m_bAtomicTesting (false)
-	,	m_psTestTimeStamp (NULL)
+	:	CBTreeTestBaseAssociative
+			<
+				CBTreeKeySort<_t_data, _t_key, _t_datalayerproperties>,
+				::std::multimap<_t_key, keySortMap_t>, 
+				_t_data, 
+				_t_key, 
+				_t_datalayerproperties
+			>
+		(
+			dynamic_cast<const CBTreeTestBaseAssociative
+							<
+								CBTreeKeySort<_t_data, _t_key, _t_datalayerproperties>, 
+								::std::multimap<_t_key, keySortMap_t>, 
+								_t_data, 
+								_t_key, 
+								_t_datalayerproperties
+							> &> (rContainer), 
+							false
+		)
 {
-	m_psTestTimeStamp = new btree_time_stamp_t (this->get_time_stamp ());
-
 	if (bAssign)
 	{
-		this->_assign (rBT);
+		this->_assign (rContainer);
 	}
 
 	this->set_atomic_testing (true);
 }
 
 template<class _t_data, class _t_key, class _t_datalayerproperties>
+CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::CBTreeKeySortTest
+	(
+		CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &&rRhsContainer
+	)
+	:	CBTreeTestBaseAssociative
+				<
+					CBTreeKeySort<_t_data, _t_key, _t_datalayerproperties>, 
+					::std::multimap<_t_key, keySortMap_t>, 
+					_t_data, 
+					_t_key, 
+					_t_datalayerproperties
+				>
+		(
+			dynamic_cast<CBTreeTestBaseAssociative
+							<
+								CBTreeKeySort<_t_data, _t_key, _t_datalayerproperties>, 
+								::std::multimap<_t_key, keySortMap_t>, 
+								_t_data, 
+								_t_key, 
+								_t_datalayerproperties
+							> &&> (rRhsContainer)
+		)
+{
+	this->test ();
+}
+
+template<class _t_data, class _t_key, class _t_datalayerproperties>
 CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::~CBTreeKeySortTest ()
 {
-	if (m_psTestTimeStamp != NULL)
-	{
-		delete m_psTestTimeStamp;
-
-		m_psTestTimeStamp = NULL;
-	}
 }
 
 template<class _t_data, class _t_key, class _t_datalayerproperties>
@@ -75,7 +114,7 @@ void CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::insert (_t_iter
 {
 	this->insert_via_iterator (sItFirst, sItLast);
 
-	test ();
+	this->test ();
 }
 
 template<class _t_data, class _t_key, class _t_datalayerproperties>
@@ -89,7 +128,7 @@ typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::iterator
 
 	sIter = CBTreeKeySort_t::insert (rData);
 
-	test ();
+	this->test ();
 
 	return (sIter);
 }
@@ -107,7 +146,7 @@ typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::iterator
 
 	sIter = CBTreeKeySort_t::insert (sCIterHint, ::std::forward<_t_va_args> (rrArgs) ...);
 
-	test ();
+	this->test ();
 
 	return (sIter);
 }
@@ -119,17 +158,11 @@ typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::iterator
 		typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::const_iterator sCIterPos
 	)
 {
-	typedef typename reference_t::iterator		itmmap_t;
-
-	key_type		sKey = (*sCIterPos).first;
-	itmmap_t		sItMMapLower = m_pClRefData->lower_bound (sKey);
-	itmmap_t		sItMMapUpper = m_pClRefData->upper_bound (sKey);
-	itmmap_t		sItMMap;
 	iterator		sIter;
 	
 	sIter = CBTreeKeySort_t::erase (sCIterPos);
 
-	test ();
+	this->test ();
 
 	return (sIter);
 }
@@ -141,7 +174,7 @@ typename _t_datalayerproperties::size_type CBTreeKeySortTest<_t_data, _t_key, _t
 
 	nRetval = CBTreeKeySort_t::erase (rKey);
 
-	test ();
+	this->test ();
 
 	return (nRetval);
 }
@@ -165,7 +198,7 @@ typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::iterator
 
 	sIter = CBTreeKeySort_t::erase (sCIterFirst, sCIterLast);
 
-	test ();
+	this->test ();
 
 	return (sIter);
 }
@@ -173,16 +206,15 @@ typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::iterator
 template<class _t_data, class _t_key, class _t_datalayerproperties>
 void CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::swap
 	(
-		CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &rKeySort
+		CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &rContainer
 	)
 {
-	CBTreeKeySort_t	&rBtrKeySort = dynamic_cast <CBTreeKeySort_t &> (rKeySort);
+	if (this != &rContainer)
+	{
+		CBTreeKeySortTest_t::_swap (rContainer);
 
-	m_pClRefData->swap (*(rKeySort.m_pClRefData));
-
-	CBTreeKeySort_t::swap (rBtrKeySort);
-
-	test ();
+		this->test ();
+	}
 }
 
 template<class _t_data, class _t_key, class _t_datalayerproperties>
@@ -190,7 +222,7 @@ void CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::clear ()
 {
 	CBTreeKeySort_t::clear ();
 
-	test ();
+	this->test ();
 }
 
 template<class _t_data, class _t_key, class _t_datalayerproperties>
@@ -217,271 +249,33 @@ typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::value_type 
 
 template<class _t_data, class _t_key, class _t_datalayerproperties>
 CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::operator=
-	(const CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &rBT)
+	(const CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &rContainer)
 {
-	if (this != &rBT)
+	if (this != &rContainer)
 	{
-		CBTreeKeySort_t			&rThisKeySort;
-		const CBTreeKeySort_t	&rBTKeySort;
+		CBTreeTestBaseAssociative_t			&rBaseAssociativeThis = dynamic_cast <CBTreeTestBaseAssociative_t &> (*this);
+		const CBTreeTestBaseAssociative_t	&rBaseAssociativeContainer = dynamic_cast <const CBTreeTestBaseAssociative_t &> (rContainer);
 
-		rThisKeySort = dynamic_cast <CBTreeKeySort_t &> (*this);
-		rBTKeySort = dynamic_cast <const CBTreeKeySort_t &> (rBT);
+		rBaseAssociativeThis = rBaseAssociativeContainer;
 
-		rThisKeySort = rBTKeySort;
-
-		test ();
+		this->test ();
 	}
 
 	return (*this);
 }
 
 template<class _t_data, class _t_key, class _t_datalayerproperties>
-void CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::test () const
+CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::operator=
+	(CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &&rRhsContainer)
 {
-	if (!m_bAtomicTesting)
-	{
-		return;
-	}
+	CBTreeTestBaseAssociative_t		&rBaseAssociativeThis = dynamic_cast <CBTreeTestBaseAssociative_t &> (*this);
+	CBTreeTestBaseAssociative_t		&rBaseAssociativeContainer = dynamic_cast <CBTreeTestBaseAssociative_t &> (rRhsContainer);
 
-	if (*m_psTestTimeStamp == this->get_time_stamp ())
-	{
-		return;
-	}
+	rBaseAssociativeThis = ::std::move (rBaseAssociativeContainer);
 
-	*m_psTestTimeStamp = this->get_time_stamp ();
-
-	typedef typename reference_t::const_iterator			citer_mmap_t;
-
-	reference_t									sMMap;
-	key_type									nKey;
-	key_type									*pnKey;
-	bool										bBounce;
-	size_type									nTotalCount = 0;
-	value_type									sEntry;
-	citer_mmap_t								sItMMapLower;
-	citer_mmap_t								sItMMapUpper;
-	citer_mmap_t								sItMMap;
-	const_iterator								sCIterBegin;
-	const_iterator								sCIterEnd;
-	const_iterator								sCIterLower;
-	const_iterator								sCIterUpper;
-	const_iterator								sCIter;
-	bool										bDeleted;
+	this->test ();
 	
-	if (!this->test_integrity ())
-	{
-		::std::cerr << ::std::endl;
-		::std::cerr << "integrity test failed" << ::std::endl;
-
-		::std::cerr << "creating integrity.html..." << ::std::endl;
-
-		this->show_integrity ("integrity.html");
-
-		::std::cerr << "finished!" << ::std::endl;
-
-		exit (-1);
-	}
-
-	sCIterBegin = CBTreeKeySort_t::cbegin ();
-	sCIterEnd = CBTreeKeySort_t::cend ();
-
-	sCIter = sCIterBegin;
-
-	if (this->size () > 0)
-	{
-		pnKey = this->extract_key (&nKey, ((value_type) (*sCIter)));
-	}
-
-	while (sCIter != sCIterEnd)
-	{
-		if (m_pClRefData->count (*pnKey) != this->count (*pnKey))
-		{
-			::std::cerr << ::std::endl;
-			::std::cerr << "number of instances mismatches" << ::std::endl;
-			::std::cerr << "key: " << std::setfill ('0') << std::hex << std::setw (8) << *pnKey << ::std::endl;
-			::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-			::std::cerr << "count: " << this->count (*pnKey) << ::std::endl;
-			::std::cerr << "reference: " << m_pClRefData->count (*pnKey) << ::std::endl;
-			
-			::std::cerr << "creating count.html..." << ::std::endl;
-
-			this->show_integrity ("count.html");
-
-			::std::cerr << "finished!" << ::std::endl;
-
-			exit (-1);
-		}
-
-		if (this->count (*pnKey) == 1)
-		{
-			sItMMapLower = m_pClRefData->lower_bound (*pnKey);
-
-			sCIterLower = CBTreeKeySort_t::lower_bound (*pnKey);
-
-			value_type						sValue ((value_type) *sItMMapLower);
-
-			sEntry = ((value_type) (*sCIterLower));
-
-			if ((sEntry.second.nData != sValue.second.nData) || (sEntry.second.nDebug != sValue.second.nDebug))
-			{
-				::std::cerr << ::std::endl;
-				::std::cerr << "data mismatches" << ::std::endl;
-				::std::cerr << "key: " << std::setfill ('0') << std::hex << std::setw (8) << sEntry.first << ::std::endl;
-				::std::cerr << "data: " << sEntry.second.nData << ::std::endl;
-
-				::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-				::std::cerr << "debug: " << sEntry.second.nDebug << ::std::endl;
-				::std::cerr << "reference" << ::std::endl;
-
-				::std::cerr << "data: " << std::setfill ('0') << std::hex << std::setw (8) << sValue.second.nData << ::std::endl;
-
-				::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-				::std::cerr << "debug: " << sValue.second.nDebug << ::std::endl;
-				
-				::std::cerr << "creating data.html..." << ::std::endl;
-
-				this->show_integrity ("data.html");
-
-				::std::cerr << "finished!" << ::std::endl;
-
-				exit (-1);
-			}
-		}
-		else
-		{
-			sItMMapLower = m_pClRefData->lower_bound (*pnKey);
-			sItMMapUpper = m_pClRefData->upper_bound (*pnKey);
-
-			sMMap.insert<citer_mmap_t> (sItMMapLower, sItMMapUpper);
-
-			sCIterLower = CBTreeKeySort_t::lower_bound (*pnKey);
-			sCIterUpper = CBTreeKeySort_t::upper_bound (*pnKey);
-
-			for (sCIter = sCIterLower; sCIter != sCIterUpper; sCIter++)
-			{
-				sEntry = ((value_type) (*sCIter));
-
-				bDeleted = false;
-
-				for (sItMMap = sMMap.cbegin (); sItMMap != sMMap.cend (); sItMMap++)
-				{
-					value_type				sValue ((value_type) *sItMMap);
-
-					if (sEntry.second.nData == sValue.second.nData)
-					{
-						if (sEntry.second.nDebug == sValue.second.nDebug)
-						{
-							sMMap.erase (sItMMap);
-
-							bDeleted = true;
-
-							break;
-						}
-					}
-				}
-
-				if (!bDeleted)
-				{
-					::std::cerr << ::std::endl;
-					::std::cerr << "number of instances mismatches" << ::std::endl;
-					::std::cerr << "key: " << std::setfill ('0') << std::hex << std::setw (8) << sEntry.first << ::std::endl;
-					::std::cerr << "data: " << sEntry.second.nData << ::std::endl;
-
-					::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-					::std::cerr << "debug: " << sEntry.second.nDebug << ::std::endl;
-					::std::cerr << "Instance not found in reference!" << ::std::endl;
-
-					::std::cerr << "creating error.html..." << ::std::endl;
-
-					this->show_integrity ("error.html");
-
-					::std::cerr << "finished!" << ::std::endl;
-
-					exit (-1);
-				}
-			}
-
-			if (sMMap.size () != 0)
-			{
-				::std::cerr << ::std::endl;
-				::std::cerr << "number of instances mismatches" << ::std::endl;
-				::std::cerr << "the following entries are still present in reference:" << ::std::endl;
-
-				for (sItMMap = sMMap.cbegin (); sItMMap != sMMap.cend (); sItMMap++)
-				{
-					value_type						sValue ((value_type) *sItMMap);
-
-					::std::cerr << "key: ";
-
-					::std::cerr << std::setfill ('0') << std::hex << std::setw (8);
-					{
-						::std::cerr << sValue.first << " ";
-						::std::cerr << "data: " << ::std::flush;
-						::std::cerr << sValue.second.nData << " ";
-					}
-					::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-					::std::cerr << "debug: " << sValue.second.nDebug << ::std::endl;
-				}
-
-				::std::cerr << "creating error.html..." << ::std::endl;
-
-				this->show_integrity ("error.html");
-
-				::std::cerr << "finished!" << ::std::endl;
-
-				exit (-1);
-			}
-		}
-
-		CBTreeKeySort_t::get_next_key (*pnKey, *pnKey, bBounce);
-
-		if (bBounce)
-		{
-			break;
-		}
-	}
-
-	if ((m_pClRefData == NULL) && (!this->empty ()))
-	{
-		::std::cerr << ::std::endl;
-		::std::cerr << "reference not set while data container not empty" << ::std::endl;
-		::std::cerr << "size: " << this->size () << ::std::endl;
-
-		exit (-1);
-	}
-	
-	if ((m_pClRefData != NULL) && (m_pClRefData->size () != this->size ()))
-	{
-		::std::cerr << ::std::endl;
-		::std::cerr << "size mismatches" << ::std::endl;
-		::std::cerr << "size: " << this->size () << ::std::endl;
-		::std::cerr << "reference size: " << m_pClRefData->size () << ::std::endl;
-
-		::std::cerr << "creating size.html..." << ::std::endl;
-
-		this->show_integrity ("size.html");
-
-		::std::cerr << "finished!" << ::std::endl;
-
-		exit (-1);
-	}
-}
-
-template<class _t_data, class _t_key, class _t_datalayerproperties>
-void CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::set_reference (typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::reference_t *pReference)
-{
-	m_pClRefData = pReference;
-}
-
-template<class _t_data, class _t_key, class _t_datalayerproperties>
-void CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::set_atomic_testing (bool bEnable)
-{
-	m_bAtomicTesting = bEnable;
+	return (*this);
 }
 
 template<class _t_data, class _t_key, class _t_datalayerproperties>
@@ -500,18 +294,6 @@ int CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::comp (const type
 }
 
 template<class _t_data, class _t_key, class _t_datalayerproperties>
-typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::key_type* CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::extract_key (typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::key_type *pKey, const typename _t_datalayerproperties::node_iter_type nNode, const typename _t_datalayerproperties::sub_node_iter_type nEntry) const
-{
-	return (CBTreeKeySort_t::extract_key (pKey, nNode, nEntry));
-}
-
-template<class _t_data, class _t_key, class _t_datalayerproperties>
-typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::key_type* CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::extract_key (typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::key_type *pKey, const typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::value_type &rData) const
-{
-	return ((typename ::std::remove_const<_t_key>::type *) &(rData.first));
-}
-
-template<class _t_data, class _t_key, class _t_datalayerproperties>
 template<class _t_iterator, class _t_ref_iterator>
 typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::value_type CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::get_data_reference (_t_iterator &rIter)
 {
@@ -520,7 +302,7 @@ typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::value_type 
 
 	get_begin (this, sIterBegin);
 	
-	get_begin (this->m_pClRefData, sMMapCIter);
+	get_begin (this->m_pClRef, sMMapCIter);
 
 	size_type			nOffset = ::std::distance (sIterBegin, rIter);
 
@@ -530,9 +312,18 @@ typename CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::value_type 
 }
 
 template<class _t_data, class _t_key, class _t_datalayerproperties>
+void CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::_swap (CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties> &rContainer)
+{
+	CBTreeTestBaseAssociative_t		&rAssociative = dynamic_cast<CBTreeTestBaseAssociative_t &> (rContainer);
+
+	CBTreeTestBaseAssociative_t::_swap (rAssociative);
+}
+
+template<class _t_data, class _t_key, class _t_datalayerproperties>
 bool CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::show_data (std::ofstream &ofs, std::stringstream &rstrData, std::stringstream &rszMsg, const typename _t_datalayerproperties::node_iter_type nNode, const typename _t_datalayerproperties::sub_node_iter_type nSubPos) const
 {
 	typedef typename reference_t::const_iterator		mmap_citer_t;
+	typedef typename reference_t::value_type			value_ref_t;
 
 	value_type				*psData;
 	key_type				rData;
@@ -541,36 +332,36 @@ bool CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::show_data (std:
 	{
 		psData = this->get_data (nNode, nSubPos);
 
-		rData = psData->first;
+		rData = get_entry_key (*psData);
 		rData = (rData >> 16) | (rData << 16);
 		rData = ((rData >> 8) & 0xFF00FF) | ((rData << 8) & 0xFF00FF00);
 		
 		rstrData.clear ();
 		rstrData << "<table border=\"0\" cellspacing=\"1\" width=\"220\"><tr><td>";
 		rstrData << "key: " << ::std::hex << ::std::setfill ('0') << ::std::setw (8) << rData << "<br>";
-		rstrData << "data: " << psData->second.nData << ::std::dec << "<br>";
-		rstrData << "debug: " << psData->second.nDebug << "<br>";
+		rstrData << "data: " << get_entry_data (*psData) << ::std::dec << "<br>";
+		rstrData << "debug: " << get_entry_debug (*psData) << "<br>";
 		rstrData << "instance: " << this->get_instancePos (nNode, nSubPos);
 		rstrData << "</td>";
 
-		size_type		nDiff = this->lower_bound (psData->first) - this->cbegin ();
+		size_type		nDiff = this->lower_bound (get_entry_key (*psData)) - this->cbegin ();
 		size_type		nOffset = nDiff + this->get_instancePos (nNode, nSubPos);
 
 		rstrData << "<td align=\"top\">";
 
-		if (nOffset < m_pClRefData->size ())
+		if (nOffset < this->m_pClRef->size ())
 		{
 			mmap_citer_t		sItMMap;
 
-			sItMMap = m_pClRefData->cbegin ();
+			sItMMap = this->m_pClRef->cbegin ();
 
 			::std::advance (sItMMap, nOffset);
 
-			rData = (*sItMMap).first;
+			rData = get_entry_key ((value_ref_t) *sItMMap);
 			rData = (rData >> 16) | (rData << 16);
 			rData = ((rData >> 8) & 0xFF00FF)| ((rData << 8) & 0xFF00FF00);
 
-			if (psData->first != (*sItMMap).first)
+			if (get_entry_key (*psData) != get_entry_key ((value_ref_t) *sItMMap))
 			{
 				if (ofs.is_open ())
 				{
@@ -589,7 +380,7 @@ bool CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::show_data (std:
 			rstrData << "key: " << ::std::hex << ::std::setfill ('0') << ::std::setw (8) << rData << "<br>";
 			rstrData << "</font>";
 
-			if (psData->second.nData != (*sItMMap).second.nData)
+			if (get_entry_data (*psData) != get_entry_data ((value_ref_t) *sItMMap))
 			{
 				if (ofs.is_open ())
 				{
@@ -605,10 +396,10 @@ bool CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::show_data (std:
 				rstrData << "<font color=\"#00BB00\">";
 			}
 			
-			rstrData << "data: " << (*sItMMap).second.nData << ::std::dec << "<br>";
+			rstrData << "data: " << get_entry_data ((value_ref_t) *sItMMap) << ::std::dec << "<br>";
 			rstrData << "</font>";
 
-			if (psData->second.nDebug != (*sItMMap).second.nDebug)
+			if (get_entry_debug (*psData) != get_entry_debug ((value_ref_t) *sItMMap))
 			{
 				rstrData << "<font color=\"#AAAA00\">";
 			}
@@ -617,7 +408,7 @@ bool CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::show_data (std:
 				rstrData << "<font color=\"#00BB00\">";
 			}
 			
-			rstrData << "debug: " << (*sItMMap).second.nDebug << "<br>";
+			rstrData << "debug: " << get_entry_debug ((value_ref_t) *sItMMap) << "<br>";
 			rstrData << "</font>";
 			rstrData << "-";
 		}
@@ -643,653 +434,12 @@ bool CBTreeKeySortTest<_t_data, _t_key, _t_datalayerproperties>::show_data (std:
 		rszMsg.clear ();
 		rszMsg << "<br>data: corruption (" << pE->what () << ")";
 
-		rData = psData->first;
+		rData = get_entry_key (*psData);
 		rData = (rData >> 16) | (rData << 16);
 		rData = ((rData >> 8) & 0xFF00FF)| ((rData << 8) & 0xFF00FF00);
 		
 		rstrData.clear ();
-		rstrData << "key: " << ::std::hex << ::std::setfill ('0') << ::std::setw (8) << rData << ::std::dec << "<br>debug: " << psData->second.nDebug << "<br>instance: ---";
-	}
-
-	return (true);
-}
-
-/******************************************************************/
-
-template<class _t_datalayerproperties>
-CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::CBTreeKeySortTest
-	(
-		_t_datalayerproperties &rDataLayerProperties, 
-		typename _t_datalayerproperties::sub_node_iter_type nNodeSize, 
-		typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::reference_t *pClRefData
-	)
-	:	CBTreeKeySort<keySortEntry_t, uint32_t, _t_datalayerproperties>
-	(
-		rDataLayerProperties, 
-		nNodeSize
-	)
-	,	m_pClRefData (pClRefData)
-	,	m_bAtomicTesting (true)
-	,	m_psTestTimeStamp (NULL)
-{
-	m_psTestTimeStamp = new btree_time_stamp_t (this->get_time_stamp ());
-}
-
-template<class _t_datalayerproperties>
-CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::CBTreeKeySortTest
-	(
-		CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties> &rBT, 
-		bool bAssign
-	)
-	:	CBTreeKeySort<keySortEntry_t, uint32_t, _t_datalayerproperties>
-	(
-		rBT, false
-	)
-	,	m_pClRefData (NULL)
-	,	m_bAtomicTesting (false)
-	,	m_psTestTimeStamp (NULL)
-{
-	m_psTestTimeStamp = new btree_time_stamp_t (this->get_time_stamp ());
-
-	if (bAssign)
-	{
-		this->_assign (rBT);
-	}
-
-	this->set_atomic_testing (true);
-}
-
-template<class _t_datalayerproperties>
-CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::~CBTreeKeySortTest ()
-{
-	if (m_psTestTimeStamp != NULL)
-	{
-		delete m_psTestTimeStamp;
-
-		m_psTestTimeStamp = NULL;
-	}
-}
-
-template<class _t_datalayerproperties>
-template<class _t_iterator>
-void CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::insert (_t_iterator sItFirst, _t_iterator sItLast)
-{
-	this->insert_via_iterator (sItFirst, sItLast);
-
-	test ();
-}
-
-template<class _t_datalayerproperties>
-typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::iterator
-	CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::insert
-	(
-		const typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::value_type &rData
-	)
-{
-	iterator								sIter;
-
-	sIter = CBTreeKeySort_t::insert (rData);
-
-	test ();
-
-	return (sIter);
-}
-
-template<class _t_datalayerproperties>
-template<class ..._t_va_args>
-typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::iterator
-	CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::insert
-	(
-		typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::const_iterator sCIterHint, 
-		_t_va_args && ... rrArgs
-	)
-{
-	iterator					sIter;
-
-	sIter = CBTreeKeySort_t::insert (sCIterHint, ::std::forward<_t_va_args> (rrArgs) ...);
-
-	test ();
-
-	return (sIter);
-}
-
-template<class _t_datalayerproperties>
-typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::iterator
-	CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::erase
-	(
-		typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::const_iterator sCIterPos
-	)
-{
-	iterator	sIter = CBTreeKeySort_t::erase (sCIterPos);
-
-	test ();
-
-	return (sIter);
-}
-
-template<class _t_datalayerproperties>
-typename _t_datalayerproperties::size_type CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::erase (const typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::key_type &rKey)
-{
-	size_type		nRetval;
-
-	nRetval = CBTreeKeySort_t::erase (rKey);
-
-	test ();
-
-	return (nRetval);
-}
-
-template<class _t_datalayerproperties>
-typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::iterator
-	CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::erase
-	(
-		typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::const_iterator sCIterFirst, 
-		typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::const_iterator sCIterLast
-	)
-{
-	iterator			sIter;
-
-	sIter = CBTreeKeySort_t::erase (sCIterFirst, sCIterLast);
-
-	return (sIter);
-}
-
-template<class _t_datalayerproperties>
-void CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::swap
-	(
-		CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties> &rKeySort
-	)
-{
-	CBTreeKeySort_t	&rBtrKeySort = dynamic_cast <CBTreeKeySort_t &> (rKeySort);
-
-	CBTreeKeySort_t::swap (rBtrKeySort);
-
-	test ();
-}
-
-template<class _t_datalayerproperties>
-typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::iterator
-	CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::find (const typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::key_type &rKey)
-{
-	return (CBTreeKeySort_t::find (rKey));
-}
-
-template<class _t_datalayerproperties>
-typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::iterator
-	CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::lower_bound (const typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::key_type &rKey)
-{
-	return (CBTreeKeySort_t::lower_bound (rKey));
-}
-
-template<class _t_datalayerproperties>
-typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::const_iterator
-	CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::lower_bound (const typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::key_type &rKey) const
-{
-	return (CBTreeKeySort_t::lower_bound (rKey));
-}
-
-template<class _t_datalayerproperties>
-typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::iterator
-	CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::upper_bound (const typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::key_type &rKey)
-{
-	return (CBTreeKeySort_t::upper_bound (rKey));
-}
-
-template<class _t_datalayerproperties>
-typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::const_iterator
-	CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::upper_bound (const typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::key_type &rKey) const
-{
-	return (CBTreeKeySort_t::upper_bound (rKey));
-}
-
-template<class _t_datalayerproperties>
-void CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::clear ()
-{
-	CBTreeKeySort_t::clear ();
-}
-
-template<class _t_datalayerproperties>
-typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::value_type CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::get_data_reference
-	(
-		typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::const_iterator &rCIter
-	)
-{
-	typedef typename reference_t::const_iterator		mmap_citer_t;
-
-	return (this->get_data_reference (rCIter));
-}
-
-template<class _t_datalayerproperties>
-typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::value_type CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::get_data_reference
-	(
-		typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::const_reverse_iterator &rCRIter
-	)
-{
-	typedef typename reference_t::const_reverse_iterator		mmap_criter_t;
-
-	return (this->get_data_reference (rCRIter));
-}
-
-template<class _t_datalayerproperties>
-CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties> &CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::operator=
-	(const CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties> &rBT)
-{
-	if (this != &rBT)
-	{
-		CBTreeKeySort_t			&rThisKeySort = dynamic_cast <CBTreeKeySort_t &> (*this);
-		const CBTreeKeySort_t	&rBTKeySort = dynamic_cast <const CBTreeKeySort_t &> (rBT);
-
-		rThisKeySort = rBTKeySort;
-
-		test ();
-	}
-
-	return (*this);
-}
-
-template<class _t_datalayerproperties>
-void CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::test () const
-{
-	if (!m_bAtomicTesting)
-	{
-		return;
-	}
-
-	if (*m_psTestTimeStamp == this->get_time_stamp ())
-	{
-		return;
-	}
-
-	*m_psTestTimeStamp = this->get_time_stamp ();
-
-	typedef typename reference_t::value_type		value_ref_t;
-	typedef typename reference_t::const_iterator	citer_ref_t;
-
-	reference_t										sMMap;
-	key_type										nKey;
-	key_type										nNextKey;
-	bool											bBounce;
-	size_type										nTotalCount = 0;
-	value_type										sEntry;
-	citer_ref_t										sItMMapLower;
-	citer_ref_t										sItMMapUpper;
-	citer_ref_t										sItMMap;
-	const_iterator									sCIterBegin;
-	const_iterator									sCIterEnd;
-	const_iterator									sCIterLower;
-	const_iterator									sCIterUpper;
-	const_iterator									sCIter;
-	bool											bDeleted;
-	
-	if (!this->test_integrity ())
-	{
-		::std::cerr << ::std::endl;
-		::std::cerr << "integrity test failed" << ::std::endl;
-
-		::std::cerr << "creating integrity.html..." << ::std::endl;
-
-		this->show_integrity ("integrity.html");
-
-		::std::cerr << "finished!" << ::std::endl;
-
-		exit (-1);
-	}
-
-	sCIterBegin = this->cbegin ();
-	sCIterEnd = this->cend ();
-
-	sCIter = sCIterBegin;
-
-	if (this->size () > 0)
-	{
-		nKey = ((value_type) (*sCIter)).nKey;
-	}
-
-	while (sCIter != sCIterEnd)
-	{
-		if (m_pClRefData->count (nKey) != this->count (nKey))
-		{
-			::std::cerr << ::std::endl;
-			::std::cerr << "number of instances mismatches" << ::std::endl;
-			::std::cerr << "key: " << std::setfill ('0') << std::hex << std::setw (8) << nKey << ::std::endl;
-			::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-			::std::cerr << "count: " << this->count (nKey) << ::std::endl;
-			::std::cerr << "reference: " << m_pClRefData->count (nKey) << ::std::endl;
-			
-			::std::cerr << "creating count.html..." << ::std::endl;
-
-			this->show_integrity ("count.html");
-
-			::std::cerr << "finished!" << ::std::endl;
-
-			exit (-1);
-		}
-
-		if (this->count (nKey) == 1)
-		{
-			sItMMapLower = m_pClRefData->lower_bound (nKey);
-
-			sCIterLower = CBTreeKeySort_t::lower_bound (nKey);
-
-			value_ref_t					sValue ((value_ref_t) *sItMMapLower);
-
-			sEntry = ((value_type) (*sCIterLower));
-
-			if ((sEntry.nData != sValue.second.nData) || (sEntry.nDebug != sValue.second.nDebug))
-			{
-				::std::cerr << ::std::endl;
-				::std::cerr << "data mismatches" << ::std::endl;
-				::std::cerr << "key: " << std::setfill ('0') << std::hex << std::setw (8) << sEntry.nKey << ::std::endl;
-				::std::cerr << "data: " << sEntry.nData << ::std::endl;
-
-				::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-				::std::cerr << "debug: " << sEntry.nDebug << ::std::endl;
-				::std::cerr << "reference" << ::std::endl;
-
-				::std::cerr << "data: " << std::setfill ('0') << std::hex << std::setw (8) << sValue.second.nData << ::std::endl;
-
-				::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-				::std::cerr << "debug: " << sValue.second.nDebug << ::std::endl;
-				
-				::std::cerr << "creating data.html..." << ::std::endl;
-
-				this->show_integrity ("data.html");
-
-				::std::cerr << "finished!" << ::std::endl;
-
-				exit (-1);
-			}
-		}
-		else
-		{
-			sItMMapLower = m_pClRefData->lower_bound (nKey);
-			sItMMapUpper = m_pClRefData->upper_bound (nKey);
-
-			sMMap.insert (sItMMapLower, sItMMapUpper);
-
-			sCIterLower = CBTreeKeySort_t::lower_bound (nKey);
-			sCIterUpper = CBTreeKeySort_t::upper_bound (nKey);
-
-			for (sCIter = sCIterLower; sCIter != sCIterUpper; sCIter++)
-			{
-				sEntry = ((value_type) (*sCIter));
-
-				bDeleted = false;
-
-				for (sItMMap = sMMap.cbegin (); sItMMap != sMMap.cend (); sItMMap++)
-				{
-					value_ref_t					sValue ((value_ref_t) *sItMMap);
-
-					if (sEntry.nData == sValue.second.nData)
-					{
-						if (sEntry.nDebug == sValue.second.nDebug)
-						{
-							sMMap.erase (sItMMap);
-
-							bDeleted = true;
-
-							break;
-						}
-					}
-				}
-
-				if (!bDeleted)
-				{
-					::std::cerr << ::std::endl;
-					::std::cerr << "number of instances mismatches" << ::std::endl;
-					::std::cerr << "key: " << std::setfill ('0') << std::hex << std::setw (8) << sEntry.nKey << ::std::endl;
-					::std::cerr << "data: " << sEntry.nData << ::std::endl;
-
-					::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-					::std::cerr << "debug: " << sEntry.nDebug << ::std::endl;
-					::std::cerr << "Instance not found in reference!" << ::std::endl;
-
-					::std::cerr << "creating error.html..." << ::std::endl;
-
-					this->show_integrity ("error.html");
-
-					::std::cerr << "finished!" << ::std::endl;
-
-					exit (-1);
-				}
-			}
-
-			if (sMMap.size () != 0)
-			{
-				::std::cerr << ::std::endl;
-				::std::cerr << "number of instances mismatches" << ::std::endl;
-				::std::cerr << "the following entries are still present in reference:" << ::std::endl;
-
-				for (sItMMap = sMMap.cbegin (); sItMMap != sMMap.cend (); sItMMap++)
-				{
-					value_ref_t					sValue ((value_ref_t) *sItMMap);
-
-					::std::cerr << "key: ";
-
-					::std::cerr << std::setfill ('0') << std::hex << std::setw (8);
-					{
-						::std::cerr << sValue.first << " ";
-						::std::cerr << "data: " << ::std::flush;
-						::std::cerr << sValue.second.nData << " ";
-					}
-					::std::cerr << std::setfill (' ') << std::dec << std::setw (0);
-
-					::std::cerr << "debug: " << sValue.second.nDebug << ::std::endl;
-				}
-
-				::std::cerr << "creating error.html..." << ::std::endl;
-
-				this->show_integrity ("error.html");
-
-				::std::cerr << "finished!" << ::std::endl;
-
-				exit (-1);
-			}
-		}
-
-		CBTreeKeySort_t::get_next_key (nKey, nNextKey, bBounce);
-
-		if (bBounce)
-		{
-			break;
-		}
-
-		nKey = nNextKey;
-	}
-	
-	if (m_pClRefData->size () != this->size ())
-	{
-		::std::cerr << ::std::endl;
-		::std::cerr << "size mismatches" << ::std::endl;
-		::std::cerr << "size: " << this->size () << ::std::endl;
-		::std::cerr << "reference size: " << m_pClRefData->size () << ::std::endl;
-		::std::cerr << "empty: " << this->empty () << ::std::endl;
-		::std::cerr << "reference empty: " << m_pClRefData->empty () << ::std::endl;
-
-		::std::cerr << "creating size.html..." << ::std::endl;
-
-		this->show_integrity ("size.html");
-
-		::std::cerr << "finished!" << ::std::endl;
-
-		exit (-1);
-	}
-}
-
-template<class _t_datalayerproperties>
-void CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::set_reference (typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::reference_t *pReference)
-{
-	m_pClRefData = pReference;
-}
-
-template<class _t_datalayerproperties>
-void CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::set_atomic_testing (bool bEnable)
-{
-	m_bAtomicTesting = bEnable;
-}
-
-template<class _t_datalayerproperties>
-int CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::comp (const typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::key_type &rKey0, const typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::key_type &rKey1) const
-{
-	if (rKey0 < rKey1)
-	{
-		return (-1);
-	}
-	else if (rKey0 > rKey1)
-	{
-		return (1);
-	}
-
-	return (0);
-}
-
-template<class _t_datalayerproperties>
-template<class _t_iterator, class _t_ref_iterator>
-typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::value_type CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::get_data_reference (_t_iterator &rIter)
-{
-	typedef typename reference_t::value_type	value_ref_t;
-
-	value_type			sRetval;
-	_t_iterator			sIterBegin;
-	_t_ref_iterator		sMMapCIter;
-
-	get_begin (this, sIterBegin);
-	
-	get_begin (this->m_pClRefData, sMMapCIter);
-
-	size_type			nOffset = ::std::distance (sIterBegin, rIter);
-
-	::std::advance (sMMapCIter, nOffset);
-
-	sRetval.nKey = ((value_ref_t) *sMMapCIter).first;
-	sRetval.nData = ((value_ref_t) *sMMapCIter).second.nData;
-	sRetval.nDebug = ((value_ref_t) *sMMapCIter).second.nDebug;
-
-	return (sRetval);
-}
-
-template<class _t_datalayerproperties>
-bool CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::show_data (std::ofstream &ofs, std::stringstream &rstrData, std::stringstream &rszMsg, const typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::node_iter_type nNode, const typename CBTreeKeySortTest<keySortEntry_t, uint32_t, _t_datalayerproperties>::sub_node_iter_type nSubPos) const
-{
-	value_type		*psData;
-	key_type		rData;
-
-	try
-	{
-		psData = this->get_data (nNode, nSubPos);
-
-		rData = psData->nKey;
-		rData = (rData >> 16) | (rData << 16);
-		rData = ((rData >> 8) & 0xFF00FF)| ((rData << 8) & 0xFF00FF00);
-		
-		rstrData.clear ();
-		rstrData << "<table border=\"0\" cellspacing=\"1\" width=\"220\"><tr><td>";
-		rstrData << "key: " << ::std::hex << ::std::setfill ('0') << ::std::setw (8) << rData << "<br>";
-		rstrData << "data: " << psData->nData << ::std::dec << "<br>";
-		rstrData << "debug: " << psData->nDebug << "<br>";
-		rstrData << "instance: " << this->get_instancePos (nNode, nSubPos);
-		rstrData << "</td>";
-
-		size_type		nDiff = ::std::distance (this->cbegin (), this->lower_bound (psData->nKey));
-		size_type		nOffset = nDiff + this->get_instancePos (nNode, nSubPos);
-
-		rstrData << "<td align=\"top\">";
-
-		if (nOffset < m_pClRefData->size ())
-		{
-			reference_t::const_iterator		sItMMap;
-
-			sItMMap = m_pClRefData->cbegin ();
-
-			::std::advance (sItMMap, nOffset);
-
-			rData = (*sItMMap).first;
-			rData = (rData >> 16) | (rData << 16);
-			rData = ((rData >> 8) & 0xFF00FF)| ((rData << 8) & 0xFF00FF00);
-
-			if (psData->nKey != (*sItMMap).first)
-			{
-				if (ofs.is_open ())
-				{
-					rstrData << "<font color=\"#FF0000\">";
-				}
-				else
-				{
-					return (false);
-				}
-			}
-			else
-			{
-				rstrData << "<font color=\"#00BB00\">";
-			}
-			
-			rstrData << "key: " << ::std::hex << ::std::setfill ('0') << ::std::setw (8) << rData << "<br>";
-			rstrData << "</font>";
-
-			if (psData->nData != (*sItMMap).second.nData)
-			{
-				if (ofs.is_open ())
-				{
-					rstrData << "<font color=\"#AAAA00\">";
-				}
-				else
-				{
-					return (false);
-				}
-			}
-			else
-			{
-				rstrData << "<font color=\"#00BB00\">";
-			}
-			
-			rstrData << "data: " << (*sItMMap).second.nData << ::std::dec << "<br>";
-			rstrData << "</font>";
-
-			if (psData->nDebug != (*sItMMap).second.nDebug)
-			{
-				rstrData << "<font color=\"#AAAA00\">";
-			}
-			else
-			{
-				rstrData << "<font color=\"#00BB00\">";
-			}
-			
-			rstrData << "debug: " << (*sItMMap).second.nDebug << "<br>";
-			rstrData << "</font>";
-			rstrData << "-";
-		}
-		else
-		{
-			rstrData << "<font color=\"#FF0000\">";
-			rstrData << "reference<br>";
-			rstrData << "out of<br>";
-			rstrData << "range";
-			rstrData << "</font>";
-		}
-
-		rstrData << "</td></tr>";
-		rstrData << "</table>" << ::std::endl;
-	}
-	catch (::std::exception *pE)
-	{
-		if (!ofs.is_open ())
-		{
-			return (false);
-		}
-
-		rszMsg.clear ();
-		rszMsg << "<br>data: corruption (" << pE->what () << ")";
-
-		rData = psData->nKey;
-		rData = (rData >> 16) | (rData << 16);
-		rData = ((rData >> 8) & 0xFF00FF)| ((rData << 8) & 0xFF00FF00);
-		
-		rstrData.clear ();
-		rstrData << "key: " << ::std::hex << ::std::setfill ('0') << ::std::setw (8) << rData << ::std::dec << "<br>debug: " << psData->nDebug << "<br>instance: ---";
+		rstrData << "key: " << ::std::hex << ::std::setfill ('0') << ::std::setw (8) << rData << ::std::dec << "<br>debug: " << get_entry_debug (*psData) << "<br>instance: ---";
 	}
 
 	return (true);

@@ -78,6 +78,9 @@ public:
 							CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>
 																(const CBTreeKeySortTestWrapper &rContainer);
 
+							CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>
+																(CBTreeKeySortTestWrapper &&rRhsContainer);
+
 							~CBTreeKeySortTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>
 																();
 
@@ -94,13 +97,21 @@ public:
 	
 	void					emplace_hint						(const value_type &rData);
 
+	CBTreeKeySortTestWrapper &
+							operator=							(const CBTreeKeySortTestWrapper &rContainer);
+
+	CBTreeKeySortTestWrapper &
+							operator=							(CBTreeKeySortTestWrapper &&rRhsContainer);
+
 protected:
 
 	void					init_containers						(const uint32_t nNodeSize, const uint32_t nPageSize);
 
-	void					init_containers						(const CBTreeAssociativeTestWrapper_t &rWrapper);
+	void					init_containers						(const CBTreeAssociativeTestWrapper_t &rWrapper, const bool bAssign = true);
 
 	void					transfer_containers					();
+
+	void					move_construct_containers			(CBTreeKeySortTestWrapper &&rRhsContainer);
 
 	CBTreeKeySortTest<value_test_type, uint32_t, CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> >	*m_pContainerFile6565min;
 	CBTreeKeySortTest<value_test_type, uint32_t, CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> >	*m_pContainerFile6555min;

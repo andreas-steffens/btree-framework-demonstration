@@ -25,47 +25,75 @@ CBTreeTestArray<_t_datalayerproperties>::CBTreeTestArray
 		typename _t_datalayerproperties::sub_node_iter_type nNodeSize, 
 		typename CBTreeTestArray<_t_datalayerproperties>::reference_t *pClRef
 	)
-	:	CBTreeArray<typename CBTreeTestArray<_t_datalayerproperties>::value_type, _t_datalayerproperties>
-	(
-		rDataLayerProperties, 
-		nNodeSize
-	)
-	,	m_pClRef (pClRef)
-	,	m_bAtomicTesting (true)
-	,	m_psTestTimeStamp (NULL)
+	:	CBTreeTestBaseLinear
+			<
+				CBTreeArray <arrayEntry_t, _t_datalayerproperties>, 
+				::std::list<arrayEntry_t>, 
+				arrayEntry_t, 
+				_t_datalayerproperties
+			>
+		(
+			rDataLayerProperties, 
+			nNodeSize, 
+			pClRef, 
+			true
+		)
 {
-	m_psTestTimeStamp = new btree_time_stamp_t (this->get_time_stamp ());
 }
 
 template<class _t_datalayerproperties>
-CBTreeTestArray<_t_datalayerproperties>::CBTreeTestArray (CBTreeTestArray<_t_datalayerproperties> &rBT, bool bAssign)
-	:	CBTreeArray<typename CBTreeTestArray<_t_datalayerproperties>::value_type, _t_datalayerproperties>
-	(
-		rBT, false
-	)
-	,	m_pClRef (rBT.m_pClRef)
-	,	m_bAtomicTesting (false)
-	,	m_psTestTimeStamp (NULL)
+CBTreeTestArray<_t_datalayerproperties>::CBTreeTestArray (const CBTreeTestArray<_t_datalayerproperties> &rContainer, const bool bAssign)
+	:	CBTreeTestBaseLinear
+			<
+				CBTreeArray <arrayEntry_t, _t_datalayerproperties>, 
+				::std::list<arrayEntry_t>, 
+				arrayEntry_t, 
+				_t_datalayerproperties
+			>
+		(
+			dynamic_cast <const CBTreeTestBaseLinear
+				<
+					CBTreeArray <arrayEntry_t, _t_datalayerproperties>, 
+					::std::list<arrayEntry_t>, 
+					arrayEntry_t, 
+					_t_datalayerproperties
+				> &> (rContainer), 
+				false
+		)
 {
-	m_psTestTimeStamp = new btree_time_stamp_t (this->get_time_stamp ());
-
 	if (bAssign)
 	{
-		this->_assign (rBT);
+		this->_assign (rContainer);
 	}
 
 	this->set_atomic_testing (true);
 }
 
 template<class _t_datalayerproperties>
+CBTreeTestArray<_t_datalayerproperties>::CBTreeTestArray (CBTreeTestArray<_t_datalayerproperties> &&rRhsContainer)
+	:	CBTreeTestBaseLinear
+			<
+				CBTreeArray <arrayEntry_t, _t_datalayerproperties>, 
+				::std::list<arrayEntry_t>, 
+				arrayEntry_t, 
+				_t_datalayerproperties
+			>
+		(
+			dynamic_cast<CBTreeTestBaseLinear
+				<
+					CBTreeArray <arrayEntry_t, _t_datalayerproperties>, 
+					::std::list<arrayEntry_t>, 
+					arrayEntry_t, 
+					_t_datalayerproperties
+				> &&> (rRhsContainer)
+		)
+{
+	this->test ();
+}
+
+template<class _t_datalayerproperties>
 CBTreeTestArray<_t_datalayerproperties>::~CBTreeTestArray ()
 {
-	if (m_psTestTimeStamp != NULL)
-	{
-		delete m_psTestTimeStamp;
-
-		m_psTestTimeStamp = NULL;
-	}
 }
 
 template<class _t_datalayerproperties>
@@ -76,11 +104,11 @@ void CBTreeTestArray<_t_datalayerproperties>::assign (_t_iterator sItFirst, _t_i
 }
 
 template<class _t_datalayerproperties>
-void CBTreeTestArray<_t_datalayerproperties>::assign (typename _t_datalayerproperties::size_type nNewSize, const typename CBTreeTestArray<_t_datalayerproperties>::value_type& rVal)
+void CBTreeTestArray<_t_datalayerproperties>::assign (const typename _t_datalayerproperties::size_type nNewSize, const typename CBTreeTestArray<_t_datalayerproperties>::value_type& rVal)
 {
 	CBTreeArray_t::assign (nNewSize, rVal);
 
-	test ();
+	this->test ();
 }
 
 template<class _t_datalayerproperties>
@@ -88,7 +116,7 @@ void CBTreeTestArray<_t_datalayerproperties>::push_back (const typename CBTreeTe
 {
 	CBTreeArray_t::push_back (rData);
 
-	test ();
+	this->test ();
 }
 
 template<class _t_datalayerproperties>
@@ -96,7 +124,7 @@ void CBTreeTestArray<_t_datalayerproperties>::pop_back ()
 {
 	CBTreeArray_t::pop_back ();
 
-	test ();
+	this->test ();
 }
 
 template<class _t_datalayerproperties>
@@ -124,7 +152,7 @@ typename CBTreeTestArray<_t_datalayerproperties>::iterator
 {
 	iterator		sRetval = CBTreeArray_t::insert (sCIterPos, rData);
 
-	test ();
+	this->test ();
 
 	return (sRetval);
 }
@@ -140,7 +168,7 @@ typename CBTreeTestArray<_t_datalayerproperties>::iterator
 {
 	iterator		sRetval = CBTreeArray_t::insert (sCIterPos, nLen, rData);
 
-	test ();
+	this->test ();
 
 	return (sRetval);
 }
@@ -154,7 +182,7 @@ typename CBTreeTestArray<_t_datalayerproperties>::iterator
 {
 	iterator		sRetval = CBTreeArray_t::erase (sCIterPos);
 
-	test ();
+	this->test ();
 
 	return (sRetval);
 }
@@ -169,7 +197,7 @@ typename CBTreeTestArray<_t_datalayerproperties>::iterator
 {
 	iterator		sRetval = CBTreeArray_t::erase (sCIterFirst, sCIterLast);
 
-	test ();
+	this->test ();
 
 	return (sRetval);
 }
@@ -177,14 +205,15 @@ typename CBTreeTestArray<_t_datalayerproperties>::iterator
 template<class _t_datalayerproperties>
 void CBTreeTestArray<_t_datalayerproperties>::swap
 	(
-		CBTreeTestArray<_t_datalayerproperties> &rArray
+		CBTreeTestArray<_t_datalayerproperties> &rContainer
 	)
 {
-	CBTreeArray_t	&rBtrArray = dynamic_cast <CBTreeArray_t &> (rArray);
+	if (this != &rContainer)
+	{
+		CBTreeTestArray_t::_swap (rContainer);
 
-	CBTreeArray_t::swap (rBtrArray);
-
-	test ();
+		this->test ();
+	}
 }
 
 template<class _t_datalayerproperties>
@@ -192,7 +221,7 @@ void CBTreeTestArray<_t_datalayerproperties>::clear ()
 {
 	CBTreeBaseDefaults_t::clear ();
 
-	test ();
+	this->test ();
 }
 
 template<class _t_datalayerproperties>
@@ -232,109 +261,34 @@ bool CBTreeTestArray<_t_datalayerproperties>::operator!= (const CBTreeTestArray 
 }
 
 template<class _t_datalayerproperties>
-void CBTreeTestArray<_t_datalayerproperties>::test () const
+CBTreeTestArray<_t_datalayerproperties> &CBTreeTestArray<_t_datalayerproperties>::operator=
+	(const CBTreeTestArray<_t_datalayerproperties> &rContainer)
 {
-	typedef typename CBTreeTestArray<_t_datalayerproperties>::const_iterator	citer_t;
-
-	if (!this->m_bAtomicTesting)
+	if (this != &rContainer)
 	{
-		return;
+		*(this->m_pClRef) = *(rContainer.m_pClRef);
+
+		CBTreeTestBaseLinear_t				&rThisArray = reinterpret_cast <CBTreeTestBaseLinear_t &> (*this);
+		const CBTreeTestBaseLinear_t		&rContainerArray = reinterpret_cast <const CBTreeTestBaseLinear_t &> (rContainer);
+
+		rThisArray = rContainerArray;
+
+		this->test ();
 	}
 
-	if (*m_psTestTimeStamp == this->get_time_stamp ())
-	{
-		return;
-	}
-
-	*m_psTestTimeStamp = this->get_time_stamp ();
-
-	if (!this->test_integrity ())
-	{
-		::std::cerr << ::std::endl;
-		::std::cerr << "integrity test failed" << ::std::endl;
-
-		::std::cerr << "creating integrity.html..." << ::std::endl;
-
-		this->show_integrity ("integrity.html");
-
-		::std::cerr << "finished!" << ::std::endl;
-
-		exit (-1);
-	}
-
-	if (this->size () != (size_type) m_pClRef->size ())
-	{
-		::std::cerr << ::std::endl;
-		::std::cerr << "size mismatches" << ::std::endl;
-		::std::cerr << "size: " << this->size () << ::std::endl;
-		::std::cerr << "reference: " << m_pClRef->size () << ::std::endl;
-
-		::std::cerr << "creating size.html..." << ::std::endl;
-
-		this->show_integrity ("size.html");
-
-		::std::cerr << "finished!" << ::std::endl;
-
-		exit (-1);
-	}
-
-	typename reference_t::iterator		itRef = m_pClRef->begin ();
-	size_type							it;
-	value_type							sData;
-	value_type							sRef;
-	citer_t								sCIter;
-
-	sCIter = this->cbegin ();
-
-	for (it = 0; it < this->size (); it++, itRef++, sCIter++)
-	{
-		sData = *sCIter;
-
-		sRef = *itRef;
-
-		if (memcmp ((void *) &sData, (void *) &sRef, sizeof (sData)) != 0)
-		{
-			::std::cerr << ::std::endl;
-			::std::cerr << "data mismatch at " << it << ::std::endl;
-			
-			::std::cerr << "creating error.html..." << ::std::endl;
-
-			this->show_integrity ("error.html");
-
-			::std::cerr << "finished!" << ::std::endl;
-
-			exit (-1);
-		}
-	}
-}
-
-template<class _t_datalayerproperties>
-void CBTreeTestArray<_t_datalayerproperties>::set_reference (reference_t *pReference)
-{
-	this->m_pClRef = pReference;
-}
-
-template<class _t_datalayerproperties>
-void CBTreeTestArray<_t_datalayerproperties>::set_atomic_testing (bool bEnable)
-{
-	this->m_bAtomicTesting = bEnable;
+	return (*this);
 }
 
 template<class _t_datalayerproperties>
 CBTreeTestArray<_t_datalayerproperties> &CBTreeTestArray<_t_datalayerproperties>::operator=
-	(const CBTreeTestArray<_t_datalayerproperties> &rBT)
+	(CBTreeTestArray<_t_datalayerproperties> &&rRhsContainer)
 {
-	if (this != &rBT)
-	{
-		*(this->m_pClRef) = *(rBT.m_pClRef);
+	CBTreeTestBaseLinear_t		&rArrayThis = dynamic_cast<CBTreeTestBaseLinear_t &> (*this);
+	CBTreeTestBaseLinear_t		&rArrayContainer = dynamic_cast<CBTreeTestBaseLinear_t &> (rRhsContainer);
 
-		CBTreeArray_t			&rThisArray = reinterpret_cast <CBTreeArray_t &> (*this);
-		const CBTreeArray_t		&rBTArray = reinterpret_cast <const CBTreeArray_t &> (rBT);
+	rArrayThis = ::std::move (rArrayContainer);
 
-		rThisArray = rBTArray;
-
-		test ();
-	}
+	this->test ();
 
 	return (*this);
 }
@@ -460,7 +414,7 @@ template<class _t_datalayerproperties>
 bool CBTreeTestArray<_t_datalayerproperties>::set_at (const typename _t_datalayerproperties::size_type nPos, const typename CBTreeTestArray<_t_datalayerproperties>::value_type &rData)
 {
 	bool								bRslt;
-	typename reference_t::iterator		itRef = m_pClRef->begin ();
+	typename reference_t::iterator		itRef = this->m_pClRef->begin ();
 	size_type							nFForward;
 
 	for (nFForward = 0; nFForward < nPos; nFForward++)
@@ -472,7 +426,7 @@ bool CBTreeTestArray<_t_datalayerproperties>::set_at (const typename _t_datalaye
 
 	bRslt = CBTreeArray_t::set_at (nPos, rData);
 
-	test ();
+	this->test ();
 
 	return (bRslt);
 }
@@ -481,6 +435,14 @@ template<class _t_datalayerproperties>
 bool CBTreeTestArray<_t_datalayerproperties>::get_at (const typename _t_datalayerproperties::size_type nPos, typename CBTreeTestArray<_t_datalayerproperties>::value_type &rData) const
 {
 	return (CBTreeArray_t::get_at (nPos, rData));
+}
+
+template<class _t_datalayerproperties>
+void CBTreeTestArray<_t_datalayerproperties>::_swap (CBTreeTestArray<_t_datalayerproperties> &rContainer)
+{
+	CBTreeTestBaseLinear_t		&rBaseLinearContainer = dynamic_cast<CBTreeTestBaseLinear_t &> (rContainer);
+
+	CBTreeTestBaseLinear_t::_swap (rBaseLinearContainer);
 }
 
 #endif // BTREETESTARRAY_CPP

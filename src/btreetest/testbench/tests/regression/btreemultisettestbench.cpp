@@ -682,6 +682,38 @@ void TestBTreeMultiSetSTLifEqualRange (_t_multiset *pClMSet, typename _t_multise
 }
 
 template<class _t_container>
+_t_container TestBTreeMultiSetMoveConstructorAndAssignmentEx (_t_container *pClMSet, typename _t_container::size_type nNumEntries)
+{
+	_t_container	sClMSet (*pClMSet);
+
+	return (sClMSet);
+}
+
+template<class _t_container>
+void TestBTreeMultiSetMoveConstructorAndAssignment (_t_container *pClMSet, typename _t_container::size_type nNumEntries)
+{
+	typedef typename _t_container::key_type					key_type;
+
+	key_type								nLastKey;
+
+	_t_container							sClMSet (*pClMSet);
+
+	::std::cout << "exercises CBTreeMultiSet<>:: CBTreeMultiSet (CBTreeMultiSet<> &&) and operator= (CBTreeMultiSet<> &&)" << ::std::endl;
+
+	associative_container_add_primitive (&sClMSet, nNumEntries, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+
+	*pClMSet = TestBTreeMultiSetMoveConstructorAndAssignmentEx (&sClMSet, nNumEntries);
+
+	pClMSet->clear ();
+
+	nLastKey = 1;
+
+	associative_container_add_primitive (pClMSet, 1, 0, nLastKey, BTREETEST_KEY_GENERATION_RANDOM);
+
+	*pClMSet = TestBTreeMultiSetMoveConstructorAndAssignmentEx (&sClMSet, nNumEntries);
+}
+
+template<class _t_container>
 void TestBTreeSTLmultiSet (uint32_t nTestNum, uint32_t nNodeSize, uint32_t nPageSize, _t_container *pMSetWrapper)
 {
 	typename _t_container::size_test_type		sTypeSelect;
@@ -709,6 +741,13 @@ void TestBTreeSTLmultiSet (uint32_t nTestNum, uint32_t nNodeSize, uint32_t nPage
 			break;
 		}
 		
+	case BTREETEST_MULTISET_MOVE_CONSTRUCTOR_AND_ASSIGNMENT:
+		{
+			TestBTreeMultiSetMoveConstructorAndAssignment (pMSetWrapper, 64);
+
+			break;
+		}
+	
 	case BTREETEST_MULTISET_STL_IF_INSERT	:
 		{
 			TestBTreeMultiSetSTLifInsert (pMSetWrapper, 64);

@@ -65,6 +65,9 @@ public:
 								CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>
 																(const CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container> &rContainer);
 
+								CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>
+																(CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container> &&rRhsContainer);
+
 	// destruction
 								~CBTreeArrayTestWrapper<_t_data, _t_sizetype, _t_ref_container>
 																();
@@ -129,7 +132,7 @@ public:
 
 	CBTreeArrayTestWrapper_t&	operator=						(const CBTreeArrayTestWrapper_t &rContainer);
 
-	CBTreeArrayTestWrapper_t&	operator=						(CBTreeArrayTestWrapper_t &&rRhBT);
+//	CBTreeArrayTestWrapper_t&	operator=						(CBTreeArrayTestWrapper_t &&rRhsContainer);
 
 	CBTreeArrayTestAccessWrapper_t
 								operator[]						(const size_type nPos);
@@ -177,6 +180,11 @@ protected:
 
 	template<class _t_container, class _t_iterator>
 	void						insert_via_self_reference_one	(_t_container *pContainer, _t_iterator &rIter, const size_test_type nPos, const size_test_type nFirst, const size_test_type nLast);
+
+	void						move_construct_containers		(CBTreeArrayTestWrapper &&rRhsContainer);
+
+	template<class _t_container>
+	_t_container				generate_move_construction		(_t_container *pContainer, _t_ref_container *pReference) const;
 
 	CBTreeTestArray<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> >		*m_pContainerRAM6565_n;
 	CBTreeTestArray<CBTreeIOpropertiesRAM <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> >		*m_pContainerRAM6555_n;

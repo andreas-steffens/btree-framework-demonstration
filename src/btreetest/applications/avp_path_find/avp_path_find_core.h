@@ -19,6 +19,12 @@
 #include <stdlib.h>
 #include <memory.h>
 
+#if defined (_DEBUG) && !defined (USE_STL) && !defined (_MSC_VER)
+
+#include <assert.h>
+
+#endif
+
 #include <stdint.h>
 
 #include <iterator>
@@ -340,7 +346,7 @@ public:
 		(_t_datalayerproperties &rDataLayerProperties, sub_node_iter_type nodeSize);
 
 	CBTreeKeySort_AgentStep<_t_datalayerproperties>
-		(CBTreeKeySort_AgentStep<_t_datalayerproperties> &rBT, bool bAssign = true);
+		(const CBTreeKeySort_AgentStep<_t_datalayerproperties> &rContainer, const bool bAssign = true);
 
 protected:
 };
@@ -354,9 +360,9 @@ CBTreeKeySort_AgentStep<_t_datalayerproperties>::CBTreeKeySort_AgentStep (_t_dat
 
 template<class _t_datalayerproperties>
 CBTreeKeySort_AgentStep<_t_datalayerproperties>::CBTreeKeySort_AgentStep
-	(CBTreeKeySort_AgentStep<_t_datalayerproperties> &rBT, bool bAssign)
+	(const CBTreeKeySort_AgentStep<_t_datalayerproperties> &rContainer, const bool bAssign)
 	:	CBTreeKeySort <agent_step_t, uint32_t, _t_datalayerproperties>
-		(rBT, bAssign)
+		(rContainer, bAssign)
 {
 }
 

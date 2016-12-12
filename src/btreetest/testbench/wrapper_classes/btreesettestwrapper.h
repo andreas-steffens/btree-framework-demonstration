@@ -101,6 +101,9 @@ public:
 							CBTreeSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>
 																(const CBTreeSetTestWrapper &rContainer);
 
+							CBTreeSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>
+																(CBTreeSetTestWrapper &&rRhsContainer);
+
 							~CBTreeSetTestWrapper<_t_data, _t_value, _t_sizetype, _t_ref_container>
 																();
 
@@ -132,11 +135,15 @@ public:
 	bool					run_key_compare						(const key_type &rKey0, const key_type &rKey1) const;
 	bool					run_value_compare					(const value_type &rKey0, const value_type &rKey1) const;
 
+	CBTreeSetTestWrapper &	operator=							(const CBTreeSetTestWrapper &rContainer);
+
+	CBTreeSetTestWrapper &	operator=							(CBTreeSetTestWrapper &&rRhsContainer);
+
 protected:
 
 	void					init_containers						(const uint32_t nNodeSize, const uint32_t nPageSize);
 
-	void					init_containers						(const CBTreeAssociativeTestWrapper_t &rWrapper);
+	void					init_containers						(const CBTreeAssociativeTestWrapper_t &rWrapper, const bool bAssign = true);
 
 	void					transfer_containers					();
 
@@ -145,6 +152,8 @@ protected:
 
 	template<class _t_ext_container, class _t_source_container, class _t_ext_sizetype, class _t_ext_iterator, class _t_iterator>
 	void					test_one_container_insert			(_t_ext_container *pExtOriginal, _t_ext_container *pExtReference, _t_ext_sizetype nPos, size_test_type nFirst, size_test_type nLast, _t_ext_iterator &rExtIter, _t_iterator &rIter, _t_source_container *pSrc) const;
+
+	void					move_construct_containers			(CBTreeSetTestWrapper &&rRhsContainer);
 
 	CBTreeTestSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint64_t, uint32_t> >		*m_pContainerFile6565min;
 	CBTreeTestSet<CBTreeIOpropertiesFile <size_test_type, uint64_t, uint32_t, uint32_t, uint32_t> >		*m_pContainerFile6555min;
